@@ -1,0 +1,47 @@
+name: Deploy main branch to GCP
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+env:
+  IMAGE: eu.gcr.io/${{ secrets.GCP_PROJECT_ID }}/arcane-platform-app
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v2
+      - name: Setup jdk16
+        uses: actions/setup-java@v2
+        with:
+          java-version: "16"
+          distribution: "adopt"
+          architecture: x64
+#          cache: "gradle"
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+      - name: Build with Gradle
+        run: ./gradlew --no-daemon :apps:arcane-gcp-platform-app:jib -Djib.to.image="$IMAGE":${GITHUB_SHA::12}
+      - name: Deploy to GCP Cloud Run
+        run: |-
+          gcloud run deploy arcane-platform \
+            --region europe-west1 \
+            --image "$IMAGE":${GITHUB_SHA::12} \
+            --cpu=1 \
+            --memory=512Mi \
+            --min-instances=1 \
+            --max-instances=1 \
+            --concurrency=1000 \
+            --service-account arcane-platform \
+            --no-allow-unauthenticated \
+            --port=8080 \
+            --platform=managed

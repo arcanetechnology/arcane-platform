@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  arcane-platform-app:
+    container_name: arcane-platform-app
+    image: arcane-platform-app
+    ports:
+      - "8080:8080"
+    entrypoint: ["java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain"]
+
+  acceptance-tests:
+    container_name: acceptance-tests
+    image: acceptance-tests
+    command: ["--select-package=no.arcane.platform.tests"]

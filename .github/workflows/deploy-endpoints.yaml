@@ -1,0 +1,53 @@
+name: Deploy main branch to GCP
+on:
+  workflow_dispatch:
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SERVICE_ID: api.arcane.no
+  ESP_FULL_VERSION: 2.30.3
+jobs:
+  deploy-endpoints:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v2
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: Deploy GCP Cloud Endpoints
+        env:
+          GCP_BACKEND_URL: ${{ secrets.GCP_BACKEND_URL }}
+        run: |
+          TMP_DIR=$(mktemp -d)
+          echo "$TMP_DIR"
+          TMP_FILE="$TMP_DIR/arcane-platform-api.yaml"
+          trap 'rm -rf "$TMP_DIR"' EXIT
+          sed 's/${GCP_PROJECT_ID}/'"$GCP_PROJECT_ID"'/g; s/${GCP_BACKEND_URL}/'"$GCP_BACKEND_URL"'/g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-api.yaml > "$TMP_FILE"
+          gcloud endpoints services deploy "$TMP_FILE"
+      - name: Fetch Endpoints Service Config ID
+        run: echo "SERVICE_CONFIG_ID=$(gcloud endpoints configs list --service api.arcane.no --format=object --flatten=id --sort-by=~id --limit=1)" >> $GITHUB_ENV
+      - name: Build & push custom ESP v2 docker image for GCP Cloud Run
+        working-directory: apps/esp-v2
+        run: |-
+          ./build_docker_image.sh \
+            -s $SERVICE_ID \
+            -c $SERVICE_CONFIG_ID \
+            -p $GCP_PROJECT_ID \
+            -v $ESP_FULL_VERSION
+      - name: Deploy ESP v2
+        run: |-
+          gcloud run deploy arcane-platform-gateway \
+            --region europe-west1 \
+            --image eu.gcr.io/$GCP_PROJECT_ID/endpoints-runtime-serverless:$ESP_FULL_VERSION-$SERVICE_ID-$SERVICE_CONFIG_ID \
+            --cpu=1 \
+            --memory=512Mi \
+            --min-instances=1 \
+            --max-instances=1 \
+            --concurrency=1000 \
+            --service-account arcane-platform-gateway \
+            --allow-unauthenticated \
+            --port=8080 \
+            --platform=managed

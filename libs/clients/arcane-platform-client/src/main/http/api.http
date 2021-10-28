@@ -1,0 +1,6 @@
+GET https://api.arcane.no/ping
+
+###
+
+GET https://api.arcane.no/utc
+Authorization: Bearer 
