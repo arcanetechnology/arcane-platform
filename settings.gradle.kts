@@ -14,6 +14,7 @@ include(
     // libs / services
     "libs:services:email",
     "libs:services:payments",
+    "libs:services:terms-and-conditions",
     // libs / utils
     "libs:utils:config",
     "libs:utils:ktor",

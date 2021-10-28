@@ -8,7 +8,10 @@ plugins {
 dependencies {
     runtimeOnly(kotlin("stdlib-jdk8"))
 
+    runtimeOnly(project(":libs:modules:identity"))
+
     runtimeOnly(project(":libs:utils:ktor"))
+    runtimeOnly("io.ktor:ktor-server-netty:${Version.ktor}")
     runtimeOnly(project(":libs:utils:logging"))
     runtimeOnly("io.micronaut.gcp:micronaut-gcp-logging:${Version.micronaut}")
 }

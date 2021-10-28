@@ -30,6 +30,17 @@ paths:
             type: string
       security:
         - firebase: []
+  "/whoami":
+    get:
+      description: "Get OAuth2 JWT payload"
+      operationId: "whoami"
+      responses:
+        200:
+          description: "Get OAuth2 JWT payload json"
+          schema:
+            type: string
+      security:
+        - firebase: []
 securityDefinitions:
   firebase:
     authorizationUrl: ""

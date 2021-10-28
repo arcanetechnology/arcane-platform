@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     base
     kotlin("jvm") version Version.kotlin apply false
+    kotlin("plugin.serialization") version Version.kotlin apply false
     id("com.google.cloud.tools.jib") version Version.jibPlugin apply false
     id("com.github.ben-manes.versions") version Version.versionsPlugin
 }

@@ -1,7 +1,7 @@
 # Arcane Platform
 
 [![Kotlin](https://img.shields.io/badge/kotlin-1.5.31-blue.svg?logo=kotlin)](http://kotlinlang.org)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/arcanetechnology/arcane-platform/cd/main)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/arcanetechnology/arcane-platform/Test/main?logo=github)
 ![GitHub](https://img.shields.io/github/license/arcanetechnology/arcane-platform)
 
 [Developer Notes](./docs/dev.md)

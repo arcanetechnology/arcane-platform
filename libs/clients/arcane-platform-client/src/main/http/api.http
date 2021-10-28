@@ -3,4 +3,10 @@ GET https://api.arcane.no/ping
 ###
 
 GET https://api.arcane.no/utc
-Authorization: Bearer 
+Authorization: Bearer
+
+###
+
+GET https://api.arcane.no/whoami
+Authorization: Bearer
+

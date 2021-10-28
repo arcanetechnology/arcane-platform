@@ -1,4 +1,4 @@
-name: Deploy main branch to GCP
+name: Deploy to GCP
 on:
   workflow_dispatch:
   push:

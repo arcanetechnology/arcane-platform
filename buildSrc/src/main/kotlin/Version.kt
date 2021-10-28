@@ -9,6 +9,7 @@ object Version {
     const val kotest = "4.6.3"
     const val kotlin = "1.5.31"
     const val kotlinCoroutines = "1.5.2"
+    const val kotlinSerialization = "1.3.0"
     const val ktor = "1.6.4"
     const val logback = "1.2.6"
     const val micrometer = "1.8.0-M3"
