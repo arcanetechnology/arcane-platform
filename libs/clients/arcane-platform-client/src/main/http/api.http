@@ -10,3 +10,13 @@ Authorization: Bearer
 GET https://api.arcane.no/whoami
 Authorization: Bearer
 
+###
+
+OPTIONS https://api.arcane.no
+Origin: https://arcane.no
+Access-Control-Request-Method: GET
+
+###
+
+
+
