@@ -82,7 +82,7 @@ echo "espCloudRun[image]: ${espCloudRun["image"]}"
 gcloud run deploy "${espCloudRun["service"]}" \
   --region europe-west1 \
   --image "${espCloudRun["image"]}" \
-  --set-env-vars=ESPv2_ARGS=^++^--cors_preset=basic++--cors_allow_origin=https://arcane.no++--cors_max_age=5m \
+  --set-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex='^https:\/\/(dev\.)?arcane\.no$'++--cors_max_age=5m \
   --cpu=1 \
   --memory=512Mi \
   --min-instances=1 \

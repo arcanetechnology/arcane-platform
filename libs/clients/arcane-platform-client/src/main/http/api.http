@@ -18,5 +18,16 @@ Access-Control-Request-Method: GET
 
 ###
 
+OPTIONS https://api.arcane.no
+Origin: https://dev.arcane.no
+Access-Control-Request-Method: GET
+
+###
+
+OPTIONS https://api.arcane.no
+Origin: https://developer.arcane.no
+Access-Control-Request-Method: GET
+
+###
 
 
