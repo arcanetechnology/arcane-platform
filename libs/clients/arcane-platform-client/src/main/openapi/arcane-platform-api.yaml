@@ -29,7 +29,7 @@ paths:
           schema:
             type: string
       security:
-        - firebase: []
+        - firebase: [ ]
   "/whoami":
     get:
       description: "Get OAuth2 JWT payload"
@@ -40,7 +40,50 @@ paths:
           schema:
             type: string
       security:
-        - firebase: []
+        - firebase: [ ]
+  "/tnc/{tnc-id}":
+    get:
+      description: "Check if Terms & Conditions are accepted"
+      operationId: "isTncAccepted"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Terms & Conditions were accepted"
+        404:
+          description: "Terms & Conditions were not accepted"
+      security:
+        - firebase: [ ]
+    post:
+      description: "Accept Terms & Conditions"
+      operationId: "acceptTnc"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Terms & Conditions marked as accepted"
+      security:
+        - firebase: [ ]
+  "/tnc/{tnc-id}/email":
+    post:
+      description: "Send Terms & Conditions in email"
+      operationId: "sendTncEmail"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Terms & Conditions sent in email"
+      security:
+        - firebase: [ ]
 securityDefinitions:
   firebase:
     authorizationUrl: ""

@@ -8,7 +8,8 @@ plugins {
 dependencies {
     runtimeOnly(kotlin("stdlib-jdk8"))
 
-    runtimeOnly(project(":libs:modules:identity"))
+    runtimeOnly(project(":libs:services:identity"))
+    runtimeOnly(project(":libs:services:terms-and-conditions"))
 
     runtimeOnly(project(":libs:utils:ktor"))
     runtimeOnly("io.ktor:ktor-server-netty:${Version.ktor}")
@@ -29,4 +30,8 @@ jib {
         mainClass = application.mainClass.get()
         jvmFlags = listOf("-Dlogback.configurationFile=logback.gcp.xml")
     }
+}
+
+tasks.withType<JavaExec> {
+    environment("ENV", "local")
 }

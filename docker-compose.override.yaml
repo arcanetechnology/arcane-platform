@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  api.arcane.no:
+    environment:
+      - ENV=gcp
+    volumes:
+      - ./infra/gcp/secrets:/config/:ro

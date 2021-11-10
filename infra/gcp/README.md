@@ -9,8 +9,9 @@ gcloud components update
 
 gcloud auth login
 gcloud config set project $GCP_PROJECT_ID
+gcloud config set compute/region europe-west1
+gcloud config set compute/zone europe-west1-b
 gcloud config set run/region europe-west1
-gcloud config set run/zone europe-west1-b
 # or
 gcloud init
 ```
@@ -24,6 +25,8 @@ zone = europe-west1-b
 account = user@arcane.no
 disable_usage_reporting = True
 project = <<GCP_PROJECT_ID>
+[run]
+region = europe-west1
 
 Your active configuration is: [default]
 ```
@@ -60,7 +63,24 @@ Ref: https://cloud.google.com/run/docs/mapping-custom-domains
 
 Ref: https://cloud.google.com/run/docs/tutorials/secure-services  
 
-Create service accounts for both the cloud run services.  
+Create service accounts for both the cloud run services.
+```shell
+gcloud iam service-accounts create arcane-platform \
+    --description="Service Account for arcane-platform cloud run service" \
+    --display-name="arcane-platform"
+
+gcloud iam service-accounts create arcane-platform-gateway \
+    --description="Service Account for arcane-platform-gateway cloud run service" \
+    --display-name="arcane-platform-gateway"
+```
+
+Assign role to service account to that it can access GCP Secret manager.
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/secretmanager.secretAccessor
+```
+
 Pass their names in `--service-account` options for `gcloud run deploy`:
 * `--service-account arcane-platform-gateway` for `arcane-platform-gateway`  
 * `--service-account arcane-platform` for `arcane-platform`

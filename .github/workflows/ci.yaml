@@ -26,5 +26,11 @@ jobs:
         run: ./gradlew --no-daemon :apps:arcane-gcp-platform-app:jibDockerBuild
       - name: Build acceptance-tests docker image with gradle
         run: ./gradlew --no-daemon :apps:acceptance-tests:jibDockerBuild
+      - name: Load github env secrets
+        env:
+          CONTENTFUL_CONFIG: ${{ secrets.CONTENTFUL_CONFIG }}
+        run: echo ${CONTENTFUL_CONFIG} >> .github/config/contentful-github.conf
       - name: Run docker compose based system integration tests
-        run: docker-compose up --build --abort-on-container-exit
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        run: docker-compose -f docker-compose.yaml -f docker-compose.github.yaml up --build --abort-on-container-exit

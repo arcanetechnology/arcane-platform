@@ -15,6 +15,8 @@ allprojects {
 
     repositories {
         mavenCentral()
+        // needed for contentful sdk
+        maven { url = uri("https://jitpack.io") }
     }
 
     tasks.withType<JavaCompile>().configureEach {

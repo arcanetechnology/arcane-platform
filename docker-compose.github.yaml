@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  api.arcane.no:
+    environment:
+      - ENV=github
+    volumes:
+      - ./.github/config:/config/:ro

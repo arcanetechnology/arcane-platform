@@ -9,6 +9,6 @@ import org.slf4j.LoggerFactory
  * Inside a class, get a logger by declaring: `private val logger by getLogger()`
  *
  */
-private fun <R: Any> R.getLogger(): Lazy<Logger> = lazy {
+fun <R: Any> R.getLogger(): Lazy<Logger> = lazy {
     LoggerFactory.getLogger(this::class.java)
 }

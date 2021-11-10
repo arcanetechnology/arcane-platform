@@ -1,9 +1,11 @@
 version: "3.8"
 
 services:
-  arcane-platform-app:
+  api.arcane.no:
     container_name: arcane-platform-app
     image: arcane-platform-app
+    environment:
+      - ENV=local
     ports:
       - "8080:8080"
     entrypoint: ["java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain"]

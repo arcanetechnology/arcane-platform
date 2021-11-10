@@ -30,4 +30,6 @@ Access-Control-Request-Method: GET
 
 ###
 
+POST https://api.arcane.no/tnc/privacy-policy/email
+Authorization: Bearer
 

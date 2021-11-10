@@ -5,10 +5,17 @@
 #
 
 #### checking bash version
-if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINFO[0]} -lt 4 ]; then echo "This script requires Bash version >= 4"; exit 1; fi
+if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINFO[0]} -lt 4 ]; then
+  echo "This script requires Bash version >= 4"
+  exit 1
+fi
 
 #### init env vars from .env
-if [ -f .env ]; then set -o allexport; source .env; set +o allexport; fi
+if [ -f .env ]; then
+  set -o allexport
+  source .env
+  set +o allexport
+fi
 
 # Deploy endpoints service
 
@@ -19,7 +26,7 @@ TMP_FILE="$TMP_DIR/arcane-platform-api.yaml"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 #### since GCP_BACKEND_URL has '/', using '~' as delimiter for sed.
-sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_BACKEND_URL}~'"${GCP_BACKEND_URL}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-api.yaml > "$TMP_FILE"
+sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_BACKEND_URL}~'"${GCP_BACKEND_URL}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-api.yaml >"$TMP_FILE"
 
 gcloud endpoints services deploy "$TMP_FILE"
 
@@ -43,20 +50,20 @@ ESP_TAG="2"
 echo "Determining fully-qualified ESP version for tag: ${ESP_TAG}"
 
 ALL_TAGS=$(gcloud container images list-tags "${BASE_IMAGE_NAME}" \
-    --filter="tags~^${ESP_TAG}$" \
-    --format="value(tags)")
-IFS=',' read -ra TAGS_ARRAY <<< "${ALL_TAGS}"
+  --filter="tags~^${ESP_TAG}$" \
+  --format="value(tags)")
+IFS=',' read -ra TAGS_ARRAY <<<"${ALL_TAGS}"
 
 if [ ${#TAGS_ARRAY[@]} -eq 0 ]; then
   error_exit "Did not find ESP version: ${ESP_TAG}"
-fi;
+fi
 
 # Find the tag with the longest length.
 ESP_FULL_VERSION=""
 for tag in "${TAGS_ARRAY[@]}"; do
-   if [ ${#tag} -gt ${#ESP_FULL_VERSION} ]; then
-      ESP_FULL_VERSION=${tag}
-   fi
+  if [ ${#tag} -gt ${#ESP_FULL_VERSION} ]; then
+    ESP_FULL_VERSION=${tag}
+  fi
 done
 echo "ESP_FULL_VERSION: ${ESP_FULL_VERSION}"
 
@@ -82,7 +89,7 @@ echo "espCloudRun[image]: ${espCloudRun["image"]}"
 gcloud run deploy "${espCloudRun["service"]}" \
   --region europe-west1 \
   --image "${espCloudRun["image"]}" \
-  --set-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex='^https:\/\/(dev\.)?arcane\.no$'++--cors_max_age=5m \
+  --update-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex='^https:\/\/(dev\.)?arcane\.no$'++--cors_max_age=5m \
   --cpu=1 \
   --memory=512Mi \
   --min-instances=1 \

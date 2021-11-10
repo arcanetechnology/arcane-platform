@@ -15,7 +15,7 @@ val apiClient = HttpClient(CIO) {
         agent = "arcane-platform/apps/acceptance-tests"
     }
     defaultRequest {
-        host = "arcane-platform-app"
+        host = "api.arcane.no"
         port = 8080
     }
 }

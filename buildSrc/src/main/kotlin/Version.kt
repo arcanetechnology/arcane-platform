@@ -1,7 +1,6 @@
 object Version {
 
     const val config4k = "0.4.2"
-    const val dockerComposeJunit = "1.7.0"
     const val googleCloudBom = "23.1.0"
     const val jacksonKotlin = "2.13.0"
     const val jibPlugin = "3.1.4"
