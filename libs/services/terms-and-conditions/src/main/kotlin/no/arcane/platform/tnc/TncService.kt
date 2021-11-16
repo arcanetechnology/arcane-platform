@@ -7,7 +7,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import no.arcane.platform.cms.getCmsService
 import no.arcane.platform.email.getEmailService
-import no.arcane.platform.identity.auth.UserInfo
+import no.arcane.platform.identity.auth.gcp.UserInfo
 import no.arcane.platform.utils.logging.getLogger
 
 fun Application.module() {

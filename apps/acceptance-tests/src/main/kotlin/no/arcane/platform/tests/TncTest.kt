@@ -4,11 +4,11 @@ import io.kotest.core.spec.style.StringSpec
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 
+@kotlin.time.ExperimentalTime
 class TncTest : StringSpec({
 
     "Accept Terms and Conditions" {
-        apiClient.post<Unit> {
-            url { path("tnc/privacy-policy") }
+        apiClient.post<Unit>(path = "tnc/privacy-policy") {
             headers {
                 appendEndpointsApiUserInfoHeader()
             }
@@ -18,8 +18,7 @@ class TncTest : StringSpec({
     }
 
     "Check if Terms and Conditions are accepted" {
-        apiClient.get<Unit> {
-            url { path("tnc/privacy-policy") }
+        apiClient.get<Unit>(path = "tnc/privacy-policy") {
             headers {
                 appendEndpointsApiUserInfoHeader()
             }
@@ -30,8 +29,7 @@ class TncTest : StringSpec({
 
     // TODO enable the test
     "Send Terms and Conditions in email".config(enabled = false) {
-        apiClient.post<Unit> {
-            url { path("tnc/privacy-policy/email") }
+        apiClient.post<Unit>(path = "tnc/privacy-policy/email") {
             headers {
                 appendEndpointsApiUserInfoHeader()
             }

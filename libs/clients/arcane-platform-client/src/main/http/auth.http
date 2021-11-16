@@ -1,0 +1,18 @@
+### Open to internet
+
+GET https://api.arcane.no/ping
+
+### Open on app. Secured on gateway.
+
+GET https://api.arcane.no/utc
+Authorization: Bearer <firebase-id-token>
+
+### Secured on app and gateway.
+
+GET https://api.arcane.no/whoami
+Authorization: Bearer <firebase-id-token>
+
+### apple
+
+GET https://api.arcane.no/firebase-custom-token
+Authorization: Bearer <apple-id-token>

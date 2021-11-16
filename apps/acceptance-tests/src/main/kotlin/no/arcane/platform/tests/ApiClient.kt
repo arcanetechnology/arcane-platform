@@ -15,7 +15,7 @@ val apiClient = HttpClient(CIO) {
         agent = "arcane-platform/apps/acceptance-tests"
     }
     defaultRequest {
-        host = "api.arcane.no"
+        host = System.getenv("BACKEND_HOST") ?: "localhost"
         port = 8080
     }
 }

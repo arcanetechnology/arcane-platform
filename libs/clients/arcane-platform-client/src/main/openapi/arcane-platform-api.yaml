@@ -41,6 +41,21 @@ paths:
             type: string
       security:
         - firebase: [ ]
+  "/firebase-custom-token":
+    get:
+      description: |
+        Pass Apple id_token as Bearer value to Auth header.
+        If the token is valid, it will try to find an existing user using email from id_token.
+        If the user does not exist, it will create a new user.
+        For valid Apple id_token, it returns Firebase custom token for new/existing user.
+      operationId: "getFirebaseCustomToken"
+      responses:
+        200:
+          description: "Firebase custom token"
+          schema:
+            type: string
+      security:
+        - apple: [ ]
   "/tnc/{tnc-id}":
     get:
       description: "Check if Terms & Conditions are accepted"
@@ -92,3 +107,10 @@ securityDefinitions:
     x-google-issuer: "https://securetoken.google.com/${GCP_PROJECT_ID}"
     x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
     x-google-audiences: "${GCP_PROJECT_ID}"
+  apple:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://appleid.apple.com"
+    x-google-jwks_uri: "https://appleid.apple.com/auth/keys"
+    x-google-audiences: "no.arcane.platform.client.web"

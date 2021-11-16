@@ -1,4 +1,4 @@
-package no.arcane.platform.identity.auth
+package no.arcane.platform.identity.auth.gcp
 
 import io.ktor.auth.*
 

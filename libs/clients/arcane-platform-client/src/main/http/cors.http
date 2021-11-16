@@ -1,0 +1,17 @@
+### arcane.no
+
+OPTIONS https://api.arcane.no
+Origin: https://arcane.no
+Access-Control-Request-Method: GET
+
+### dev.arcane.no
+
+OPTIONS https://api.arcane.no
+Origin: https://dev.arcane.no
+Access-Control-Request-Method: GET
+
+### developer.arcane.no
+
+OPTIONS https://api.arcane.no
+Origin: https://developer.arcane.no
+Access-Control-Request-Method: GET

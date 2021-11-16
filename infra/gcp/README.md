@@ -74,11 +74,25 @@ gcloud iam service-accounts create arcane-platform-gateway \
     --display-name="arcane-platform-gateway"
 ```
 
-Assign role to service account to that it can access GCP Secret manager.
+Assign role to service account so that it can access GCP Secret manager.
 ```shell
 gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
   --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
   --role roles/secretmanager.secretAccessor
+```
+
+Assign role to service account so that it can get and create users in Firebase Authentication / Customer IAM.
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/firebaseauth.admin
+```
+
+Assign role to service account so that it can access Firebase custom tokens.
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/iam.serviceAccountTokenCreator
 ```
 
 Pass their names in `--service-account` options for `gcloud run deploy`:

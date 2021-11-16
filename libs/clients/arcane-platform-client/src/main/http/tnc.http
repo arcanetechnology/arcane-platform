@@ -1,0 +1,4 @@
+### Send T&C in email
+
+POST https://api.arcane.no/tnc/privacy-policy/email
+Authorization: Bearer

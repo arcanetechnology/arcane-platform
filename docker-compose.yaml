@@ -8,9 +8,13 @@ services:
       - ENV=local
     ports:
       - "8080:8080"
-    entrypoint: ["java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain"]
+    entrypoint: [ "java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain" ]
 
   acceptance-tests:
     container_name: acceptance-tests
     image: acceptance-tests
-    command: ["--select-package=no.arcane.platform.tests"]
+    environment:
+      - BACKEND_HOST=api.arcane.no
+    command: [ "--select-package=no.arcane.platform.tests" ]
+    depends_on:
+      - api.arcane.no

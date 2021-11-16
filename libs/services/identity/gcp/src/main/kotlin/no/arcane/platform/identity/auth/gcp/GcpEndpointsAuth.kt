@@ -1,4 +1,4 @@
-package no.arcane.platform.identity.auth
+package no.arcane.platform.identity.auth.gcp
 
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -14,25 +14,7 @@ import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import java.util.*
 
-fun Application.module() {
-    install(Authentication) {
-        gcpEndpointsAuth("esp-v2-header")
-    }
-    routing {
-        authenticate("esp-v2-header") {
-            get("/whoami") {
-                val userInfo = call.request.headers[GcpHttpHeaders.UserInfo]
-                    ?.let { userInfo -> String(Base64.getDecoder().decode(userInfo)) }
-                    ?: ""
-                val jsonFormat = Json {
-                    prettyPrint = true
-                }
-                val jsonElement = jsonFormat.parseToJsonElement(userInfo)
-                call.respondText(jsonFormat.encodeToString(jsonElement), contentType = ContentType.Application.Json)
-            }
-        }
-    }
-}
+private const val AUTH_CONFIG_NAME = "esp-v2-header"
 
 object GcpHttpHeaders {
     const val UserInfo = "X-Endpoint-API-UserInfo"
@@ -48,10 +30,8 @@ class GcpEndpointsAuthProvider internal constructor(
     class Configuration internal constructor(name: String?) : AuthenticationProvider.Configuration(name)
 }
 
-fun Authentication.Configuration.gcpEndpointsAuth(
-    name: String? = null,
-) {
-    val provider = GcpEndpointsAuthProvider(GcpEndpointsAuthProvider.Configuration(name))
+fun Authentication.Configuration.gcpEndpointsAuthConfig() {
+    val provider = GcpEndpointsAuthProvider(GcpEndpointsAuthProvider.Configuration(AUTH_CONFIG_NAME))
 
     provider.pipeline.intercept(AuthenticationPipeline.RequestAuthentication) { context ->
         when (val espV2Header = call.request.espV2Header()) {
@@ -87,4 +67,21 @@ fun ApplicationRequest.espV2Header(): EspV2Header? {
         ignoreUnknownKeys = true
     }
     return jsonFormat.decodeFromString<EspV2Header>(userInfoJson)
+}
+
+fun Application.module() {
+    routing {
+        authenticate(AUTH_CONFIG_NAME) {
+            get("/whoami") {
+                val userInfo = call.request.headers[GcpHttpHeaders.UserInfo]
+                    ?.let { userInfo -> String(Base64.getDecoder().decode(userInfo)) }
+                    ?: ""
+                val jsonFormat = Json {
+                    prettyPrint = true
+                }
+                val jsonElement = jsonFormat.parseToJsonElement(userInfo)
+                call.respondText(jsonFormat.encodeToString(jsonElement), contentType = ContentType.Application.Json)
+            }
+        }
+    }
 }

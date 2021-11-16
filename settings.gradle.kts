@@ -18,6 +18,7 @@ include(
     "libs:services:email:sendgrid",
 
     "libs:services:identity",
+    "libs:services:identity:apple",
     "libs:services:identity:identity-api",
     "libs:services:identity:gcp",
 
@@ -26,11 +27,18 @@ include(
 
     // libs / utils
 
+    "libs:utils:appleid-auth",
     "libs:utils:cms",
     "libs:utils:cms:cms-api",
     "libs:utils:cms:contentful",
 
     "libs:utils:config",
+    "libs:utils:firebase-auth",
+
+    "libs:utils:firestore",
+    "libs:utils:firestore:firestore-api",
+    "libs:utils:firestore:firestore-impl",
+
     "libs:utils:ktor",
     "libs:utils:logging",
     "libs:utils:metrics",
