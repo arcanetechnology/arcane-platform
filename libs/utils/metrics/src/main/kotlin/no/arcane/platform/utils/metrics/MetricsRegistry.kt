@@ -6,7 +6,7 @@ import io.micrometer.stackdriver.StackdriverConfig
 import io.micrometer.stackdriver.StackdriverMeterRegistry
 import no.arcane.platform.utils.config.getConfig
 
-internal class StackDriverConfigReader() {
+internal class StackDriverConfigReader {
     private val config by getConfig(name = "metrics", path = "monitoring.metrics")
     internal val stackDriverConfig = object : StackdriverConfig {
         override fun get(key: String): String? = config.extract(key)

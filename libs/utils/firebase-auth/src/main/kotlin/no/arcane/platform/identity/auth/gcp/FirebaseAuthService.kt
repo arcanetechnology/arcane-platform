@@ -5,7 +5,6 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.UserRecord
-import kotlinx.coroutines.runBlocking
 import no.arcane.platform.utils.logging.getLogger
 
 object FirebaseAuthService {

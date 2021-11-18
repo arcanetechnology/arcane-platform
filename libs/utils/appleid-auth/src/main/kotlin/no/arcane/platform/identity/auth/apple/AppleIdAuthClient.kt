@@ -1,4 +1,4 @@
-package no.arcane.platform.identity.auth
+package no.arcane.platform.identity.auth.apple
 
 import arrow.core.Either
 import arrow.core.left
@@ -15,14 +15,6 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
-import no.arcane.platform.identity.auth.apple.Config
-import no.arcane.platform.identity.auth.apple.Error
-import no.arcane.platform.identity.auth.apple.ErrorResponse
-import no.arcane.platform.identity.auth.apple.FileConfig
-import no.arcane.platform.identity.auth.apple.GrantType
-import no.arcane.platform.identity.auth.apple.JWKSet
-import no.arcane.platform.identity.auth.apple.TokenResponse
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
 import java.security.KeyFactory

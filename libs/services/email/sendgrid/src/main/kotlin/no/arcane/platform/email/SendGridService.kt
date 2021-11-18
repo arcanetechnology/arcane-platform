@@ -1,16 +1,15 @@
 package no.arcane.platform.email
 
-import com.sendgrid.Content
-import com.sendgrid.Email
-import com.sendgrid.Mail
-import com.sendgrid.MailSettings
 import com.sendgrid.Method
 import com.sendgrid.Request
 import com.sendgrid.SendGrid
-import com.sendgrid.Setting
+import com.sendgrid.helpers.mail.Mail
+import com.sendgrid.helpers.mail.objects.Content
+import com.sendgrid.helpers.mail.objects.Email
+import com.sendgrid.helpers.mail.objects.MailSettings
+import com.sendgrid.helpers.mail.objects.Setting
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
-import org.apache.http.HttpStatus
 
 object SendGridService : EmailService {
 

@@ -10,6 +10,7 @@ data class Domain(
 fun main() {
     val emailDomainList = File("src/main/resources/customers.csv")
         .readLines()
+        .asSequence()
         .map {
             Domain(
                 fqdn = it.split("@")[1].lowercase(),
@@ -26,6 +27,7 @@ fun main() {
         .toList()
         .sortedBy { it.first }
         .sortedByDescending { it.second.count() }
+        .toList()
 
     println("Total emails: ${emailDomainList.sumOf { it.second.count() }}")
     println("Total domains: ${emailDomainList.size}")
