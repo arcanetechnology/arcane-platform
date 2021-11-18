@@ -5,7 +5,6 @@ include(
     "apps:acceptance-tests",
     "apps:arcane-platform-app",
     "apps:arcane-gcp-platform-app",
-    "apps:tools",
 
     // libs
     // libs / clients
@@ -27,7 +26,6 @@ include(
 
     // libs / utils
 
-    "libs:utils:appleid-auth",
     "libs:utils:cms",
     "libs:utils:cms:cms-api",
     "libs:utils:cms:contentful",
