@@ -74,6 +74,26 @@ gcloud iam service-accounts create arcane-platform-gateway \
     --display-name="arcane-platform-gateway"
 ```
 
+Pass their names in `--service-account` options for `gcloud run deploy`:
+* `--service-account arcane-platform-gateway` for `arcane-platform-gateway`  
+* `--service-account arcane-platform` for `arcane-platform`
+
+```shell
+gcloud run services add-iam-policy-binding arcane-platform \
+  --member serviceAccount:arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/run.invoker \
+  --region='europe-west1'
+```
+
+Options for `gcloud run deploy`:  
+* `--allow-unauthenticated` for `arcane-platform-gateway`  
+* `--no-allow-unauthenticated` for `arcane-platform`
+
+### Verification  
+Direct access to `arcane-platform` (https://arcane-platform-s6k5oexj4q-ew.a.run.app/ping) should be blocked.  
+Access via esp `arcane-platform-gateway` (https://api.arcane.no/ping) should be allowed.
+
+### Additional roles
 Assign role to service account so that it can access GCP Secret manager.
 ```shell
 gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
@@ -95,21 +115,3 @@ gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
   --role roles/iam.serviceAccountTokenCreator
 ```
 
-Pass their names in `--service-account` options for `gcloud run deploy`:
-* `--service-account arcane-platform-gateway` for `arcane-platform-gateway`  
-* `--service-account arcane-platform` for `arcane-platform`
-
-```shell
-gcloud run services add-iam-policy-binding arcane-platform \
-  --member serviceAccount:arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
-  --role roles/run.invoker \
-  --region='europe-west1'
-```
-
-Options for `gcloud run deploy`:  
-* `--allow-unauthenticated` for `arcane-platform-gateway`  
-* `--no-allow-unauthenticated` for `arcane-platform`
-
-### Verification  
-Direct access to `arcane-platform` (https://arcane-platform-s6k5oexj4q-ew.a.run.app/ping) should be blocked.  
-Access via esp `arcane-platform-gateway` (https://api.arcane.no/ping) should be allowed.
