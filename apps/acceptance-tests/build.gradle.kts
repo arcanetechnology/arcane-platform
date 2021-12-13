@@ -18,7 +18,7 @@ application {
 }
 
 jib {
-    from.image = "adoptopenjdk/openjdk16-openj9:x86_64-alpine-jdk-16.0.1_9_openj9-0.26.0"
+    from.image = "eclipse-temurin:17.0.1_12-jdk-alpine"
     to.image = "acceptance-tests"
     container {
         mainClass = application.mainClass.get()
