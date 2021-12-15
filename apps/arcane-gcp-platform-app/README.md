@@ -17,3 +17,6 @@ Build docker & push image using `jib` tool with files in `build-jib-cache`.
 
     ./gradlew :apps:arcane-gcp-platform-app:jib -Djib.to.image=<image>
 
+## Checking for dependency resolution
+
+    ./gradlew :apps:arcane-gcp-platform-app:dependencyInsight --configuration runtimeClasspath --dependency dependency-name
