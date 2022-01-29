@@ -29,7 +29,7 @@ jobs:
       - name: Authorize Docker push
         run: gcloud auth configure-docker
       - name: Build with Gradle
-        run: ./gradlew --no-daemon :apps:arcane-gcp-platform-app:jib -Djib.to.image="$IMAGE":${GITHUB_SHA::12}
+        run: ./gradlew --no-daemon :apps:arcane-platform-app:jib -Djib.to.image="$IMAGE":${GITHUB_SHA::12}
       - name: Deploy to GCP Cloud Run
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -43,7 +43,7 @@ jobs:
             --max-instances=1 \
             --concurrency=1000 \
             --set-env-vars=GOOGLE_CLOUD_PROJECT="$GCP_PROJECT_ID" \
-            --service-account arcane-platform@arcane-platform-prod.iam.gserviceaccount.com \
+            --service-account arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
             --no-allow-unauthenticated \
             --port=8080 \
             --platform=managed

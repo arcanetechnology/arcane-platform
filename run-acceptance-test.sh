@@ -15,8 +15,7 @@ if [ -f .env ]; then
   set +o allexport
 fi
 
-./gradlew :apps:acceptance-tests:jibDockerBuild
-./gradlew :apps:arcane-gcp-platform-app:jibDockerBuild
+./gradlew jibDockerBuild
 
 # env = local
 docker compose -f docker-compose.yaml up --abort-on-container-exit

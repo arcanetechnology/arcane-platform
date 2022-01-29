@@ -115,3 +115,9 @@ gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
   --role roles/iam.serviceAccountTokenCreator
 ```
 
+Assign role to service account so that it can access Firestore database.
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/datastore.user
+```

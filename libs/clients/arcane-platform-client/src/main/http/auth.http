@@ -16,3 +16,17 @@ Authorization: Bearer <firebase-id-token>
 
 GET https://api.arcane.no/firebase-custom-token
 Authorization: Bearer <apple-id-token>
+
+### oauth2-provider-emulator keys
+
+GET http://localhost:8080/auth/keys
+
+### oauth2-provider-emulator idToken
+
+GET http://localhost:8080/id-token
+Content-Type: application/json
+
+{
+  "subject": "test",
+  "email": "test@arcane.no"
+}

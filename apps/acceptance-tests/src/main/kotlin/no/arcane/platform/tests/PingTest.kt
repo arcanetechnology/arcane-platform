@@ -9,12 +9,12 @@ import java.time.Instant
 
 class PingTest : StringSpec({
 
-    "call /ping" {
+    "GET /ping" {
         val response = apiClient.get<String>(path = "ping")
         response shouldBe "pong"
     }
 
-    "call /utc" {
+    "GET /utc" {
         val response = apiClient.get<String>(path = "utc") {
             headers {
                 appendEndpointsApiUserInfoHeader()

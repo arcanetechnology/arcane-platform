@@ -40,4 +40,38 @@ object ContentfulService : CmsService {
         val context = HtmlContext()
         return processor.process(context, node)
     }
+
+    override fun check(
+        entryKey: String,
+        spaceId: String,
+        entryId: String,
+        fieldId: String,
+        version: String,
+    ): Boolean {
+
+        if (contentfulConfig.spaceId != spaceId) {
+            logger.error("spaceId not found: $spaceId")
+            return false
+        }
+
+        val entryConfig = contentfulConfig.entries[entryKey]
+
+        if (entryConfig == null) {
+            logger.error("entryKey not found: $entryKey")
+            return false
+        }
+
+        if (entryConfig.entryId != entryId) {
+            logger.error("Entry Id does not match. Expected: ${entryConfig.entryId} Found: $entryId")
+            return false
+        }
+
+        if (entryConfig.fieldId != fieldId) {
+            logger.error("Field Id does not match. Expected: ${entryConfig.fieldId} Found: $fieldId")
+            return false
+        }
+
+        // TODO check latest version
+        return true
+    }
 }

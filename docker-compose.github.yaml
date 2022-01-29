@@ -1,8 +1,14 @@
 version: "3.8"
 
 services:
-  api.arcane.no:
+  arcane-platform-app:
     environment:
       - ENV=github
+      - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
     volumes:
       - ./.github/config:/config/:ro
+
+  test.api.arcane.no:
+    volumes:
+      - "./.github/config/gcp-service-account.json:/config/gcp-service-account.json:ro"

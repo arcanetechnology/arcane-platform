@@ -1,60 +1,73 @@
 package no.arcane.platform.tnc
 
+import dev.vihang.firestore4k.typed.add
+import dev.vihang.firestore4k.typed.div
+import dev.vihang.firestore4k.typed.get
+import dev.vihang.firestore4k.typed.put
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import kotlinx.serialization.Serializable
 import no.arcane.platform.cms.getCmsService
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.identity.auth.gcp.UserInfo
+import no.arcane.platform.tnc.TncService.getTnc
+import no.arcane.platform.tnc.TncService.setTnc
+import no.arcane.platform.user.UserId
+import no.arcane.platform.user.users
 import no.arcane.platform.utils.logging.getLogger
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 fun Application.module() {
 
     val logger by getLogger()
 
-    val tncService = TncService()
-
     routing {
         authenticate("esp-v2-header") {
-            route("/tnc") {
-                route("/{tncId}") {
-                    get {
-                        val accepted = tncService.getAccepted(
-                            userId = call.principal<UserInfo>()!!.userId,
-                            tncId = call.parameters["tncId"]!!,
-                        )
-                        if (accepted) {
-                            call.respond(HttpStatusCode.OK)
-                        } else {
-                            // TODO remove this
-                            call.respond(HttpStatusCode.NotImplemented)
-                        }
-                    }
+            route("/tnc/{tncId}") {
 
-                    post {
-                        val accepted = tncService.accepted(
-                            userId = call.principal<UserInfo>()!!.userId,
-                            tncId = call.parameters["tncId"]!!,
-                        )
-                        if (accepted) {
-                            call.respond(HttpStatusCode.OK)
-                        } else {
-                            // TODO remove this
-                            call.respond(HttpStatusCode.NotImplemented)
-                            // call.respond(HttpStatusCode.InternalServerError)
-                        }
+                post {
+                    val userId = UserId(call.principal<UserInfo>()!!.userId)
+                    val tncId = TncId(call.parameters["tncId"]!!)
+                    val tnc = call.receive<TncRequest>()
+                    val savedTnc = userId.setTnc(
+                        tncId = tncId,
+                        tncRequest = tnc,
+                    )
+                    if (savedTnc != null) {
+                        call.respond(HttpStatusCode.Created, savedTnc)
+                    } else {
+                        logger.error("Failed to store tnc")
+                        call.respond(HttpStatusCode.InternalServerError)
                     }
+                }
 
-                    post("/email") {
-                        val emailSent = tncService.emailTnc(
-                            email = call.principal<UserInfo>()!!.email,
-                            tncId = call.parameters["tncId"]!!,
-                        )
-                        if (emailSent) {
-                            call.respond(HttpStatusCode.OK)
-                        }
+                get {
+                    val userId = UserId(call.principal<UserInfo>()!!.userId)
+                    val tncId = TncId(call.parameters["tncId"]!!)
+                    val tnc = userId.getTnc(
+                        tncId = tncId,
+                    )
+                    if (tnc != null) {
+                        call.respond(HttpStatusCode.OK, tnc)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound)
+                    }
+                }
+
+                post("/email") {
+                    val userEmail = call.principal<UserInfo>()!!.email
+                    val tncId = TncId(call.parameters["tncId"]!!)
+                    val emailSent = TncService.emailTnc(
+                        email = userEmail,
+                        tncId = tncId,
+                    )
+                    if (emailSent) {
+                        call.respond(HttpStatusCode.OK)
                     }
                 }
             }
@@ -62,34 +75,56 @@ fun Application.module() {
     }
 }
 
-class TncService {
+@Serializable
+data class TncRequest(
+    val version: String,
+    val accepted: Boolean,
+    val spaceId: String,
+    val entryId: String,
+    val fieldId: String,
+)
+
+object TncService {
 
     private val logger by getLogger()
 
     private val emailService by getEmailService()
     private val cmsService by getCmsService()
 
-    fun accepted(
-        userId: String,
-        tncId: String,
-    ): Boolean {
-        // TODO save in DB
-        return false
+    suspend fun UserId.setTnc(
+        tncId: TncId,
+        tncRequest: TncRequest,
+    ): Tnc? {
+        cmsService.check(
+            entryKey = tncId.value,
+            spaceId = tncRequest.spaceId,
+            entryId = tncRequest.entryId,
+            fieldId = tncRequest.fieldId,
+            version = tncRequest.version,
+        )
+        val tnc = Tnc(
+            tncId = tncId.value,
+            version = tncRequest.version,
+            accepted = tncRequest.accepted,
+            spaceId = tncRequest.spaceId,
+            entryId = tncRequest.entryId,
+            fieldId = tncRequest.fieldId,
+            timestamp = ZonedDateTime.now(ZoneOffset.UTC).toString()
+        )
+        put(users / this / termsAndConditions / tncId, tnc)
+        add(users / this / termsAndConditions / tncId / history, tnc)
+        return getTnc(tncId)
     }
 
-    fun getAccepted(
-        userId: String,
-        tncId: String,
-    ): Boolean {
-        // TODO read from DB
-        return false
-    }
+    suspend fun UserId.getTnc(
+        tncId: TncId,
+    ): Tnc? = get(users / this / termsAndConditions / tncId)
 
     fun emailTnc(
         email: String,
-        tncId: String,
+        tncId: TncId,
     ): Boolean {
-        val html = cmsService.getHtml(entryKey = tncId)
+        val html = cmsService.getHtml(entryKey = tncId.value)
 
         if (html.isNullOrBlank()) {
             logger.error("CMS has no entry for $tncId")

@@ -5,6 +5,7 @@ import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.serialization.*
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import java.time.Instant
@@ -22,6 +23,9 @@ fun Application.module() {
             logger.error("Internal Server Error", cause)
             throw cause
         }
+    }
+    install(ContentNegotiation) {
+        json()
     }
     routing {
         get("/ping") {

@@ -21,15 +21,16 @@ jobs:
 #          cache: "gradle"
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build arcane-platform-app docker image with gradle
-        run: ./gradlew --no-daemon :apps:arcane-gcp-platform-app:jibDockerBuild
-      - name: Build acceptance-tests docker image with gradle
-        run: ./gradlew --no-daemon :apps:acceptance-tests:jibDockerBuild
+      - name: Build docker images with gradle
+        run: ./gradlew --no-daemon jibDockerBuild
       - name: Load github env secrets
         env:
           CONTENTFUL_CONFIG: ${{ secrets.CONTENTFUL_CONFIG }}
-        run: echo ${CONTENTFUL_CONFIG} >> .github/config/contentful-github.conf
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          echo ${CONTENTFUL_CONFIG} >> .github/config/contentful-github.conf
+          echo ${GCP_SA_KEY} >> .github/config/gcp-service-account.json
       - name: Run docker compose based system integration tests
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        run: docker-compose -f docker-compose.yaml -f docker-compose.github.yaml up --build --abort-on-container-exit
+        run: docker-compose -f docker-compose.yaml -f docker-compose.github.yaml up --abort-on-container-exit

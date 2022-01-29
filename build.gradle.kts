@@ -17,6 +17,8 @@ allprojects {
         mavenCentral()
         // needed for contentful sdk
         maven { url = uri("https://jitpack.io") }
+        // needed for firestore4k
+        maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/") }
     }
 
     tasks.withType<JavaCompile>().configureEach {

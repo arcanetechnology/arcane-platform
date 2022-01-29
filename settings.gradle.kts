@@ -4,7 +4,8 @@ include(
     // apps
     "apps:acceptance-tests",
     "apps:arcane-platform-app",
-    "apps:arcane-gcp-platform-app",
+    "apps:oauth2-provider-emulator",
+    "apps:oauth2-provider-emulator:oauth2-provider-api",
 
     // libs
     // libs / clients
@@ -23,6 +24,8 @@ include(
 
     "libs:services:payments",
     "libs:services:terms-and-conditions",
+    "libs:services:user",
+    "libs:services:user:model",
 
     // libs / utils
 
@@ -32,10 +35,6 @@ include(
 
     "libs:utils:config",
     "libs:utils:firebase-auth",
-
-    "libs:utils:firestore",
-    "libs:utils:firestore:firestore-api",
-    "libs:utils:firestore:firestore-impl",
 
     "libs:utils:ktor",
     "libs:utils:logging",

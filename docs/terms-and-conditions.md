@@ -20,16 +20,20 @@
 
 ## Use cases
 
-### New user
+### T&C shown for the first time
 
 1. Client will load the latest T&C, along with its version from metadata, from CMS.
 2. Client will locally cache the version of accepted T&C.
 3. Client will notify backend server with:
    1. T&C ID
    2. T&C Version
-   3. Timestamp
+   3. Accept/Reject (boolean)
+   4. CMS (Contentful) keys:
+      1. Space ID
+      2. Entry ID
+      3. Field ID
 
-### Existing user
+### T&C previously accepted by the user
 
 1. Client will check the latest version of T&C on CMS.
 2. Client will try to load the local cache version of accepted T&C.

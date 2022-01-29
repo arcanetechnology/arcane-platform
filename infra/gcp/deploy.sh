@@ -21,10 +21,7 @@ backendCloudRun["image"]="eu.gcr.io/${GCP_PROJECT_ID}/arcane-platform-app:$(git 
 backendCloudRun["service_account"]="arcane-platform"
 
 echo "Building and pushing docker image: ${backendCloudRun["image"]}"
-./gradlew :apps:arcane-gcp-platform-app:jib -Djib.to.image="${backendCloudRun["image"]}"
-
-# echo "Building docker image: ${backendCloudRun["image"]}"
-# ./gradlew :apps:arcane-gcp-platform-app:jibDockerBuild -Djib.to.image="${backendCloudRun["image"]}"
+./gradlew :apps:arcane-platform-app:jib -Djib.to.image="${backendCloudRun["image"]}"
 
 echo "Deploying to cloud run: ${backendCloudRun["image"]}"
 gcloud run deploy "${backendCloudRun["service"]}" \

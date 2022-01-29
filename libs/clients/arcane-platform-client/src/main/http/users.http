@@ -1,0 +1,9 @@
+### Get user
+
+GET https://api.arcane.no/user
+Authorization: Bearer <id-token>
+
+### Create user
+
+POST https://api.arcane.no/user
+Authorization: Bearer <id-token>

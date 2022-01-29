@@ -12,6 +12,4 @@
 
 ## Apps
 
-[Standard](apps/arcane-platform-app/README.md)
-
-[GCP](apps/arcane-gcp-platform-app/README.md)
+[Platform](apps/arcane-platform-app/README.md)

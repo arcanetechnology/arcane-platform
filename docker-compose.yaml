@@ -1,20 +1,58 @@
 version: "3.8"
 
 services:
-  api.arcane.no:
+  arcane-platform-app:
     container_name: arcane-platform-app
     image: arcane-platform-app
     environment:
-      - ENV=local
+      - ENV=gcp
+      - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
+    volumes:
+      - ./infra/gcp/secrets:/config/:ro
+    expose:
+      - 8080
+    entrypoint: [ "java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain" ]
+    depends_on:
+      - firestore-emulator
+
+  test.api.arcane.no:
+    container_name: esp
+    image: gcr.io/endpoints-release/endpoints-runtime:2
+    command: >
+      --listener_port=8080
+      --backend=http://arcane-platform-app:8080
+      --service=test.api.arcane.no
+      --rollout_strategy=managed
+      --non_gcp
+      --service_account_key=/config/gcp-service-account.json
     ports:
       - "8080:8080"
-    entrypoint: [ "java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain" ]
+    volumes:
+      - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
+    depends_on:
+      - oauth2-provider-emulator
+      - arcane-platform-app
+
+  oauth2-provider-emulator:
+    image: oauth2-provider-emulator
+    expose:
+      - 8080
+
+  firestore-emulator:
+    image: google/cloud-sdk:370.0.0-emulators
+    expose:
+      - 5173
+    ports:
+      - "5173:5173"
+    command: [ "gcloud", "beta", "emulators", "firestore", "start", "--host-port=0.0.0.0:5173" ]
 
   acceptance-tests:
     container_name: acceptance-tests
     image: acceptance-tests
     environment:
-      - BACKEND_HOST=api.arcane.no
+      - BACKEND_HOST=test.api.arcane.no
     command: [ "--select-package=no.arcane.platform.tests" ]
     depends_on:
-      - api.arcane.no
+      - test.api.arcane.no
+      - oauth2-provider-emulator
