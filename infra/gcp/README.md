@@ -94,6 +94,27 @@ Direct access to `arcane-platform` (https://arcane-platform-s6k5oexj4q-ew.a.run.
 Access via esp `arcane-platform-gateway` (https://api.arcane.no/ping) should be allowed.
 
 ### Additional roles
+
+Assign role to service accounts so that it can report monitoring metrics
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/monitoring.metricWriter
+
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/monitoring.metricWriter
+```
+
+#### For arcane-platform-gateway
+Assign role to service account so that it can report Endpoint stats
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/servicemanagement.serviceController
+```
+
+#### For arcane-platform
 Assign role to service account so that it can access GCP Secret manager.
 ```shell
 gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \

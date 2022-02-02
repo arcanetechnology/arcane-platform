@@ -3,9 +3,10 @@
 * Update the open api spec in the test file - [arcane-platform-test-api.yaml](../libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-test-api.yaml).
 * Diff this file with main file - [arcane-platform-api.yaml](../libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-api.yaml).
 * Only these values should differ:
+  * `info/*`
   * `host`
-  * `x-google-backend`
-  * `securityDefinitions/firebase`
+  * `x-google-backend/*`
+  * `securityDefinitions/firebase/*`
 * Deploy updated test spec
 ```shell
 ./infra/gcp/deploy-test-endpoints-service.sh

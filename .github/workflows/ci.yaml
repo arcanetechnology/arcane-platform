@@ -28,8 +28,8 @@ jobs:
           CONTENTFUL_CONFIG: ${{ secrets.CONTENTFUL_CONFIG }}
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          echo ${CONTENTFUL_CONFIG} >> .github/config/contentful-github.conf
-          echo ${GCP_SA_KEY} >> .github/config/gcp-service-account.json
+          echo "${CONTENTFUL_CONFIG}" >> .github/config/contentful-github.conf
+          echo "${GCP_SA_KEY}" >> .github/config/gcp-service-account.json
       - name: Run docker compose based system integration tests
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}

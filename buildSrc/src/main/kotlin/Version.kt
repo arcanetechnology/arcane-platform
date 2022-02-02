@@ -14,6 +14,7 @@ object Version {
     const val kotlinSerialization = "1.3.2"
     const val ktor = "1.6.7"
     const val logback = "1.2.10"
+    const val logbackJsonClassic = "0.1.5"
     const val micrometer = "1.8.2"
     const val micronaut = "4.0.0"
     const val nimbusJoseJwt = "9.17"

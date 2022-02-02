@@ -13,8 +13,7 @@ dependencies {
 
     runtimeOnly(project(":libs:utils:ktor"))
     runtimeOnly("io.ktor:ktor-server-netty:${Version.ktor}")
-    runtimeOnly(project(":libs:utils:logging"))
-    runtimeOnly("io.micronaut.gcp:micronaut-gcp-logging:${Version.micronaut}")
+    runtimeOnly(project(":libs:utils:logging:gcp-logging"))
 }
 
 application {
