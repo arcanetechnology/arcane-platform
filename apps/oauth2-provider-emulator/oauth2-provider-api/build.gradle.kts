@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-serialization:${Version.ktor}")
+    implementation(Ktor.features.serialization)
 }

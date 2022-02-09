@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 
 #
 #  Script to deploy arcane-platform-app to GCP cloud run.

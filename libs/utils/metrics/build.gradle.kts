@@ -9,10 +9,10 @@ repositories {
 dependencies {
     api(project(":libs:utils:logging"))
     api(project(":libs:utils:config"))
-    api("io.micrometer:micrometer-registry-stackdriver:${Version.micrometer}")
+    api("io.micrometer:micrometer-registry-stackdriver:_")
 
     // test
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:${Version.kotest}")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:_")
 }
 
 tasks.withType<Test> {

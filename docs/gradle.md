@@ -2,7 +2,7 @@
 
 ## Check for new version of dependencies
 
-    ./gradlew dependencyUpdates -Drevision=release
+    ./gradlew refreshVersions
 
 ## Checking for dependency resolution
 

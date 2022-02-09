@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation("com.google.firebase:firebase-admin:${Version.firebase}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.kotlinCoroutines}")
+    implementation("com.google.firebase:firebase-admin:_")
+    implementation(KotlinX.coroutines.core)
     implementation(project(":libs:utils:logging"))
 }

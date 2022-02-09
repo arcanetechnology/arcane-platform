@@ -9,11 +9,11 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(project(":libs:utils:logging"))
     implementation(project(":apps:oauth2-provider-emulator:oauth2-provider-api"))
-    implementation("io.ktor:ktor-client-cio:${Version.ktor}")
-    implementation("io.ktor:ktor-client-logging:${Version.ktor}")
-    implementation("io.ktor:ktor-client-serialization:${Version.ktor}")
-    implementation("io.kotest:kotest-runner-junit5-jvm:${Version.kotest}")
-    implementation("org.junit.platform:junit-platform-console:${Version.junit5}")
+    implementation(Ktor.client.cio)
+    implementation(Ktor.client.logging)
+    implementation(Ktor.client.serialization)
+    implementation("io.kotest:kotest-runner-junit5-jvm:_")
+    implementation("org.junit.platform:junit-platform-console:_")
 }
 
 application {

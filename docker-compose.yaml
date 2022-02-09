@@ -35,12 +35,14 @@ services:
       - arcane-platform-app
 
   oauth2-provider-emulator:
+    container_name: oauth2-provider-emulator
     image: oauth2-provider-emulator
     expose:
       - 8080
 
   firestore-emulator:
-    image: google/cloud-sdk:370.0.0-emulators
+    container_name: firestore-emulator
+    image: google/cloud-sdk:372.0.0-emulators
     expose:
       - 5173
     ports:

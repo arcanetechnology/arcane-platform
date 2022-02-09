@@ -12,7 +12,7 @@ dependencies {
     runtimeOnly(project(":libs:services:terms-and-conditions"))
 
     runtimeOnly(project(":libs:utils:ktor"))
-    runtimeOnly("io.ktor:ktor-server-netty:${Version.ktor}")
+    runtimeOnly(Ktor.server.netty)
     runtimeOnly(project(":libs:utils:logging:gcp-logging"))
 }
 

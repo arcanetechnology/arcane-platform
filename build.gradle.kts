@@ -1,12 +1,10 @@
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     base
-    kotlin("jvm") version Version.kotlin apply false
-    kotlin("plugin.serialization") version Version.kotlin apply false
-    id("com.google.cloud.tools.jib") version Version.jibPlugin apply false
-    id("com.github.ben-manes.versions") version Version.versionsPlugin
+    kotlin("jvm") apply false
+    kotlin("plugin.serialization") apply false
+    id("com.google.cloud.tools.jib") apply false
 }
 
 allprojects {
@@ -40,34 +38,5 @@ subprojects {
         && parent != rootProject) {
         generateSequence(parent) { project -> project.parent.takeIf { it != rootProject } }
             .forEach { evaluationDependsOn(it.path) }
-    }
-}
-
-fun isNonStable(version: String): Boolean {
-    val regex = "^[0-9,.v-]+$".toRegex()
-    val isStable = regex.matches(version)
-    return isStable.not()
-}
-
-tasks.withType<DependencyUpdatesTask> {
-    // Example 1: reject all non stable versions
-    rejectVersionIf {
-        isNonStable(candidate.version)
-    }
-
-    // Example 2: disallow release candidates as upgradable versions from stable versions
-    rejectVersionIf {
-        isNonStable(candidate.version) && !isNonStable(currentVersion)
-    }
-
-    // Example 3: using the full syntax
-    resolutionStrategy {
-        componentSelection {
-            all {
-                if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
-                    reject("Release candidate")
-                }
-            }
-        }
     }
 }

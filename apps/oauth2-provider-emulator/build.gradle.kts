@@ -11,12 +11,12 @@ dependencies {
 
     implementation(project(":libs:utils:logging"))
 
-    implementation("io.ktor:ktor-server-core:${Version.ktor}")
-    implementation("io.ktor:ktor-auth:${Version.ktor}")
-    implementation("io.ktor:ktor-serialization:${Version.ktor}")
-    runtimeOnly("io.ktor:ktor-server-netty:${Version.ktor}")
+    implementation(Ktor.server.core)
+    implementation(Ktor.features.auth)
+    implementation(Ktor.features.serialization)
+    runtimeOnly(Ktor.server.netty)
 
-    implementation("com.nimbusds:nimbus-jose-jwt:${Version.nimbusJoseJwt}")
+    implementation("com.nimbusds:nimbus-jose-jwt:_")
 }
 
 application {

@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 
 #
 #  Script to update secrets for arcane-platform-app to GCP cloud run.
@@ -18,23 +18,28 @@ fi
 declare -A gcp_secrets
 
 gcp_secrets[0, "name"]="contentful_config"
-gcp_secrets[0, "src"]="secrets/contentful-gcp.conf"
+gcp_secrets[0, "src"]="infra/gcp/secrets/contentful-gcp.conf"
 gcp_secrets[0, "target"]="/config/contentful-gcp.conf"
 
 gcp_secrets[1, "name"]="sendgrid_api_key"
-gcp_secrets[1, "src"]="secrets/sendgrid_api_key.txt"
+gcp_secrets[1, "src"]="infra/gcp/secrets/sendgrid_api_key.txt"
 gcp_secrets[1, "target"]="SENDGRID_API_KEY"
 
 index=0
 
 while [ -n "${gcp_secrets["$index", "name"]}" ]; do
 
-  echo Creating secret: "${gcp_secrets["$index", "name"]}"
+#  echo Creating secret: "${gcp_secrets["$index", "name"]}"
+#
+#  gcloud secrets create "${gcp_secrets["$index", "name"]}" \
+#    --data-file="${gcp_secrets["$index", "src"]}" \
+#    --replication-policy=user-managed \
+#    --locations=europe-west1
 
-  gcloud secrets create "${gcp_secrets["$index", "name"]}" \
-    --data-file="${gcp_secrets["$index", "src"]}" \
-    --replication-policy=user-managed \
-    --locations=europe-west1
+  echo Updating secret: "${gcp_secrets["$index", "name"]}"
+
+  gcloud secrets versions add "${gcp_secrets["$index", "name"]}" \
+    --data-file="${gcp_secrets["$index", "src"]}"
 
   index=$((index + 1))
 
@@ -66,4 +71,8 @@ echo $secret_string
 
 gcloud run services update "${CLOUD_RUN_SERVICE}" \
   --update-secrets="${secret_string}" \
+  --region europe-west1
+
+gcloud run services update arcane-web-proxy \
+  --clear-secrets \
   --region europe-west1

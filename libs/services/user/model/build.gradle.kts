@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
 
-    api("dev.vihang.firestore4k:typed-api:${Version.firestore4k}")
+    api("dev.vihang.firestore4k:typed-api:_")
     // TODO should be available via firestore4k
-    api("org.jetbrains.kotlinx:kotlinx-serialization-properties:${Version.kotlinSerialization}")
+    api(KotlinX.serialization.properties)
 }

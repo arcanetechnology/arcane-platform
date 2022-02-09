@@ -8,6 +8,6 @@ dependencies {
     implementation(project("gcp"))
     implementation(project("apple"))
 
-    implementation("io.ktor:ktor-server-core:${Version.ktor}")
-    implementation("io.ktor:ktor-auth:${Version.ktor}")
+    implementation(Ktor.server.core)
+    implementation(Ktor.features.auth)
 }

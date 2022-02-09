@@ -11,12 +11,12 @@ dependencies {
     implementation(project(":libs:utils:cms"))
     implementation(project(":libs:utils:logging"))
 
-    implementation("io.ktor:ktor-server-core:${Version.ktor}")
-    implementation("io.ktor:ktor-auth:${Version.ktor}")
+    implementation(Ktor.server.core)
+    implementation(Ktor.features.auth)
 
     implementation(project(":libs:services:user:model"))
 
-    implementation("dev.vihang.firestore4k:typed-api:${Version.firestore4k}")
+    implementation("dev.vihang.firestore4k:typed-api:_")
     // TODO should be available via firestore4k
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:${Version.kotlinSerialization}")
+    implementation(KotlinX.serialization.properties)
 }
