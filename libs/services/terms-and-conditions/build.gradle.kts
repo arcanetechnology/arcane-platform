@@ -16,7 +16,5 @@ dependencies {
 
     implementation(project(":libs:services:user:model"))
 
-    implementation("dev.vihang.firestore4k:typed-api:_")
-    // TODO should be available via firestore4k
-    implementation(KotlinX.serialization.properties)
+    implementation("io.firestore4k:typed-api:_")
 }

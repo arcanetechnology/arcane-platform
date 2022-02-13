@@ -1,6 +1,6 @@
 package no.arcane.platform.user
 
-import dev.vihang.firestore4k.typed.rootCollection
+import io.firestore4k.typed.rootCollection
 import kotlinx.serialization.Serializable
 
 @Serializable

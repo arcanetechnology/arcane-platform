@@ -1,0 +1,79 @@
+@startuml
+
+'!theme amiga
+'!theme blueprint
+'!theme crt-amber
+!theme plain
+
+actor User as user
+participant Client as client
+boundary Server as server
+
+user -> client : LogIn
+
+client -> server: GET /user
+
+alt User already registered
+
+client <-[#green] server: 200 OK
+
+user <- client : User home page (?)
+
+else User not registered
+
+client <-[#red] server: 404 Not Found
+
+note over client
+
+Since there is only one mandatory step for **THIS** registration,
+we are assuming that the **GET /tnc/platform-terms-and-conditions** will return 404,
+and hence skipping the call.
+
+end note
+
+user <- client : Show **Platform Terms and Conditions**
+
+alt User Rejects
+
+user -[#red]> client : Reject
+
+user <- client : Landing page (?)
+
+else User Accepts
+
+user -[#green]> client : Accept
+
+client -> server: POST /tnc/platform-terms-and-conditions
+
+...
+
+note right of client
+
+Register user by **POST /user** after all mandatory steps are done.
+
+end note
+
+client -> server: POST /user
+
+...
+
+note over client
+
+For **THIS** registration,
+we are assuming that the **GET /tnc/platform-allow-tracking** will return 404,
+and hence skipping the call.
+
+end note
+
+user <- client : Show **Allow tracking (optional) (?) **
+user -> client : Accept/Reject
+
+client -> server: POST /tnc/platform-allow-tracking (?)
+
+user <- client : User home page (?)
+
+end
+
+end
+
+@enduml

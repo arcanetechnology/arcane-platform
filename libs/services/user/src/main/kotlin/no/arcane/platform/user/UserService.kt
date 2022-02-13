@@ -1,8 +1,8 @@
 package no.arcane.platform.user
 
-import dev.vihang.firestore4k.typed.div
-import dev.vihang.firestore4k.typed.get
-import dev.vihang.firestore4k.typed.put
+import io.firestore4k.typed.div
+import io.firestore4k.typed.get
+import io.firestore4k.typed.put
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
