@@ -34,8 +34,15 @@ include(
     "libs:services:identity:gcp",
 
     "libs:services:terms-and-conditions",
+    "libs:services:terms-and-conditions:terms-and-conditions-endpoint",
+    "libs:services:terms-and-conditions:terms-and-conditions-graphql",
+    "libs:services:terms-and-conditions:terms-and-conditions-service",
+
     "libs:services:user",
-    "libs:services:user:model",
+    "libs:services:user:user-endpoint",
+    "libs:services:user:user-graphql",
+    "libs:services:user:user-model",
+    "libs:services:user:user-service",
 
     // libs / utils
 
@@ -45,6 +52,7 @@ include(
 
     "libs:utils:config",
     "libs:utils:firebase-auth",
+    "libs:utils:graphql",
 
     "libs:utils:ktor",
 

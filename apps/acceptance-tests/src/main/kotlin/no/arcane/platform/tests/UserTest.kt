@@ -4,32 +4,42 @@ import io.kotest.core.spec.style.StringSpec
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.delay
+import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @kotlin.time.ExperimentalTime
 class UserTest : StringSpec({
 
+    val userId = UUID.randomUUID().toString()
+
     "GET /user -> Check if unregistered user exists" {
         apiClient.get<Unit>(path = "user") {
             headers {
-                appendEndpointsApiUserInfoHeader()
+                appendEndpointsApiUserInfoHeader(userId)
             }
             expectSuccess = false
         }
     }
 
     "POST /user -> Register user" {
-        apiClient.post<Unit>(path = "user") {
+        apiClient.post<User>(path = "user") {
             headers {
-                appendEndpointsApiUserInfoHeader()
+                appendEndpointsApiUserInfoHeader(userId)
             }
         }
     }
 
     "GET /user -> Check if registered user exists" {
-        apiClient.get<Unit>(path = "user") {
+        apiClient.get<User>(path = "user") {
             headers {
-                appendEndpointsApiUserInfoHeader()
+                appendEndpointsApiUserInfoHeader(userId)
             }
         }
     }
 })
+
+@Serializable
+data class User(
+    val userId: String,
+    val analyticsId: String,
+)

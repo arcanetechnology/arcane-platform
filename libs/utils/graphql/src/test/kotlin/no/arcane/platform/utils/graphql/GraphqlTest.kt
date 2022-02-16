@@ -1,0 +1,85 @@
+package no.arcane.platform.utils.graphql
+
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import graphql.ExecutionInput
+import graphql.ExecutionResult
+import graphql.GraphQL
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.future.await
+import java.io.File
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.future.asCompletableFuture
+
+class GraphqlTest : AnnotationSpec() {
+
+    @Test
+    suspend fun test() {
+
+        //
+        // init
+        //
+
+        coroutineScope {
+
+            GraphqlModulesRegistry.registerDataFetcher("user") { env ->
+                val userId: String = env.graphQlContext["userId"]
+                async {
+                    User(
+                        userId = userId,
+                        analyticsId = "analytics-id",
+                    )
+                }.asCompletableFuture()
+            }
+
+            GraphqlModulesRegistry.registerDataFetcher("termsAndConditions") { env ->
+                val tncIds: List<String> = env.arguments["tncIds"] as? List<String> ?: emptyList()
+                async {
+                    tncIds.map { tncId ->
+                        Tnc(
+                            tncId = tncId,
+                            version = "1",
+                            accepted = true,
+                            spaceId = "space-id",
+                            entryId = "entry-id",
+                            fieldId = "field-id",
+                            timestamp = "2022-01-20T14:05:00Z"
+                        )
+                    }
+                }.asCompletableFuture()
+            }
+
+            GraphqlModulesRegistry.registerSchema(File("src/test/resources/user.graphqls").readText())
+            GraphqlModulesRegistry.registerSchema(File("src/test/resources/tnc.graphqls").readText())
+
+            val graphQL: GraphQL = GraphqlModulesRegistry.getGraphQL()
+
+            //
+            // request
+            //
+
+            val executionInput: ExecutionInput = ExecutionInput.newExecutionInput()
+                .query("""{ user { userId analyticsId } termsAndConditions(tncIds: ["platform-terms-and-conditions", "platform-allow-tracking"]) { tncId version accepted spaceId entryId fieldId timestamp } }""")
+                // .variables(emptyMap())
+                // .variables(mapOf("tncId" to "platform-terms-and-conditions"))
+                // .graphQLContext(emptyMap<Any, Any>())
+                .graphQLContext(mapOf("userId" to "user-id"))
+                .build()
+
+            val executionResult: ExecutionResult = graphQL.executeAsync(executionInput).await()
+
+            //
+            // response
+            //
+
+            executionResult.errors shouldBe emptyList()
+
+            val data = jacksonObjectMapper().writeValueAsString(executionResult.getData<Map<String, Any?>>())
+            data shouldBe """
+{"user":{"userId":"user-id","analyticsId":"analytics-id"},"termsAndConditions":[{"tncId":"platform-terms-and-conditions","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"},{"tncId":"platform-allow-tracking","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"}]}
+        """.trimIndent()
+
+        }
+    }
+}

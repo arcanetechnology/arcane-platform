@@ -1,6 +1,21 @@
 version: "3.8"
 
 services:
+  firestore-emulator:
+    container_name: firestore-emulator
+    image: google/cloud-sdk:373.0.0-emulators
+    expose:
+      - 5173
+    ports:
+      - "5173:5173"
+    command: [ "gcloud", "beta", "emulators", "firestore", "start", "--host-port=0.0.0.0:5173" ]
+
+  oauth2-provider-emulator:
+    container_name: oauth2-provider-emulator
+    image: oauth2-provider-emulator
+    expose:
+      - 8080
+
   arcane-platform-app:
     container_name: arcane-platform-app
     image: arcane-platform-app
@@ -26,6 +41,8 @@ services:
       --rollout_strategy=managed
       --non_gcp
       --service_account_key=/config/gcp-service-account.json
+    expose:
+      - 8080
     ports:
       - "8080:8080"
     volumes:
@@ -33,21 +50,6 @@ services:
     depends_on:
       - oauth2-provider-emulator
       - arcane-platform-app
-
-  oauth2-provider-emulator:
-    container_name: oauth2-provider-emulator
-    image: oauth2-provider-emulator
-    expose:
-      - 8080
-
-  firestore-emulator:
-    container_name: firestore-emulator
-    image: google/cloud-sdk:372.0.0-emulators
-    expose:
-      - 5173
-    ports:
-      - "5173:5173"
-    command: [ "gcloud", "beta", "emulators", "firestore", "start", "--host-port=0.0.0.0:5173" ]
 
   acceptance-tests:
     container_name: acceptance-tests

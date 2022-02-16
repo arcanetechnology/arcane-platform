@@ -26,7 +26,6 @@ application {
 }
 
 jib {
-    from.image = "azul/zulu-openjdk:17.0.2-17.32.13"
     to.image = "oauth2-provider-emulator"
     container {
         mainClass = application.mainClass.get()

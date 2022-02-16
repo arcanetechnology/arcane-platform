@@ -1,0 +1,8 @@
+extend type Query {
+    user: User
+}
+
+type User {
+    userId: String!
+    analyticsId: String!
+}

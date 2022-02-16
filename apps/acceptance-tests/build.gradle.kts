@@ -21,7 +21,6 @@ application {
 }
 
 jib {
-    from.image = "azul/zulu-openjdk:17.0.2-17.32.13"
     to.image = "acceptance-tests"
     container {
         mainClass = application.mainClass.get()

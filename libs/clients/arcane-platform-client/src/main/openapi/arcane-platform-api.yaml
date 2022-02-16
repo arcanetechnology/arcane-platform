@@ -144,6 +144,47 @@ paths:
         - firebase: [ ]
 
 
+  "/graphql":
+    get:
+      description: "GraphQL GET endpoint"
+      produces:
+        - application/json
+      operationId: "graphqlGet"
+      parameters:
+        - name: "query"
+          in: query
+          description: "GraphQL Query."
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+    post:
+      description: "GraphQL POST endpoint"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: "graphqlPost"
+      parameters:
+        - name: "request"
+          in: body
+          description: "GraphQL Request."
+          schema:
+            $ref: '#/definitions/GraphQLRequest'
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+
+
 definitions:
 
   User:
@@ -203,6 +244,25 @@ definitions:
       - entryId
       - fieldId
       - timestamp
+
+
+  GraphQLRequest:
+    type: object
+    properties:
+      query:
+        description: "GraphQL query."
+        type: string
+    required:
+      - query
+  GraphQLResponse:
+    type: object
+    properties:
+      data:
+        type: object
+      errors:
+        type: array
+        items:
+          type: string
 
 
 securityDefinitions:

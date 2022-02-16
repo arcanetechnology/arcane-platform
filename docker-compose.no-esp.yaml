@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  firestore-emulator:
+    container_name: firestore-emulator
+    image: google/cloud-sdk:373.0.0-emulators
+    expose:
+      - 5173
+    ports:
+      - "5173:5173"
+    command: [ "gcloud", "beta", "emulators", "firestore", "start", "--host-port=0.0.0.0:5173" ]
+
+  arcane-platform-app:
+    container_name: arcane-platform-app
+    image: arcane-platform-app
+    environment:
+      - ENV=gcp
+      - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
+    volumes:
+      - ./infra/gcp/secrets:/config/:ro
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
+    entrypoint: [ "java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain" ]
+    depends_on:
+      - firestore-emulator
+
+  acceptance-tests:
+    container_name: acceptance-tests
+    image: acceptance-tests
+    environment:
+      - BACKEND_HOST=arcane-platform-app
+    command: [ "--select-package=no.arcane.platform.tests" ]
+    depends_on:
+      - arcane-platform-app

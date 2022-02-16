@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 
 #
 #  Run acceptance tests
@@ -14,6 +14,8 @@ if [ -f .env ]; then
   source .env
   set +o allexport
 fi
+
+docker rmi acceptance-tests arcane-platform-app oauth2-provider-emulator
 
 ./gradlew jibDockerBuild
 

@@ -20,35 +20,32 @@ private val oauthProviderEmulatorClient = HttpClient(CIO) {
     }
 }
 
-private val idToken: String by lazy {
-    runBlocking {
-        oauthProviderEmulatorClient.get(path = "id-token") {
-            contentType(ContentType.Application.Json)
-            body = IdTokenClaims(
-                name = "Test User",
-                picture = "https://picsum.photos/200",
-                subject = "123456789",
-                email = "test@arcane.no",
-            )
-        }
-    }
-}
-
 @OptIn(InternalAPI::class)
-fun HeadersBuilder.appendEndpointsApiUserInfoHeader() {
+fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
     if (System.getenv("BACKEND_HOST") == "test.api.arcane.no") {
+        val idToken: String = runBlocking {
+            oauthProviderEmulatorClient.get(path = "id-token") {
+                contentType(ContentType.Application.Json)
+                body = IdTokenClaims(
+                    name = "Test User",
+                    picture = "https://picsum.photos/200",
+                    subject = subject,
+                    email = "test@arcane.no",
+                )
+            }
+        }
         append("Authorization", "Bearer $idToken")
     } else {
-        append("X-Endpoint-API-UserInfo", Base64.getEncoder().encodeToString(userInfoJson.toByteArray()))
+        append("X-Endpoint-API-UserInfo", Base64.getEncoder().encodeToString(userInfoJson(subject).toByteArray()))
     }
 }
 
-val userInfoJson = """
+fun userInfoJson(subject: String) = """
 {
     "aud": "acceptance-tests",
-    "sub": "123456789",
+    "sub": "$subject",
     "email_verified": true,
-    "user_id": "123456789",
+    "user_id": "$subject",
     "name": "Test User",
     "iss": "oauth2-provider-emulator",
     "picture": "https://picsum.photos/200",

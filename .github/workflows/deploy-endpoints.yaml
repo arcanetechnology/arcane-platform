@@ -4,7 +4,7 @@ on:
 env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   SERVICE_ID: api.arcane.no
-  ESP_FULL_VERSION: 2.33.0
+  ESP_FULL_VERSION: 2.34.0
 jobs:
   deploy-endpoints:
     runs-on: ubuntu-latest
