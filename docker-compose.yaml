@@ -12,22 +12,22 @@ services:
 
   oauth2-provider-emulator:
     container_name: oauth2-provider-emulator
-    image: oauth2-provider-emulator
+    build: apps/oauth2-provider-emulator
     expose:
       - 8080
 
   arcane-platform-app:
     container_name: arcane-platform-app
-    image: arcane-platform-app
+    build: apps/arcane-platform-app
     environment:
       - ENV=gcp
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
+      - JAVA_OPTS=-Dlogback.configurationFile=logback.xml
     volumes:
       - ./infra/gcp/secrets:/config/:ro
     expose:
       - 8080
-    entrypoint: [ "java", "-cp", "@/app/jib-classpath-file", "io.ktor.server.netty.EngineMain" ]
     depends_on:
       - firestore-emulator
 
@@ -53,10 +53,9 @@ services:
 
   acceptance-tests:
     container_name: acceptance-tests
-    image: acceptance-tests
+    build: apps/acceptance-tests
     environment:
       - BACKEND_HOST=test.api.arcane.no
-    command: [ "--select-package=no.arcane.platform.tests" ]
     depends_on:
       - test.api.arcane.no
       - oauth2-provider-emulator

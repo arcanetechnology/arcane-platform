@@ -4,7 +4,6 @@ plugins {
     base
     kotlin("jvm") apply false
     kotlin("plugin.serialization") apply false
-    id("com.google.cloud.tools.jib") apply false
 }
 
 allprojects {

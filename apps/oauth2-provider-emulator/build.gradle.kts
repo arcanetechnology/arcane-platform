@@ -2,7 +2,6 @@ plugins {
     application
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("com.google.cloud.tools.jib")
 }
 
 dependencies {
@@ -23,11 +22,4 @@ application {
     mainClass.set("io.ktor.server.netty.EngineMain")
     applicationName = "oauth2-provider-emulator"
     applicationDefaultJvmArgs = listOf("-Dlogback.configurationFile=logback.xml")
-}
-
-jib {
-    to.image = "oauth2-provider-emulator"
-    container {
-        mainClass = application.mainClass.get()
-    }
 }

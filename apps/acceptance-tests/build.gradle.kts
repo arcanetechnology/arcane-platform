@@ -2,7 +2,6 @@ plugins {
     application
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("com.google.cloud.tools.jib")
 }
 
 dependencies {
@@ -18,13 +17,6 @@ dependencies {
 
 application {
     mainClass.set("org.junit.platform.console.ConsoleLauncher")
-}
-
-jib {
-    to.image = "acceptance-tests"
-    container {
-        mainClass = application.mainClass.get()
-    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

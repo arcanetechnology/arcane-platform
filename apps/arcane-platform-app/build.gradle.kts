@@ -1,7 +1,6 @@
 plugins {
     application
     kotlin("jvm")
-    id("com.google.cloud.tools.jib")
 }
 
 dependencies {
@@ -18,18 +17,6 @@ dependencies {
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
-    applicationName = "arane-platform-app"
-    applicationDefaultJvmArgs = listOf("-Dlogback.configurationFile=logback.xml")
-}
-
-jib {
-    to.image = "arcane-platform-app"
-    container {
-        mainClass = application.mainClass.get()
-        jvmFlags = listOf("-Dlogback.configurationFile=logback.gcp.xml")
-    }
-}
-
-tasks.withType<JavaExec> {
-    environment("ENV", "local")
+    applicationName = "arcane-platform-app"
+    applicationDefaultJvmArgs = listOf("-Dlogback.configurationFile=logback.gcp.xml")
 }

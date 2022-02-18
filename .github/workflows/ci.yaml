@@ -21,8 +21,8 @@ jobs:
 #          cache: "gradle"
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build docker images with gradle
-        run: ./gradlew --no-daemon jibDockerBuild
+      - name: Build with Gradle
+        run: ./gradlew --no-daemon installDist --parallel
       - name: Load github env secrets
         env:
           CONTENTFUL_CONFIG: ${{ secrets.CONTENTFUL_CONFIG }}
@@ -33,4 +33,4 @@ jobs:
       - name: Run docker compose based system integration tests
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        run: docker-compose -f docker-compose.yaml -f docker-compose.github.yaml up --abort-on-container-exit
+        run: docker compose -f docker-compose.yaml -f docker-compose.github.yaml up --build --abort-on-container-exit

@@ -6,6 +6,7 @@ services:
       - ENV=github
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
+      - JAVA_OPTS=-Dlogback.configurationFile=logback.xml
     volumes:
       - ./.github/config:/config/:ro
 

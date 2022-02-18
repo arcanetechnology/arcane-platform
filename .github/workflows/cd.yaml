@@ -29,7 +29,11 @@ jobs:
       - name: Authorize Docker push
         run: gcloud auth configure-docker
       - name: Build with Gradle
-        run: ./gradlew --no-daemon :apps:arcane-platform-app:jib -Djib.to.image="$IMAGE":${GITHUB_SHA::12}
+        run: ./gradlew --no-daemon :apps:arcane-platform-app:installDist --parallel
+      - name: Build docker image
+        run: docker image build -t "$IMAGE":${GITHUB_SHA::12} apps/arcane-platform-app
+      - name: Push docker image
+        run: docker image push "$IMAGE":${GITHUB_SHA::12}
       - name: Deploy to GCP Cloud Run
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
