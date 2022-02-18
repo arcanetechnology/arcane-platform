@@ -7,7 +7,6 @@ import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.SchemaPrinter
-import java.io.File
 
 object GraphqlModulesRegistry {
 

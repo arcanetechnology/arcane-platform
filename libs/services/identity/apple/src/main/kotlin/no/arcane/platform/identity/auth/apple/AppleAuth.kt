@@ -9,8 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import no.arcane.platform.identity.auth.gcp.FirebaseAuthService
-import org.slf4j.LoggerFactory
-import java.util.*
+import java.util.Base64
 
 private const val AUTH_CONFIG_NAME = "apple-oauth2"
 
@@ -81,30 +80,3 @@ fun Application.module() {
         }
     }
 }
-
-/*
-fun Authentication.Configuration.appleJwtAuthConfig() {
-    val issuer = "https://appleid.apple.com"
-    val audiences = arrayOf("no.arcane.platform.client.web")
-    val issuerPublicKeyJwkUrl = URL("https://appleid.apple.com/auth/keys")
-
-    val jwkProvider = JwkProviderBuilder(issuerPublicKeyJwkUrl)
-        .cached(false)
-        .build()
-
-    jwt(AUTH_CONFIG_NAME) {
-        verifier(jwkProvider, issuer) { // no need of withIssuer() when it is passed here
-            withAnyOfAudience(*audiences)
-            withClaimPresence("email")
-            withClaim("email_verified", "true")
-        }
-        validate { credential ->
-            if (credential.payload.getClaim("email").asString().isNullOrBlank()) {
-                null
-            } else {
-                JWTPrincipal(credential.payload)
-            }
-        }
-    }
-}
-*/

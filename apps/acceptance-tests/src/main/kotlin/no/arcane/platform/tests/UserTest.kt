@@ -3,9 +3,8 @@ package no.arcane.platform.tests
 import io.kotest.core.spec.style.StringSpec
 import io.ktor.client.features.*
 import io.ktor.client.request.*
-import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import java.util.*
 
 @kotlin.time.ExperimentalTime
 class UserTest : StringSpec({

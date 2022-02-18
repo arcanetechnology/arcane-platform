@@ -6,7 +6,7 @@ import io.kotest.matchers.date.shouldBeBefore
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 class PingTest : StringSpec({
 

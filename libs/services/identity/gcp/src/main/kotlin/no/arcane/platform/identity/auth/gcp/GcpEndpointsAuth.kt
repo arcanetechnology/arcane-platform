@@ -2,6 +2,7 @@ package no.arcane.platform.identity.auth.gcp
 
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -11,6 +12,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.slf4j.event.Level
 import java.util.*
 
 private const val AUTH_CONFIG_NAME = "esp-v2-header"
@@ -59,27 +61,32 @@ data class EspV2Header(
     val email: String,
 ) : Credential
 
-fun ApplicationRequest.espV2Header(): EspV2Header? {
+private val jsonSerializer = Json {
+    ignoreUnknownKeys = true
+    prettyPrint = true
+}
+
+private fun ApplicationRequest.espV2Header(): EspV2Header? {
     val userInfo = header(GcpHttpHeaders.UserInfo) ?: return null
     val userInfoJson = String(Base64.getDecoder().decode(userInfo))
-    val jsonFormat = Json {
-        ignoreUnknownKeys = true
-    }
-    return jsonFormat.decodeFromString<EspV2Header>(userInfoJson)
+    return jsonSerializer.decodeFromString<EspV2Header>(userInfoJson)
 }
 
 fun Application.module() {
+    install(CallLogging) {
+        level = Level.INFO
+        mdc("userId") {
+            it.request.espV2Header()?.userId
+        }
+    }
     routing {
         authenticate(AUTH_CONFIG_NAME) {
             get("/whoami") {
                 val userInfo = call.request.headers[GcpHttpHeaders.UserInfo]
                     ?.let { userInfo -> String(Base64.getDecoder().decode(userInfo)) }
                     ?: ""
-                val jsonFormat = Json {
-                    prettyPrint = true
-                }
-                val jsonElement = jsonFormat.parseToJsonElement(userInfo)
-                call.respondText(jsonFormat.encodeToString(jsonElement), contentType = ContentType.Application.Json)
+                val jsonElement = jsonSerializer.parseToJsonElement(userInfo)
+                call.respondText(jsonSerializer.encodeToString(jsonElement), contentType = ContentType.Application.Json)
             }
         }
     }

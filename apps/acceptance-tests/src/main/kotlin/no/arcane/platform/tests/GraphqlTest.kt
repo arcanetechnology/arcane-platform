@@ -2,11 +2,8 @@ package no.arcane.platform.tests
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldMatch
 import io.ktor.client.request.*
-import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.*
-import io.ktor.http.cio.*
 import kotlinx.serialization.Serializable
 import java.util.*
 

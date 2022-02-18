@@ -7,16 +7,12 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 private val logger by lazy { LoggerFactory.getLogger("no.arcane.platform.utils.Ktor") }
 
 fun Application.module() {
-    install(CallLogging) {
-        level = Level.INFO
-    }
     install(StatusPages) {
         exception<Throwable> { cause ->
             call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")

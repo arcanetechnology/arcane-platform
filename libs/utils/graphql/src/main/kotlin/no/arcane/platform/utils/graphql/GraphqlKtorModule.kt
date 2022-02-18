@@ -1,18 +1,14 @@
 package no.arcane.platform.utils.graphql
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import graphql.ExecutionInput
 import graphql.ExecutionResult
-import graphql.GraphQL
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
-import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import io.ktor.util.pipeline.*
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.Serializable
 import no.arcane.platform.identity.auth.gcp.UserInfo
@@ -29,11 +25,6 @@ fun Application.module() {
     val jacksonObjectMapper by lazy { jacksonObjectMapper() }
 
     routing {
-
-        static("playground") {
-            default("graphql-playground.html")
-            resource("graphql-playground.html")
-        }
 
         get("sdl") {
             call.respond(sdl)

@@ -6,11 +6,11 @@ import graphql.ExecutionResult
 import graphql.GraphQL
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.future.await
-import java.io.File
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.coroutines.future.await
+import java.io.File
 
 class GraphqlTest : AnnotationSpec() {
 
@@ -53,11 +53,38 @@ class GraphqlTest : AnnotationSpec() {
             GraphqlModulesRegistry.registerSchema(File("src/test/resources/user.graphqls").readText())
             GraphqlModulesRegistry.registerSchema(File("src/test/resources/tnc.graphqls").readText())
 
-            val graphQL: GraphQL = GraphqlModulesRegistry.getGraphQL()
+            //
+            // sdl
+            //
+
+            GraphqlModulesRegistry.getSdl() shouldBe """
+                        type Query {
+                          termsAndConditions(tncIds: [String]!): [Tnc]!
+                          user: User
+                        }
+                        
+                        type Tnc {
+                          accepted: Boolean!
+                          entryId: String!
+                          fieldId: String!
+                          spaceId: String!
+                          timestamp: String!
+                          tncId: String!
+                          version: String!
+                        }
+                        
+                        type User {
+                          analyticsId: String!
+                          userId: String!
+                        }
+                        
+                        """.trimIndent()
 
             //
             // request
             //
+
+            val graphQL: GraphQL = GraphqlModulesRegistry.getGraphQL()
 
             val executionInput: ExecutionInput = ExecutionInput.newExecutionInput()
                 .query("""{ user { userId analyticsId } termsAndConditions(tncIds: ["platform-terms-and-conditions", "platform-allow-tracking"]) { tncId version accepted spaceId entryId fieldId timestamp } }""")
