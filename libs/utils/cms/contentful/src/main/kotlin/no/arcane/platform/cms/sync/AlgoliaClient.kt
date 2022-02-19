@@ -49,14 +49,14 @@ class AlgoliaClient(
     suspend fun getAllIds(): Map<String, String> {
         val query = query("") {
             attributesToRetrieve {
-                +"objectID"
+                +Algolia.Key.ObjectID
                 +"publishedAt"
             }
         }
         return index.browseObjects(query)
             .flatMap {
                 it.hits.map { hit ->
-                    hit.json["objectID"]!!.jsonPrimitive.content to hit.json["publishedAt"]!!.jsonPrimitive.content
+                    hit.json[Algolia.Key.ObjectID]!!.jsonPrimitive.content to hit.json["publishedAt"]!!.jsonPrimitive.content
                 }
             }
             .toMap()

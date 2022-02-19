@@ -11,8 +11,9 @@ dependencies {
     implementation(project(":libs:utils:logging"))
 
     implementation(Ktor.server.core)
-    implementation(Ktor.features.auth)
-    implementation(Ktor.features.serialization)
+    implementation("io.ktor:ktor-server-auth:_")
+    implementation("io.ktor:ktor-server-content-negotiation:_")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     runtimeOnly(Ktor.server.netty)
 
     implementation("com.nimbusds:nimbus-jose-jwt:_")

@@ -1,15 +1,16 @@
 package no.arcane.platform.utils.analytics
 
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.client.response.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.cio.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import no.arcane.platform.utils.logging.getLogger
@@ -34,8 +35,8 @@ object GoogleAnalyticsService {
         }
         val validationMessages: List<ValidationMessage> = googleAnalyticsClient.post {
             url(path = "/debug/mp/collect")
-            body = request
-        }
+            setBody(request)
+        }.body()
         if (validationMessages.isNotEmpty()) {
             logger.error(validationMessages.joinToString())
             return
@@ -52,9 +53,9 @@ object GoogleAnalyticsService {
             userAnalyticsId = userAnalyticsId,
             events = events
         )
-        googleAnalyticsClient.post<Unit> {
-            body = request
-        }
+        googleAnalyticsClient.post {
+            setBody(request)
+        }.body<Unit>()
     }
 }
 
@@ -66,12 +67,16 @@ private val googleAnalyticsClient = HttpClient(CIO) {
     install(UserAgent) {
         agent = "arcane-platform-app"
     }
-    install(JsonFeature)
+    install(ContentNegotiation) {
+        json()
+    }
     defaultRequest {
         url("https://www.google-analytics.com/mp/collect")
         contentType(ContentType.Application.Json)
-        parameter("api_secret", System.getenv("GOOGLE_ANALYTICS_API_KEY"))
-        parameter("measurement_id", System.getenv("GOOGLE_ANALYTICS_MEASUREMENT_ID"))
+        parametersOf(
+            "api_secret" to listOf(System.getenv("GOOGLE_ANALYTICS_API_KEY")),
+            "measurement_id" to listOf(System.getenv("GOOGLE_ANALYTICS_MEASUREMENT_ID")),
+        )
     }
 }
 

@@ -1,11 +1,11 @@
 package no.arcane.platform.cms.space.research.page
 
-import com.algolia.search.serialize.KeyObjectID
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import no.arcane.platform.cms.clients.ContentfulGraphql
 import no.arcane.platform.cms.content.Content
+import no.arcane.platform.cms.sync.Algolia
 import no.arcane.platform.cms.utils.optional
 import no.arcane.platform.cms.utils.richToPlainText
 import no.arcane.platform.utils.config.lazyResourceWithoutWhitespace
@@ -20,7 +20,7 @@ class ResearchPage(
             token = token,
             type = "page"
         ) {
-            "objectID" *= "sys.id"
+            Algolia.Key.ObjectID *= "sys.id"
             "title" *= "title"
             "slug" *= "slug"
             "publishedAt" *= "sys.publishedAt"
@@ -65,7 +65,7 @@ class ResearchPage(
             token = token,
             type = "pageWeeklyUpdate"
         ) {
-            "objectID" *= "linkedFrom.pageCollection.items[*].sys.id"
+            Algolia.Key.ObjectID *= "linkedFrom.pageCollection.items[*].sys.id"
             "publishedAt" *= "linkedFrom.pageCollection.items[*].sys.publishedAt"
         }
     }
@@ -76,11 +76,11 @@ class ResearchPage(
         return clientForIds
             .fetch(queryIds)
             .mapNotNull {
-                (it["objectID"]?.jsonArray?.getOrNull(0)?.jsonPrimitive?.content ?: return@mapNotNull null) to
+                (it[Algolia.Key.ObjectID]?.jsonArray?.getOrNull(0)?.jsonPrimitive?.content ?: return@mapNotNull null) to
                         (it["publishedAt"]?.jsonArray?.getOrNull(0)?.jsonPrimitive?.content ?: return@mapNotNull null)
             }
             .toMap()
     }
 
-    private fun JsonObject.objectIDString(): String = getValue(KeyObjectID).jsonPrimitive.content
+    private fun JsonObject.objectIDString(): String = getValue(Algolia.Key.ObjectID).jsonPrimitive.content
 }

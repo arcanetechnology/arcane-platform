@@ -1,6 +1,6 @@
 package no.arcane.platform.tnc
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.future.asCompletableFuture

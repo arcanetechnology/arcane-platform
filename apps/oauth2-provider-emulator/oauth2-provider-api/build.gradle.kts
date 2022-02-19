@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    implementation(Ktor.features.serialization)
+    api(KotlinX.serialization.core)
 }

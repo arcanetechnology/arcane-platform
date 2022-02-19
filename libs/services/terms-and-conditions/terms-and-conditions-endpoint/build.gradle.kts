@@ -9,7 +9,7 @@ dependencies {
     implementation(project(":libs:utils:logging"))
 
     implementation(Ktor.server.core)
-    implementation(Ktor.features.auth)
+    implementation("io.ktor:ktor-server-auth:_")
 
     implementation(project(":libs:services:terms-and-conditions:terms-and-conditions-service"))
 }

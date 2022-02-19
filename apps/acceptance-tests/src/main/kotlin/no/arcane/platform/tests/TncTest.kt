@@ -2,6 +2,7 @@ package no.arcane.platform.tests
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
@@ -44,8 +45,8 @@ class TncTest : StringSpec({
                 appendEndpointsApiUserInfoHeader(userId)
             }
             contentType(ContentType.Application.Json)
-            body = tncRequest
-        }
+            setBody(tncRequest)
+        }.body()
         savedTnc.copy(timestamp = now) shouldBe tnc
     }
 
@@ -55,7 +56,7 @@ class TncTest : StringSpec({
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
-        }
+        }.body()
         savedTnc.copy(timestamp = now) shouldBe tnc
     }
 

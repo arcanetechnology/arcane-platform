@@ -1,12 +1,13 @@
 package no.arcane.platform.identity.auth.gcp
 
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -15,33 +16,29 @@ import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import java.util.*
 
-private const val AUTH_CONFIG_NAME = "esp-v2-header"
+private const val ESP_V2_HEADER = "esp-v2-header"
 
 object GcpHttpHeaders {
     const val UserInfo = "X-Endpoint-API-UserInfo"
 }
 
 class GcpEndpointsAuthProvider internal constructor(
-    configuration: Configuration
+    configuration: Config
 ) : AuthenticationProvider(configuration) {
 
     /**
      * GCP Endpoints Header Auth configuration
      */
-    class Configuration internal constructor(name: String?) : AuthenticationProvider.Configuration(name)
-}
+    class Configuration internal constructor(name: String?) : Config(name)
 
-fun Authentication.Configuration.gcpEndpointsAuthConfig() {
-    val provider = GcpEndpointsAuthProvider(GcpEndpointsAuthProvider.Configuration(AUTH_CONFIG_NAME))
-
-    provider.pipeline.intercept(AuthenticationPipeline.RequestAuthentication) { context ->
-        when (val espV2Header = call.request.espV2Header()) {
+    override suspend fun onAuthenticate(context: AuthenticationContext) {
+        when (val espV2Header = context.call.request.espV2Header()) {
             null -> context.challenge(
                 OAuthKey,
                 AuthenticationFailedCause.NoCredentials,
-            ) {
+            ) { challenge, call ->
                 call.respond(UnauthorizedResponse())
-                it.complete()
+                challenge.complete()
             }
             else -> context.principal(
                 UserInfo(
@@ -51,8 +48,10 @@ fun Authentication.Configuration.gcpEndpointsAuthConfig() {
             )
         }
     }
+}
 
-    register(provider)
+fun AuthenticationConfig.gcpEndpointsAuthConfig() {
+    register(GcpEndpointsAuthProvider(GcpEndpointsAuthProvider.Configuration(ESP_V2_HEADER)))
 }
 
 @Serializable
@@ -86,7 +85,7 @@ fun Application.module() {
         callIdMdc("logging.googleapis.com/trace")
     }
     routing {
-        authenticate(AUTH_CONFIG_NAME) {
+        authenticate(ESP_V2_HEADER) {
             get("/whoami") {
                 val userInfo = call.request.headers[GcpHttpHeaders.UserInfo]
                     ?.let { userInfo -> String(Base64.getUrlDecoder().decode(userInfo)) }

@@ -1,7 +1,7 @@
 package no.arcane.platform.identity.auth
 
-import io.ktor.application.*
-import io.ktor.auth.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import no.arcane.platform.identity.auth.apple.appleJwtAuthConfig
 import no.arcane.platform.identity.auth.gcp.gcpEndpointsAuthConfig
 

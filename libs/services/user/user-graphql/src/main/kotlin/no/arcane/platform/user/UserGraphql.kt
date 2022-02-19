@@ -1,6 +1,6 @@
 package no.arcane.platform.user
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import no.arcane.platform.user.UserService.fetchUser
