@@ -53,7 +53,7 @@ class GraphqlTest : StringSpec({
         val response = queryGraphqlEndpoint()
 
         response.errors shouldBe null
-        response.data shouldBe  """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[]}"""
+        response.data shouldBe """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[]}"""
     }
 
     var tnc: TncResponse? = null
@@ -80,6 +80,6 @@ class GraphqlTest : StringSpec({
         val response = queryGraphqlEndpoint()
 
         response.errors shouldBe null
-        response.data shouldBe  """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[{"tncId":"platform-terms-and-conditions","version":"version","accepted":true,"spaceId":"spaceId","entryId":"entryId","fieldId":"fieldId","timestamp":"${tnc!!.timestamp}"}]}"""
+        response.data shouldBe """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[{"tncId":"platform-terms-and-conditions","version":"version","accepted":true,"spaceId":"spaceId","entryId":"entryId","fieldId":"fieldId","timestamp":"${tnc!!.timestamp}"}]}"""
     }
 })

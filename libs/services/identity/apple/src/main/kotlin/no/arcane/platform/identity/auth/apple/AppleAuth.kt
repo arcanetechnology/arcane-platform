@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import no.arcane.platform.identity.auth.gcp.FirebaseAuthService
-import java.util.Base64
+import java.util.*
 
 private const val AUTH_CONFIG_NAME = "apple-oauth2"
 

@@ -69,7 +69,11 @@ private val jsonSerializer = Json {
 private fun ApplicationRequest.espV2Header(): EspV2Header? {
     val userInfo = header(GcpHttpHeaders.UserInfo) ?: return null
     val userInfoJson = String(Base64.getDecoder().decode(userInfo))
-    return jsonSerializer.decodeFromString<EspV2Header>(userInfoJson)
+    return try {
+        jsonSerializer.decodeFromString<EspV2Header>(userInfoJson)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 fun Application.module() {
