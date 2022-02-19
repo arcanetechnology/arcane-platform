@@ -1,10 +1,10 @@
 package no.arcane.platform.identity.auth.apple
 
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -12,41 +12,39 @@ import no.arcane.platform.identity.auth.gcp.FirebaseAuthService
 import no.arcane.platform.utils.logging.logWithMDC
 import java.util.*
 
-private const val AUTH_CONFIG_NAME = "apple-oauth2"
+private const val APPLE_OAUTH2 = "apple-oauth2"
 
 object GcpHttpHeaders {
     const val UserInfo = "X-Endpoint-API-UserInfo"
 }
 
 class GcpEndpointsAuthProvider internal constructor(
-    configuration: Configuration
+    configuration: Config
 ) : AuthenticationProvider(configuration) {
 
     /**
      * GCP Endpoints Header Auth configuration
      */
-    class Configuration internal constructor(name: String?) : AuthenticationProvider.Configuration(name)
-}
+    class Configuration internal constructor(name: String?) : Config(name)
 
-fun Authentication.Configuration.appleJwtAuthConfig() {
-    val provider = GcpEndpointsAuthProvider(GcpEndpointsAuthProvider.Configuration(AUTH_CONFIG_NAME))
-
-    provider.pipeline.intercept(AuthenticationPipeline.RequestAuthentication) { context ->
-        when (val espV2Header = call.request.espV2Header()) {
+    override suspend fun onAuthenticate(context: AuthenticationContext) {
+        when (val espV2Header = context.call.request.espV2Header()) {
             null -> context.challenge(
                 OAuthKey,
                 AuthenticationFailedCause.NoCredentials,
-            ) {
+            ) { challenge, call ->
                 call.respond(UnauthorizedResponse())
-                it.complete()
+                challenge.complete()
             }
             else -> context.principal(
                 UserIdPrincipal(espV2Header.email)
             )
         }
     }
+}
 
-    register(provider)
+fun AuthenticationConfig.appleJwtAuthConfig() {
+    register(GcpEndpointsAuthProvider(GcpEndpointsAuthProvider.Configuration(APPLE_OAUTH2)))
 }
 
 @Serializable
@@ -66,7 +64,7 @@ fun ApplicationRequest.espV2Header(): EspV2Header? {
 fun Application.module() {
 
     routing {
-        authenticate(AUTH_CONFIG_NAME) {
+        authenticate(APPLE_OAUTH2) {
             get("/firebase-custom-token") {
                 val email = call.principal<UserIdPrincipal>()!!.name
                 val uid = FirebaseAuthService.createOrMergeUser(

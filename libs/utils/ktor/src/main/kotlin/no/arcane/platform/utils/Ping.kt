@@ -1,7 +1,7 @@
 package no.arcane.platform.utils
 
-import io.ktor.application.*
-import io.ktor.response.*
+import io.ktor.server.application.*
+import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
 import org.slf4j.Logger
 

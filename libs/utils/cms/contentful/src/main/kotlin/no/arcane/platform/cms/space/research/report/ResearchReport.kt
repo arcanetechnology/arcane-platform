@@ -4,6 +4,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import no.arcane.platform.cms.clients.ContentfulGraphql
 import no.arcane.platform.cms.content.Content
+import no.arcane.platform.cms.sync.Algolia
 import no.arcane.platform.cms.utils.richToPlainText
 import no.arcane.platform.utils.config.lazyResourceWithoutWhitespace
 
@@ -19,7 +20,7 @@ class ResearchReport(
             token = token,
             type = "report"
         ) {
-            "objectID" *= "sys.id"
+            Algolia.Key.ObjectID *= "sys.id"
             "title" *= "title"
             "slug" *= "slug"
             "subtitle" *= "subtitle"
@@ -51,7 +52,7 @@ class ResearchReport(
             token = token,
             type = "report"
         ) {
-            "objectID" *= "sys.id"
+            Algolia.Key.ObjectID *= "sys.id"
             "publishedAt" *= "sys.publishedAt"
         }
     }
@@ -62,7 +63,7 @@ class ResearchReport(
         return clientForIds
             .fetch(queryIds)
             .mapNotNull {
-                (it["objectID"]?.jsonPrimitive?.content ?: return@mapNotNull null) to
+                (it[Algolia.Key.ObjectID]?.jsonPrimitive?.content ?: return@mapNotNull null) to
                         (it["publishedAt"]?.jsonPrimitive?.content ?: return@mapNotNull null)
             }
             .toMap()

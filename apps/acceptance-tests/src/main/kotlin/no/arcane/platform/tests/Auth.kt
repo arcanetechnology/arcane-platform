@@ -2,11 +2,13 @@ package no.arcane.platform.tests
 
 import io.kotest.common.runBlocking
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -20,7 +22,9 @@ private val jsonPrinter = Json {
 }
 
 private val oauthProviderEmulatorClient = HttpClient(CIO) {
-    install(JsonFeature)
+    install(ContentNegotiation) {
+        json()
+    }
     defaultRequest {
         host = "oauth2-provider-emulator"
         port = 8080
@@ -35,8 +39,8 @@ fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
             oauthProviderEmulatorClient.get {
                 url(path = "firebase-id-token")
                 contentType(ContentType.Application.Json)
-                body = firebaseIdTokenPayload
-            }
+                setBody(firebaseIdTokenPayload)
+            }.body()
         }
         append("Authorization", "Bearer $idToken")
     } else {
@@ -56,8 +60,8 @@ fun HeadersBuilder.appendAppleIdToken(subject: String) {
             oauthProviderEmulatorClient.get {
                 url(path = "apple-id-token")
                 contentType(ContentType.Application.Json)
-                body = appleIdTokenPayload
-            }
+                setBody(appleIdTokenPayload)
+            }.body()
         }
         append("Authorization", "Bearer $idToken")
     } else {

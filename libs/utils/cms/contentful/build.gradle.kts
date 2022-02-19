@@ -16,6 +16,8 @@ dependencies {
     implementation(Ktor.client.cio)
     implementation(Ktor.client.logging)
     implementation(Ktor.client.serialization)
+    implementation("io.ktor:ktor-client-content-negotiation:_")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:_")
 
     implementation(Ktor.server.core)
 

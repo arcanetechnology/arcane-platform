@@ -9,5 +9,5 @@ dependencies {
     implementation(project("apple"))
 
     implementation(Ktor.server.core)
-    implementation(Ktor.features.auth)
+    implementation("io.ktor:ktor-server-auth:_")
 }

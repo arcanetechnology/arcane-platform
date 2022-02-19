@@ -1,10 +1,10 @@
 package no.arcane.platform.cms.events
 
-import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import no.arcane.platform.cms.space.research.page.ResearchPageValidation
 import no.arcane.platform.cms.sync.ContentfulToAlgolia
 import no.arcane.platform.utils.logging.getLogger

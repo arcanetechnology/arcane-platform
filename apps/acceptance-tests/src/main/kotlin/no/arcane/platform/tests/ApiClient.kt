@@ -2,10 +2,10 @@ package no.arcane.platform.tests
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.logging.*
-import io.ktor.client.request.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.serialization.kotlinx.json.*
 
 val apiClient = HttpClient(CIO) {
     install(Logging) {
@@ -15,7 +15,9 @@ val apiClient = HttpClient(CIO) {
     install(UserAgent) {
         agent = "arcane-platform/apps/acceptance-tests"
     }
-    install(JsonFeature)
+    install(ContentNegotiation) {
+        json()
+    }
     defaultRequest {
         host = System.getenv("BACKEND_HOST") ?: "localhost"
         port = 8080

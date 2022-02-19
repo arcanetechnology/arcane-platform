@@ -5,7 +5,6 @@ import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
 import com.algolia.search.model.ObjectID
-import com.algolia.search.serialize.KeyObjectID
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -66,7 +65,7 @@ class ContentfulToAlgolia(
         algoliaClient.delete(objectID)
     }
 
-    private val JsonObject.objectID get() = getValue(KeyObjectID).jsonPrimitive.content.toObjectID()
+    private val JsonObject.objectID get() = getValue(Algolia.Key.ObjectID).jsonPrimitive.content.toObjectID()
 
     companion object {
         private val logger by getLogger()

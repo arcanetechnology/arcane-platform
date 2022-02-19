@@ -1,20 +1,22 @@
 package no.arcane.platform.utils
 
-import io.ktor.application.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.serialization.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 fun Application.module() {
     install(StatusPages) {
-        exception<Throwable> { cause ->
+        exception<Throwable> { call, cause ->
             call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
-            log.error("Internal Server Error", cause)
+            call.application.log.error("Internal Server Error", cause)
             throw cause
         }
     }
@@ -35,10 +37,10 @@ fun Application.module() {
     routing {
         route("/ping") {
             get {
-                log(log)
+                log(application.log)
             }
             post {
-                log(log)
+                log(application.log)
             }
         }
         get("/utc") {

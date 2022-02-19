@@ -7,8 +7,10 @@ import com.nimbusds.jwt.JWTParser
 import com.nimbusds.jwt.SignedJWT
 import io.kotest.matchers.shouldBe
 import io.ktor.client.*
-import io.ktor.client.features.json.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -34,7 +36,9 @@ private data class FirebaseCustomTokenClaims(
 )
 
 private val httpClient = HttpClient {
-    install(JsonFeature)
+    install(ContentNegotiation) {
+        json()
+    }
 }
 
 private fun readServiceAccountFile(): ServiceAccount {
@@ -46,7 +50,7 @@ private fun readServiceAccountFile(): ServiceAccount {
 
 suspend fun getClientX509Certificate(): X509Certificate {
     val serviceAccount = readServiceAccountFile()
-    val clientCertMap = httpClient.get<Map<String, String>>(serviceAccount.clientX509CertificatesUrl)
+    val clientCertMap = httpClient.get(serviceAccount.clientX509CertificatesUrl).body<Map<String, String>>()
     val clientPublicKey = clientCertMap[serviceAccount.privateKeyId]
     return X509CertUtils.parse(clientPublicKey) ?: throw Exception("Failed to parse client X509 cert")
 }

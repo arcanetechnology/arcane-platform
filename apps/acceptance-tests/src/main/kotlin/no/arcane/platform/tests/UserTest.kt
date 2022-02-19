@@ -1,7 +1,8 @@
 package no.arcane.platform.tests
 
 import io.kotest.core.spec.style.StringSpec
-import io.ktor.client.features.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -22,21 +23,21 @@ class UserTest : StringSpec({
     }
 
     "POST /user -> Register user" {
-        apiClient.post<User> {
+        apiClient.post {
             url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
-        }
+        }.body<User>()
     }
 
     "GET /user -> Check if registered user exists" {
-        apiClient.get<User> {
+        apiClient.get {
             url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
-        }
+        }.body<User>()
     }
 })
 

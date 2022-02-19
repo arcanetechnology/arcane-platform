@@ -1,15 +1,16 @@
 package no.arcane.platform.cms.clients
 
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -31,8 +32,8 @@ class ContentfulGraphql(
     private val logger by getLogger()
 
     private val client = HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+        install(ContentNegotiation) {
+            json(Json {
                 ignoreUnknownKeys = true
                 isLenient = true
             })
@@ -67,8 +68,8 @@ class ContentfulGraphql(
         }
         val response: String = withContext(Dispatchers.IO) {
             client.post {
-                body = graphqlRequest
-            }
+                setBody(graphqlRequest)
+            }.body()
         }
 
         val jsonObject = Json.parseToJsonElement(response).jsonObject

@@ -2,7 +2,9 @@ package no.arcane.platform.tests
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import no.arcane.platform.identity.auth.FirebaseIdTokenPayload
 import no.arcane.platform.identity.auth.gcp.FirebaseAuthService
 import java.util.*
@@ -17,18 +19,18 @@ class AuthTest : StringSpec({
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
-        }
+        }.body()
         firebaseIdTokenPayload shouldBe FirebaseIdTokenPayload(subject = userId)
     }
 
     "Login with Apple ID" {
         val userId = UUID.randomUUID().toString()
-        val firebaseCustomToken = apiClient.get<String> {
+        val firebaseCustomToken: String = apiClient.get {
             url { path("firebase-custom-token") }
             headers {
                 appendAppleIdToken(userId)
             }
-        }
+        }.body()
         val uid = FirebaseAuthService.createOrMergeUser(
             email = "test@arcane.no",
             displayName = "Test User",

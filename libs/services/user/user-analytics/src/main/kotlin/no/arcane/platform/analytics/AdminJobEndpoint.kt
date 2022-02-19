@@ -1,9 +1,9 @@
 package no.arcane.platform.analytics
 
-import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import no.arcane.platform.filestore.FileStoreService
 
 fun Application.module() {
