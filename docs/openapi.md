@@ -6,7 +6,7 @@
   * `info/*`
   * `host`
   * `x-google-backend/*`
-  * `securityDefinitions/firebase/*`
+  * `securityDefinitions/`
 * Deploy updated test spec
 ```shell
 ./infra/gcp/deploy-test-endpoints-service.sh

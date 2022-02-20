@@ -25,7 +25,7 @@ services:
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
       - JAVA_OPTS=-Dlogback.configurationFile=logback.xml
     volumes:
-      - ./infra/gcp/secrets:/config/:ro
+      - "./infra/gcp/secrets:/config/:ro"
     expose:
       - 8080
     depends_on:
@@ -56,6 +56,9 @@ services:
     build: apps/acceptance-tests
     environment:
       - BACKEND_HOST=test.api.arcane.no
+      - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
+    volumes:
+      - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     depends_on:
       - test.api.arcane.no
       - oauth2-provider-emulator

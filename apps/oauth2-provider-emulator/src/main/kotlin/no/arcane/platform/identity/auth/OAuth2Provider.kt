@@ -14,7 +14,6 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
-import kotlinx.serialization.Serializable
 import java.util.*
 
 
@@ -39,18 +38,38 @@ fun Application.module() {
             call.respondText("""{ "keys": [ ${rsaKey.toPublicJWK()} ] }""", ContentType.Application.Json)
         }
 
-        get("id-token") {
-            val requestedClaims = call.receive<Claims>()
+        get("firebase-id-token") {
+            val firebaseIdTokenPayload = call.receive<FirebaseIdTokenPayload>()
 
             val claims = JWTClaimsSet.Builder()
-                .claim("name", requestedClaims.name)
-                .claim("picture", requestedClaims.picture)
-                .issuer("oauth2-provider-emulator")
-                .audience("acceptance-tests")
-                .claim("user_id", requestedClaims.subject)
-                .subject(requestedClaims.subject)
-                .claim("email", requestedClaims.email)
-                .claim("email_verified", true)
+                .claim("name", firebaseIdTokenPayload.name)
+                .claim("picture", firebaseIdTokenPayload.picture)
+                .issuer(firebaseIdTokenPayload.issuer)
+                .audience(firebaseIdTokenPayload.audience)
+                .claim("user_id", firebaseIdTokenPayload.subject)
+                .subject(firebaseIdTokenPayload.subject)
+                .claim("email", firebaseIdTokenPayload.email)
+                .claim("email_verified", firebaseIdTokenPayload.emailVerified)
+                .build()
+
+            val jwt = SignedJWT(jwtHeader, claims)
+            jwt.sign(signer)
+
+            call.respondText(jwt.serialize())
+        }
+
+        get("apple-id-token") {
+            val appleIdTokenPayload = call.receive<AppleIdTokenPayload>()
+
+            val claims = JWTClaimsSet.Builder()
+                .issuer(appleIdTokenPayload.issuer)
+                .subject(appleIdTokenPayload.subject)
+                .audience(appleIdTokenPayload.audience)
+                .claim("name", appleIdTokenPayload.name)
+                .claim("email", appleIdTokenPayload.email)
+                .claim("email_verified", appleIdTokenPayload.emailVerified)
+                .claim("is_private_email", appleIdTokenPayload.isPrivateEmail)
+                .claim("real_user_status", appleIdTokenPayload.realUserStatus)
                 .build()
 
             val jwt = SignedJWT(jwtHeader, claims)
@@ -60,11 +79,3 @@ fun Application.module() {
         }
     }
 }
-
-@Serializable
-data class Claims(
-    val name: String,
-    val picture: String,
-    val subject: String,
-    val email: String,
-)
