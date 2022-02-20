@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation(project(":libs:utils:firebase-auth"))
+    implementation(project(":libs:utils:logging"))
 
     implementation(Ktor.server.core)
     implementation(Ktor.features.auth)

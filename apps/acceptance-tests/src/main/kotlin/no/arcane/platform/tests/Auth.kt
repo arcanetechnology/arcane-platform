@@ -31,7 +31,8 @@ fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
     val firebaseIdTokenPayload = FirebaseIdTokenPayload(subject = subject)
     if (System.getenv("BACKEND_HOST") == "test.api.arcane.no") {
         val idToken: String = runBlocking {
-            oauthProviderEmulatorClient.get(path = "firebase-id-token") {
+            oauthProviderEmulatorClient.get {
+                url(path = "firebase-id-token")
                 contentType(ContentType.Application.Json)
                 body = firebaseIdTokenPayload
             }
@@ -40,7 +41,7 @@ fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
     } else {
         append("X-Endpoint-API-UserInfo",
             jsonPrinter.encodeToString(firebaseIdTokenPayload)
-                .let { it.toByteArray() }
+                .toByteArray()
                 .let(Base64.getEncoder()::encodeToString)
         )
     }
@@ -51,7 +52,8 @@ fun HeadersBuilder.appendAppleIdToken(subject: String) {
     val appleIdTokenPayload = AppleIdTokenPayload(subject = subject)
     if (System.getenv("BACKEND_HOST") == "test.api.arcane.no") {
         val idToken: String = runBlocking {
-            oauthProviderEmulatorClient.get(path = "apple-id-token") {
+            oauthProviderEmulatorClient.get {
+                url(path = "apple-id-token")
                 contentType(ContentType.Application.Json)
                 body = appleIdTokenPayload
             }
@@ -60,7 +62,7 @@ fun HeadersBuilder.appendAppleIdToken(subject: String) {
     } else {
         append("X-Endpoint-API-UserInfo",
             jsonPrinter.encodeToString(appleIdTokenPayload)
-                .let { it.toByteArray() }
+                .toByteArray()
                 .let(Base64.getEncoder()::encodeToString)
         )
     }

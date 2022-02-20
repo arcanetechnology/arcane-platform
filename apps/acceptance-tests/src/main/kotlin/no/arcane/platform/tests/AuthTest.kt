@@ -12,7 +12,7 @@ class AuthTest : StringSpec({
 
     "Parse gcp esp v2 headers" {
         val userId = UUID.randomUUID().toString()
-        val firebaseIdTokenPayload = apiClient.get<FirebaseIdTokenPayload> {
+        val firebaseIdTokenPayload: FirebaseIdTokenPayload = apiClient.get {
             url { path("whoami") }
             headers {
                 appendEndpointsApiUserInfoHeader(userId)

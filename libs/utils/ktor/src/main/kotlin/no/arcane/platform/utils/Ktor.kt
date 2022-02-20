@@ -3,28 +3,44 @@ package no.arcane.platform.utils
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
-import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-
-private val logger by lazy { LoggerFactory.getLogger("no.arcane.platform.utils.Ktor") }
 
 fun Application.module() {
     install(StatusPages) {
         exception<Throwable> { cause ->
             call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
-            logger.error("Internal Server Error", cause)
+            log.error("Internal Server Error", cause)
             throw cause
         }
     }
     install(ContentNegotiation) {
         json()
     }
+    install(CallId) {
+        val prefix = System.getenv("GOOGLE_CLOUD_PROJECT")
+            ?.let { gcpProjectId -> "projects/$gcpProjectId/traces/" }
+            ?: ""
+        retrieve { call: ApplicationCall ->
+            call.request.header("traceparent")
+                ?.split("-")
+                ?.getOrNull(1)
+                ?.let { traceId -> prefix + traceId }
+        }
+    }
     routing {
         get("/ping") {
+            log.info(
+                call.request.headers.entries()
+                    .filterNot { (name, _) -> name.equals("Authorization", ignoreCase = true) }
+                    .joinToString { (name, values) ->
+                        "$name: $values"
+                    }
+            )
             call.respondText("pong")
         }
         get("/utc") {
@@ -32,15 +48,15 @@ fun Application.module() {
         }
     }
     environment.monitor.subscribe(ApplicationStarting) {
-        logger.info("Application starting...")
+        log.info("Application starting...")
     }
     environment.monitor.subscribe(ApplicationStarted) {
-        logger.info("Application started.")
+        log.info("Application started.")
     }
     environment.monitor.subscribe(ApplicationStopping) {
-        logger.info("Application stopping...")
+        log.info("Application stopping...")
     }
     environment.monitor.subscribe(ApplicationStopped) {
-        logger.info("Application stopped.")
+        log.info("Application stopped.")
     }
 }

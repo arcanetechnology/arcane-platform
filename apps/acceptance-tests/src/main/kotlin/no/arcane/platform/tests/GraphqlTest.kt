@@ -22,7 +22,8 @@ class GraphqlTest : StringSpec({
 
     val userId = UUID.randomUUID().toString()
 
-    suspend fun queryGraphqlEndpoint() = apiClient.post<GraphqlResponse>(path = "graphql") {
+    suspend fun queryGraphqlEndpoint(): GraphqlResponse = apiClient.post {
+        url(path = "graphql")
         headers {
             appendEndpointsApiUserInfoHeader(userId)
         }
@@ -42,7 +43,8 @@ class GraphqlTest : StringSpec({
 
     "POST /user -> Register user" {
 
-        user = apiClient.post(path = "user") {
+        user = apiClient.post {
+            url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
@@ -60,7 +62,8 @@ class GraphqlTest : StringSpec({
 
     "POST /tnc/privacy-policy -> Submit Terms and Conditions" {
 
-        tnc = apiClient.post<TncResponse>(path = "tnc/platform-terms-and-conditions") {
+        tnc = apiClient.post {
+            url(path = "tnc/platform-terms-and-conditions")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }

@@ -12,7 +12,8 @@ class UserTest : StringSpec({
     val userId = UUID.randomUUID().toString()
 
     "GET /user -> Check if unregistered user exists" {
-        apiClient.get<Unit>(path = "user") {
+        apiClient.get<Unit> {
+            url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
@@ -21,7 +22,8 @@ class UserTest : StringSpec({
     }
 
     "POST /user -> Register user" {
-        apiClient.post<User>(path = "user") {
+        apiClient.post<User> {
+            url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
@@ -29,7 +31,8 @@ class UserTest : StringSpec({
     }
 
     "GET /user -> Check if registered user exists" {
-        apiClient.get<User>(path = "user") {
+        apiClient.get<User> {
+            url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }

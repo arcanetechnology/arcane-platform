@@ -82,6 +82,8 @@ fun Application.module() {
         mdc("userId") {
             it.request.espV2Header()?.userId
         }
+        // https://cloud.google.com/logging/docs/structured-logging#special-payload-fields
+        callIdMdc("logging.googleapis.com/trace")
     }
     routing {
         authenticate(AUTH_CONFIG_NAME) {

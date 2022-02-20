@@ -6,4 +6,6 @@ plugins {
 dependencies {
     api("org.slf4j:slf4j-api:_")
     runtimeOnly("ch.qos.logback:logback-classic:_")
+
+    implementation(KotlinX.coroutines.slf4j)
 }

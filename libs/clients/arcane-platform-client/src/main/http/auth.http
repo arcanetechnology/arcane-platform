@@ -21,12 +21,34 @@ Authorization: Bearer <apple-id-token>
 
 GET http://localhost:8080/auth/keys
 
-### oauth2-provider-emulator idToken
+### oauth2-provider-emulator firebase-id-token
 
-GET http://localhost:8080/id-token
+GET http://localhost:8080/firebase-id-token
 Content-Type: application/json
 
 {
-  "subject": "test",
+  "aud": "acceptance-tests",
+  "sub": "test",
+  "email_verified": true,
+  "user_id": "test",
+  "name": "Test User",
+  "iss": "oauth2-provider-emulator",
+  "picture:": "https://picsum.photos/200",
   "email": "test@arcane.no"
+}
+
+### oauth2-provider-emulator apple-id-token
+
+GET http://localhost:8080/apple-id-token
+Content-Type: application/json
+
+{
+  "iss": "oauth2-provider-emulator",
+  "subject": "test",
+  "aud": "acceptance-tests",
+  "name": "Test User",
+  "email": "test@arcane.no",
+  "email_verified": true,
+  "is_private_email": false,
+  "real_user_status": 0
 }

@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import no.arcane.platform.identity.auth.gcp.FirebaseAuthService
+import no.arcane.platform.utils.logging.logWithMDC
 import java.util.*
 
 private const val AUTH_CONFIG_NAME = "apple-oauth2"
@@ -74,8 +75,10 @@ fun Application.module() {
                     email = email,
                     displayName = "",
                 )
-                val firebaseCustomToken = FirebaseAuthService.createCustomToken(uid = uid, email = email)
-                call.respondText(firebaseCustomToken)
+                logWithMDC("userId" to uid) {
+                    val firebaseCustomToken = FirebaseAuthService.createCustomToken(uid = uid, email = email)
+                    call.respondText(firebaseCustomToken)
+                }
             }
         }
     }

@@ -11,12 +11,15 @@ import java.util.*
 class PingTest : StringSpec({
 
     "GET /ping" {
-        val response = apiClient.get<String>(path = "ping")
+        val response: String = apiClient.get {
+            url(path = "ping")
+        }
         response shouldBe "pong"
     }
 
     "GET /utc" {
-        val response = apiClient.get<String>(path = "utc") {
+        val response: String = apiClient.get {
+            url(path = "utc")
             headers {
                 appendEndpointsApiUserInfoHeader(UUID.randomUUID().toString())
             }

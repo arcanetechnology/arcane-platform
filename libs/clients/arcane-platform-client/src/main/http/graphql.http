@@ -1,0 +1,7 @@
+POST https://api.arcane.no/graphql
+Authorization: Bearer
+Content-Type: application/json
+
+{
+  "query": "{ user { userId analyticsId } termsAndConditions(tncIds: [\"platform-terms-and-conditions\", \"platform-allow-tracking\"]) { tncId version accepted spaceId entryId fieldId timestamp } }"
+}

@@ -9,14 +9,6 @@ Directly run App
 
     ./gradlew :apps:arcane-platform-app:run
 
-Build docker image using `jib` tool with files in `build-jib-cache`.
-
-    ./gradlew :apps:arcane-platform-app:jibDockerBuild
-
-Build docker & push image using `jib` tool with files in `build-jib-cache`.
-
-    ./gradlew :apps:arcane-platform-app:jib -Djib.to.image=<image>
-
 ## Checking for dependency resolution
 
     ./gradlew :apps:arcane-platform-app:dependencyInsight --configuration runtimeClasspath --dependency dependency-name

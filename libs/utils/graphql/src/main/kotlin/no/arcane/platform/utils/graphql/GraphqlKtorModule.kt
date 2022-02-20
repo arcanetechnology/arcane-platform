@@ -12,11 +12,8 @@ import io.ktor.routing.*
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.Serializable
 import no.arcane.platform.identity.auth.gcp.UserInfo
-import no.arcane.platform.utils.logging.getLogger
 
 fun Application.module() {
-
-    val logger by getLogger()
 
     val graphQL by lazy { GraphqlModulesRegistry.getGraphQL() }
 
@@ -43,7 +40,6 @@ fun Application.module() {
 
                 val executionResult: ExecutionResult = graphQL.executeAsync(executionInput).await()
                 val data = jacksonObjectMapper.writeValueAsString(executionResult.getData())
-                logger.info(data)
                 call.respond(
                     GraphqlResponse(
                         data = data,

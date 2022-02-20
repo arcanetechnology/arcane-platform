@@ -11,11 +11,8 @@ import no.arcane.platform.identity.auth.gcp.UserInfo
 import no.arcane.platform.tnc.TncService.getTnc
 import no.arcane.platform.tnc.TncService.setTnc
 import no.arcane.platform.user.UserId
-import no.arcane.platform.utils.logging.getLogger
 
 fun Application.module() {
-
-    val logger by getLogger()
 
     routing {
         authenticate("esp-v2-header") {
@@ -36,7 +33,7 @@ fun Application.module() {
                     if (savedTnc != null) {
                         call.respond(HttpStatusCode.Created, savedTnc)
                     } else {
-                        logger.error("Failed to store tnc")
+                        log.error("Failed to store tnc")
                         call.respond(HttpStatusCode.InternalServerError)
                     }
                 }

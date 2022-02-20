@@ -36,7 +36,8 @@ class TncTest : StringSpec({
 
     "POST /tnc/privacy-policy -> Submit Terms and Conditions" {
 
-        val savedTnc = apiClient.post<TncResponse>(path = "tnc/privacy-policy") {
+        val savedTnc: TncResponse = apiClient.post {
+            url(path = "tnc/privacy-policy")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
@@ -47,7 +48,8 @@ class TncTest : StringSpec({
     }
 
     "GET /tnc/privacy-policy -> Check if Terms and Conditions are saved" {
-        val savedTnc = apiClient.get<TncResponse>(path = "tnc/privacy-policy") {
+        val savedTnc: TncResponse = apiClient.get {
+            url(path = "tnc/privacy-policy")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
@@ -57,7 +59,8 @@ class TncTest : StringSpec({
 
     // TODO enable the test
     "POST /tnc/privacy-policy/email -> Send Terms and Conditions in email".config(enabled = false) {
-        apiClient.post<Unit>(path = "tnc/privacy-policy/email") {
+        apiClient.post<Unit> {
+            url(path = "tnc/privacy-policy/email")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }

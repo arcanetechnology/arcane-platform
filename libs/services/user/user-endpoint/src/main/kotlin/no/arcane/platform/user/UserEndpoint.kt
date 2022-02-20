@@ -8,11 +8,8 @@ import io.ktor.routing.*
 import no.arcane.platform.identity.auth.gcp.UserInfo
 import no.arcane.platform.user.UserService.createUser
 import no.arcane.platform.user.UserService.fetchUser
-import no.arcane.platform.utils.logging.getLogger
 
 fun Application.module() {
-
-    val logger by getLogger()
 
     routing {
         authenticate("esp-v2-header") {
@@ -21,20 +18,20 @@ fun Application.module() {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
                     val user = userId.fetchUser()
                     if (user != null) {
-                        logger.info("Found user: {}", user)
+                        log.info("Found user: {}", user)
                         call.respond(HttpStatusCode.OK, user)
                     } else {
-                        logger.info("User: {} does not exists", userId)
+                        log.info("User: {} does not exists", userId)
                         call.respond(HttpStatusCode.NotFound)
                     }
                 }
 
                 post {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
-                    logger.info("Creating user: {}", userId)
+                    log.info("Creating user: {}", userId)
                     val user = userId.createUser()
                     if (user == null) {
-                        logger.error("Failed to create a user: $userId")
+                        log.error("Failed to create a user: $userId")
                         call.respond(HttpStatusCode.InternalServerError)
                     } else {
                         call.respond(HttpStatusCode.OK, user)

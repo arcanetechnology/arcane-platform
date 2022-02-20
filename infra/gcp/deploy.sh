@@ -20,8 +20,12 @@ backendCloudRun["service"]="arcane-platform"
 backendCloudRun["image"]="eu.gcr.io/${GCP_PROJECT_ID}/arcane-platform-app:$(git rev-parse HEAD | cut -c 1-12)"
 backendCloudRun["service_account"]="arcane-platform"
 
+echo "Build with Gradle"
+./gradlew :apps:arcane-platform-app:installDist --parallel
+
 echo "Building and pushing docker image: ${backendCloudRun["image"]}"
-./gradlew :apps:arcane-platform-app:jib -Djib.to.image="${backendCloudRun["image"]}"
+docker image build -t "${backendCloudRun["image"]}" apps/arcane-platform-app
+docker image push "${backendCloudRun["image"]}"
 
 echo "Deploying to cloud run: ${backendCloudRun["image"]}"
 gcloud run deploy "${backendCloudRun["service"]}" \
