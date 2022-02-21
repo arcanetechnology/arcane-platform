@@ -46,6 +46,8 @@ include(
 
     // libs / utils
 
+    "libs:utils:analytics",
+
     "libs:utils:cms",
     "libs:utils:cms:cms-api",
     "libs:utils:cms:contentful",

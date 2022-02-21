@@ -58,7 +58,7 @@ data class EspV2Header(
 
 fun ApplicationRequest.espV2Header(): EspV2Header? {
     val userInfo = header(GcpHttpHeaders.UserInfo) ?: return null
-    val userInfoJson = String(Base64.getDecoder().decode(userInfo))
+    val userInfoJson = String(Base64.getUrlDecoder().decode(userInfo))
     val jsonFormat = Json {
         ignoreUnknownKeys = true
     }

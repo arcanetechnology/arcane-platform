@@ -68,7 +68,7 @@ private val jsonSerializer = Json {
 
 private fun ApplicationRequest.espV2Header(): EspV2Header? {
     val userInfo = header(GcpHttpHeaders.UserInfo) ?: return null
-    val userInfoJson = String(Base64.getDecoder().decode(userInfo))
+    val userInfoJson = String(Base64.getUrlDecoder().decode(userInfo))
     return try {
         jsonSerializer.decodeFromString<EspV2Header>(userInfoJson)
     } catch (e: Exception) {
@@ -89,7 +89,7 @@ fun Application.module() {
         authenticate(AUTH_CONFIG_NAME) {
             get("/whoami") {
                 val userInfo = call.request.headers[GcpHttpHeaders.UserInfo]
-                    ?.let { userInfo -> String(Base64.getDecoder().decode(userInfo)) }
+                    ?.let { userInfo -> String(Base64.getUrlDecoder().decode(userInfo)) }
                     ?: ""
                 val jsonElement = jsonSerializer.parseToJsonElement(userInfo)
                 call.respondText(jsonSerializer.encodeToString(jsonElement), contentType = ContentType.Application.Json)
