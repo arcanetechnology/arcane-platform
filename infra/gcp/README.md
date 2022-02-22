@@ -31,6 +31,13 @@ region = europe-west1
 Your active configuration is: [default]
 ```
 
+## Add docker repository to GCP Artifact Registry
+
+```shell
+gcloud artifacts repositories list
+gcloud artifacts repositories create platform --location=europe --repository-format=DOCKER
+```
+
 ## Run backend app
 
 Ref: https://cloud.google.com/run/docs/quickstarts/prebuilt-deploy  

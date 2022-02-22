@@ -74,7 +74,7 @@ echo "ENDPOINT_SERVICE: ${ENDPOINT_SERVICE}"
 espCloudRun["service_config"]="$(gcloud endpoints configs list --service "$ENDPOINT_SERVICE" --format=object --flatten=id --sort-by=~id --limit=1)"
 echo "service_config: ${espCloudRun["service_config"]}"
 
-espCloudRun["image"]="eu.gcr.io/${GCP_PROJECT_ID}/endpoints-runtime-serverless:${ESP_FULL_VERSION}-${espCloudRun["endpoint_service"]}-${espCloudRun["service_config"]}"
+espCloudRun["image"]="europe-docker.pkg.dev/${GCP_PROJECT_ID}/platform/endpoints-runtime-serverless:${ESP_FULL_VERSION}-${espCloudRun["endpoint_service"]}-${espCloudRun["service_config"]}"
 
 echo "espCloudRun[image]: ${espCloudRun["image"]}"
 
@@ -83,7 +83,8 @@ echo "espCloudRun[image]: ${espCloudRun["image"]}"
   -s "${espCloudRun["endpoint_service"]}" \
   -c "${espCloudRun["service_config"]}" \
   -p "$GCP_PROJECT_ID" \
-  -v "$ESP_FULL_VERSION"
+  -v "$ESP_FULL_VERSION" \
+  -g europe-docker.pkg.dev/"$GCP_PROJECT_ID"/platform
 
 # Deploy ESP to GCP Cloud Run
 gcloud run deploy "${espCloudRun["service"]}" \

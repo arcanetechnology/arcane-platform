@@ -63,7 +63,7 @@ echo "Using base image: ${BASE_IMAGE}"
 # If IMAGE_REPOSITORY is not set, it is to support container registry format:
 #   'gcr.io/PROJECT-ID' or 'us.gcr.io/PROJECT-ID'
 if [ -z "${IMAGE_REPOSITORY}" ]; then
-  IMAGE_REPOSITORY="eu.gcr.io/${PROJECT}"
+  IMAGE_REPOSITORY="gcr.io/${PROJECT}"
   if [ -n "${ZONE}" ]; then
     IMAGE_REPOSITORY="${ZONE}.${IMAGE_REPOSITORY}"
   fi

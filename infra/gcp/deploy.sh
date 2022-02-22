@@ -17,7 +17,7 @@ fi
 
 declare -A backendCloudRun
 backendCloudRun["service"]="arcane-platform"
-backendCloudRun["image"]="eu.gcr.io/${GCP_PROJECT_ID}/arcane-platform-app:$(git rev-parse HEAD | cut -c 1-12)"
+backendCloudRun["image"]="europe-docker.pkg.dev/${GCP_PROJECT_ID}/platform/arcane-platform-app:$(git rev-parse HEAD | cut -c 1-12)"
 backendCloudRun["service_account"]="arcane-platform"
 
 echo "Build with Gradle"
