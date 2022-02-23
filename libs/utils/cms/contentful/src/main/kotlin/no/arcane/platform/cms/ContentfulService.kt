@@ -7,7 +7,6 @@ import com.contentful.rich.html.HtmlContext
 import com.contentful.rich.html.HtmlProcessor
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
-
 object ContentfulService : CmsService {
 
     private val logger by getLogger()
@@ -44,34 +43,41 @@ object ContentfulService : CmsService {
     override fun check(
         entryKey: String,
         spaceId: String,
+        environmentId: String,
         entryId: String,
         fieldId: String,
         version: String,
     ): Boolean {
 
+        val errors = mutableSetOf<String>()
+
         if (contentfulConfig.spaceId != spaceId) {
-            logger.error("spaceId not found: $spaceId")
-            return false
+            errors += "spaceId not found: $spaceId"
+        }
+
+        if (contentfulConfig.environmentId != environmentId) {
+            errors += "environmentId not found: $environmentId"
         }
 
         val entryConfig = contentfulConfig.entries[entryKey]
 
         if (entryConfig == null) {
-            logger.error("entryKey not found: $entryKey")
-            return false
+            errors += "entryKey not found: $entryKey"
+        }
+        else {
+            if (entryConfig.entryId != entryId) {
+                errors += "Entry Id does not match. Expected: ${entryConfig.entryId} Found: $entryId"
+            }
+
+            if (entryConfig.fieldId != fieldId) {
+                errors += "Field Id does not match. Expected: ${entryConfig.fieldId} Found: $fieldId"
+            }
         }
 
-        if (entryConfig.entryId != entryId) {
-            logger.error("Entry Id does not match. Expected: ${entryConfig.entryId} Found: $entryId")
-            return false
+        if (errors.isNotEmpty()) {
+            logger.error(errors.joinToString())
         }
 
-        if (entryConfig.fieldId != fieldId) {
-            logger.error("Field Id does not match. Expected: ${entryConfig.fieldId} Found: $fieldId")
-            return false
-        }
-
-        // TODO check latest version
-        return true
+        return errors.isEmpty()
     }
 }

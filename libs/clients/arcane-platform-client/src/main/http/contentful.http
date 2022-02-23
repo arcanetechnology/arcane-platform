@@ -1,0 +1,7 @@
+POST https://graphql.contentful.com/content/v1/spaces/<space-id>/environments/<env-id>
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "query":"query { legalTextCollection (limit:10) { items { titleOfLegalText, contentOfLegalText { json } sys { id spaceId environmentId publishedVersion } } } }"
+}

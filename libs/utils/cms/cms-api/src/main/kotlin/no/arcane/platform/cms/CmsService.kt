@@ -8,6 +8,7 @@ interface CmsService {
     fun check(
         entryKey: String,
         spaceId: String,
+        environmentId: String,
         entryId: String,
         fieldId: String,
         version: String,

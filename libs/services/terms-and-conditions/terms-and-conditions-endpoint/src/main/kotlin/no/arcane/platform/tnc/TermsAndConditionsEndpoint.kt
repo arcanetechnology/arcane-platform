@@ -27,6 +27,7 @@ fun Application.module() {
                         version = tncRequest.version,
                         accepted = tncRequest.accepted,
                         spaceId = tncRequest.spaceId,
+                        environmentId = tncRequest.environmentId,
                         entryId = tncRequest.entryId,
                         fieldId = tncRequest.fieldId,
                     )
@@ -72,6 +73,7 @@ data class TncRequest(
     val version: String,
     val accepted: Boolean,
     val spaceId: String,
+    val environmentId: String,
     val entryId: String,
     val fieldId: String,
 )

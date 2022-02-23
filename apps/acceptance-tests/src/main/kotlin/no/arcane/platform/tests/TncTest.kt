@@ -13,22 +13,24 @@ import java.util.*
 class TncTest : StringSpec({
 
     val tncRequest = TncRequest(
-        spaceId = "spaceId",
-        entryId = "entryId",
-        fieldId = "fieldId",
         version = "version",
-        accepted = true
+        accepted = true,
+        spaceId = "spaceId",
+        environmentId = "environmentId",
+        fieldId = "fieldId",
+        entryId = "entryId",
     )
 
     val now = ZonedDateTime.now(ZoneOffset.UTC).toString()
 
     val tnc = TncResponse(
         tncId = "privacy-policy",
-        spaceId = "spaceId",
-        entryId = "entryId",
-        fieldId = "fieldId",
         version = "version",
         accepted = true,
+        spaceId = "spaceId",
+        environmentId = "environmentId",
+        entryId = "entryId",
+        fieldId = "fieldId",
         timestamp = now,
     )
 
@@ -73,6 +75,7 @@ data class TncRequest(
     val version: String,
     val accepted: Boolean,
     val spaceId: String,
+    val environmentId: String,
     val entryId: String,
     val fieldId: String,
 )
@@ -83,6 +86,7 @@ data class TncResponse(
     val version: String,
     val accepted: Boolean,
     val spaceId: String,
+    val environmentId: String,
     val entryId: String,
     val fieldId: String,
     val timestamp: String,

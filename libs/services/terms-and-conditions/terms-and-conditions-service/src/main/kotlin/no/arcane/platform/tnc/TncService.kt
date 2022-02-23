@@ -9,6 +9,7 @@ import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.user.users
 import no.arcane.platform.utils.logging.getLogger
+import java.awt.GraphicsEnvironment
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
@@ -24,12 +25,14 @@ object TncService {
         version: String,
         accepted: Boolean,
         spaceId: String,
+        environmentId: String,
         entryId: String,
         fieldId: String,
     ): Tnc? {
         cmsService.check(
             entryKey = tncId.value,
             spaceId = spaceId,
+            environmentId = environmentId,
             entryId = entryId,
             fieldId = fieldId,
             version = version,
@@ -39,6 +42,7 @@ object TncService {
             version = version,
             accepted = accepted,
             spaceId = spaceId,
+            environmentId = environmentId,
             entryId = entryId,
             fieldId = fieldId,
             timestamp = ZonedDateTime.now(ZoneOffset.UTC).toString()

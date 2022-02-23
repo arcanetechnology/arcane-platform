@@ -208,6 +208,8 @@ definitions:
         type: boolean
       spaceId:
         type: string
+      environmentId:
+        type: string
       entryId:
         type: string
       fieldId:
@@ -216,6 +218,7 @@ definitions:
       - version
       - accepted
       - spaceId
+      - environmentId
       - entryId
       - fieldId
   TncResponse:
@@ -229,6 +232,8 @@ definitions:
         type: boolean
       spaceId:
         type: string
+      environmentId:
+        type: string
       entryId:
         type: string
       fieldId:
@@ -241,6 +246,7 @@ definitions:
       - version
       - accepted
       - spaceId
+      - environmentId
       - entryId
       - fieldId
       - timestamp

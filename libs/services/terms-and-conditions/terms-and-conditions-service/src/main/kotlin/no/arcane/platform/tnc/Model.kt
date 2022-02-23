@@ -9,6 +9,7 @@ data class Tnc(
     val version: String,
     val accepted: Boolean,
     val spaceId: String,
+    val environmentId: String,
     val entryId: String,
     val fieldId: String,
     val timestamp: String,
