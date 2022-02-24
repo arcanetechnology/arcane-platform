@@ -7,20 +7,21 @@ import com.contentful.rich.html.HtmlContext
 import com.contentful.rich.html.HtmlProcessor
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
+
 object ContentfulService : CmsService {
 
     private val logger by getLogger()
 
     private val contentfulConfig by loadConfig<ContentfulConfig>("contentful", "contentful")
 
-    override fun getHtml(
-        entryKey: String,
+    override suspend fun getHtml(
+        id: String,
     ): String? {
 
-        val entryConfig = contentfulConfig.entries[entryKey]
+        val fetchedMetadata = ContentfulGraphqlClient.fetchLegalEntryMetadata(id)
 
-        if (entryConfig == null) {
-            logger.error("entryKey not found: $entryKey")
+        if (fetchedMetadata == null) {
+            logger.error("cms entry not found: $id")
             return null
         }
 
@@ -31,53 +32,29 @@ object ContentfulService : CmsService {
 
         val entry = client
             .fetch(CDAEntry::class.java)
-            .one(entryConfig.entryId)
+            .one(fetchedMetadata.entryId)
 
-        val node = entry.getField<CDARichDocument>(entryConfig.fieldId)
+        val node = entry.getField<CDARichDocument>(fetchedMetadata.fieldId)
 
         val processor = HtmlProcessor()
         val context = HtmlContext()
         return processor.process(context, node)
     }
 
-    override fun check(
-        entryKey: String,
-        spaceId: String,
-        environmentId: String,
-        entryId: String,
-        fieldId: String,
-        version: String,
+    override suspend fun check(
+        legalEntryMetadata: LegalEntryMetadata
     ): Boolean {
 
-        val errors = mutableSetOf<String>()
-
-        if (contentfulConfig.spaceId != spaceId) {
-            errors += "spaceId not found: $spaceId"
+        if (legalEntryMetadata.spaceId != contentfulConfig.spaceId) {
+            logger.error("spaceId not found: ${legalEntryMetadata.spaceId}")
+            return false
         }
 
-        if (contentfulConfig.environmentId != environmentId) {
-            errors += "environmentId not found: $environmentId"
+        val fetchedMetadata = ContentfulGraphqlClient.fetchLegalEntryMetadata(legalEntryMetadata.id)
+        if (fetchedMetadata != legalEntryMetadata) {
+            logger.error("Legal entry metadata do not match. Submitted: $legalEntryMetadata Found in cms: $fetchedMetadata")
+            return false
         }
-
-        val entryConfig = contentfulConfig.entries[entryKey]
-
-        if (entryConfig == null) {
-            errors += "entryKey not found: $entryKey"
-        }
-        else {
-            if (entryConfig.entryId != entryId) {
-                errors += "Entry Id does not match. Expected: ${entryConfig.entryId} Found: $entryId"
-            }
-
-            if (entryConfig.fieldId != fieldId) {
-                errors += "Field Id does not match. Expected: ${entryConfig.fieldId} Found: $fieldId"
-            }
-        }
-
-        if (errors.isNotEmpty()) {
-            logger.error(errors.joinToString())
-        }
-
-        return errors.isEmpty()
+        return true
     }
 }

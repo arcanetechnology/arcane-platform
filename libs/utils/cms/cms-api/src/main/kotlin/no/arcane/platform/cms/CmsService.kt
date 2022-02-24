@@ -1,16 +1,21 @@
 package no.arcane.platform.cms
 
 interface CmsService {
-    fun getHtml(
-        entryKey: String
+
+    suspend fun getHtml(
+        id: String
     ): String?
 
-    fun check(
-        entryKey: String,
-        spaceId: String,
-        environmentId: String,
-        entryId: String,
-        fieldId: String,
-        version: String,
+    suspend fun check(
+        legalEntryMetadata: LegalEntryMetadata
     ): Boolean
 }
+
+data class LegalEntryMetadata(
+    val id: String,
+    val version: String,
+    val spaceId: String,
+    val environmentId: String,
+    val entryId: String,
+    val fieldId: String = "contentOfLegalText",
+)

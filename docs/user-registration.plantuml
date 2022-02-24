@@ -26,7 +26,7 @@ client <-[#red] server: 404 Not Found
 note over client
 
 Since there is only one mandatory step for **THIS** registration,
-we are assuming that the **GET /tnc/platform-terms-and-conditions** will return 404,
+we are assuming that the **GET /tnc/platform.termsAndConditions** will return 404,
 and hence skipping the call.
 
 end note
@@ -43,7 +43,7 @@ else User Accepts
 
 user -[#green]> client : Accept
 
-client -> server: POST /tnc/platform-terms-and-conditions
+client -> server: POST /tnc/platform.termsAndConditions
 
 ...
 
@@ -54,21 +54,6 @@ Register user by **POST /user** after all mandatory steps are done.
 end note
 
 client -> server: POST /user
-
-...
-
-note over client
-
-For **THIS** registration,
-we are assuming that the **GET /tnc/platform-allow-tracking** will return 404,
-and hence skipping the call.
-
-end note
-
-user <- client : Show **Allow tracking (optional) (?) **
-user -> client : Accept/Reject
-
-client -> server: POST /tnc/platform-allow-tracking (?)
 
 user <- client : User home page (?)
 

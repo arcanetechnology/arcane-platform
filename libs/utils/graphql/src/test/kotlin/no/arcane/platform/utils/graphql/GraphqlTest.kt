@@ -87,9 +87,9 @@ class GraphqlTest : AnnotationSpec() {
             val graphQL: GraphQL = GraphqlModulesRegistry.getGraphQL()
 
             val executionInput: ExecutionInput = ExecutionInput.newExecutionInput()
-                .query("""{ user { userId analyticsId } termsAndConditions(tncIds: ["platform-terms-and-conditions", "platform-allow-tracking"]) { tncId version accepted spaceId entryId fieldId timestamp } }""")
+                .query("""{ user { userId analyticsId } termsAndConditions(tncIds: ["platform.termsAndConditions", "platform.privacyPolicy"]) { tncId version accepted spaceId entryId fieldId timestamp } }""")
                 // .variables(emptyMap())
-                // .variables(mapOf("tncId" to "platform-terms-and-conditions"))
+                // .variables(mapOf("tncId" to "platform.termsAndConditions"))
                 // .graphQLContext(emptyMap<Any, Any>())
                 .graphQLContext(mapOf("userId" to "user-id"))
                 .build()
@@ -104,7 +104,7 @@ class GraphqlTest : AnnotationSpec() {
 
             val data = jacksonObjectMapper().writeValueAsString(executionResult.getData<Map<String, Any?>>())
             data shouldBe """
-{"user":{"userId":"user-id","analyticsId":"analytics-id"},"termsAndConditions":[{"tncId":"platform-terms-and-conditions","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"},{"tncId":"platform-allow-tracking","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"}]}
+{"user":{"userId":"user-id","analyticsId":"analytics-id"},"termsAndConditions":[{"tncId":"platform.termsAndConditions","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"},{"tncId":"platform-allow-tracking","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"}]}
         """.trimIndent()
 
         }

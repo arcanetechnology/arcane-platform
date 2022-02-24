@@ -29,7 +29,7 @@ class GraphqlTest : StringSpec({
         }
         contentType(ContentType.Application.Json)
         body = GraphqlRequest(
-            query = """{ user { userId analyticsId } termsAndConditions(tncIds: ["platform-terms-and-conditions", "platform-allow-tracking"]) { tncId version accepted spaceId environmentId entryId fieldId timestamp } }"""
+            query = """{ user { userId analyticsId } termsAndConditions(tncIds: ["platform.termsAndConditions", "platform.privacyPolicy"]) { tncId version accepted spaceId environmentId entryId fieldId timestamp } }"""
         )
     }
 
@@ -60,10 +60,10 @@ class GraphqlTest : StringSpec({
 
     var tnc: TncResponse? = null
 
-    "POST /tnc/privacy-policy -> Submit Terms and Conditions" {
+    "POST /tnc/platform.termsAndConditions -> Submit Terms and Conditions" {
 
         tnc = apiClient.post {
-            url(path = "tnc/platform-terms-and-conditions")
+            url(path = "tnc/platform.termsAndConditions")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
@@ -84,6 +84,6 @@ class GraphqlTest : StringSpec({
         val response = queryGraphqlEndpoint()
 
         response.errors shouldBe null
-        response.data shouldBe """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[{"tncId":"platform-terms-and-conditions","version":"version","accepted":true,"spaceId":"spaceId","environmentId":"environmentId","entryId":"entryId","fieldId":"fieldId","timestamp":"${tnc!!.timestamp}"}]}"""
+        response.data shouldBe """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[{"tncId":"platform.termsAndConditions","version":"version","accepted":true,"spaceId":"spaceId","environmentId":"environmentId","entryId":"entryId","fieldId":"fieldId","timestamp":"${tnc!!.timestamp}"}]}"""
     }
 })

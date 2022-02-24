@@ -1,7 +1,27 @@
-POST https://graphql.contentful.com/content/v1/spaces/<space-id>/environments/<env-id>
+POST https://graphql.contentful.com/content/v1/spaces/<space-id>
 Content-Type: application/json
 Authorization: Bearer
 
 {
-  "query":"query { legalTextCollection (limit:10) { items { titleOfLegalText, contentOfLegalText { json } sys { id spaceId environmentId publishedVersion } } } }"
+  "query": "query { legalTextCollection (limit:10) { items { titleOfLegalText, contentOfLegalText { json } sys { id spaceId environmentId publishedVersion } } } }"
+}
+
+###
+
+POST https://graphql.contentful.com/content/v1/spaces/<space-id>
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "query": "query { legalTextCollection (where: { titleOfLegalText: \"platform.termsAndConditions\" }, limit:10) { items { titleOfLegalText sys { id spaceId environmentId publishedVersion } } } }"
+}
+
+###
+
+POST https://graphql.contentful.com/content/v1/spaces/<space-id>
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "query": "query { pageWeeklyUpdateCollection (limit:3) { items { name content { json } sys { environmentId } } } }"
 }

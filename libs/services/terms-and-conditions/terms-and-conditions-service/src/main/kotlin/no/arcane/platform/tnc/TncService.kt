@@ -4,6 +4,7 @@ import io.firestore4k.typed.add
 import io.firestore4k.typed.div
 import io.firestore4k.typed.get
 import io.firestore4k.typed.put
+import no.arcane.platform.cms.LegalEntryMetadata
 import no.arcane.platform.cms.getCmsService
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
@@ -30,12 +31,14 @@ object TncService {
         fieldId: String,
     ): Tnc? {
         cmsService.check(
-            entryKey = tncId.value,
-            spaceId = spaceId,
-            environmentId = environmentId,
-            entryId = entryId,
-            fieldId = fieldId,
-            version = version,
+            LegalEntryMetadata(
+                id = tncId.value,
+                version = version,
+                spaceId = spaceId,
+                environmentId = environmentId,
+                entryId = entryId,
+                fieldId = fieldId,
+            )
         )
         val tnc = Tnc(
             tncId = tncId.value,
@@ -56,11 +59,11 @@ object TncService {
         tncId: TncId,
     ): Tnc? = get(users / this / termsAndConditions / tncId)
 
-    fun emailTnc(
+    suspend fun emailTnc(
         email: String,
         tncId: TncId,
     ): Boolean {
-        val html = cmsService.getHtml(entryKey = tncId.value)
+        val html = cmsService.getHtml(id = tncId.value)
 
         if (html.isNullOrBlank()) {
             logger.error("CMS has no entry for $tncId")
