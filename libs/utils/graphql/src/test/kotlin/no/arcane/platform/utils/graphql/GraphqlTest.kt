@@ -104,7 +104,7 @@ class GraphqlTest : AnnotationSpec() {
 
             val data = jacksonObjectMapper().writeValueAsString(executionResult.getData<Map<String, Any?>>())
             data shouldBe """
-{"user":{"userId":"user-id","analyticsId":"analytics-id"},"termsAndConditions":[{"tncId":"platform.termsAndConditions","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"},{"tncId":"platform-allow-tracking","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"}]}
+{"user":{"userId":"user-id","analyticsId":"analytics-id"},"termsAndConditions":[{"tncId":"platform.termsAndConditions","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"},{"tncId":"platform.privacyPolicy","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"}]}
         """.trimIndent()
 
         }

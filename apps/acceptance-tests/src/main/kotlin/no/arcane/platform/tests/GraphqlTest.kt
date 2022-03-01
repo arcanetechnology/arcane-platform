@@ -58,6 +58,14 @@ class GraphqlTest : StringSpec({
         response.data shouldBe """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[]}"""
     }
 
+    val tncRequest = TncRequest(
+        version = System.getenv("PLATFORM_TNC_VERSION"),
+        accepted = true,
+        spaceId = System.getenv("LEGAL_SPACE_ID"),
+        environmentId = System.getenv("PLATFORM_TNC_ENV_ID"),
+        entryId = System.getenv("PLATFORM_TNC_ENTRY_ID"),
+        fieldId = "contentOfLegalText",
+    )
     var tnc: TncResponse? = null
 
     "POST /tnc/platform.termsAndConditions -> Submit Terms and Conditions" {
@@ -68,14 +76,7 @@ class GraphqlTest : StringSpec({
                 appendEndpointsApiUserInfoHeader(userId)
             }
             contentType(ContentType.Application.Json)
-            body = TncRequest(
-                version = "version",
-                accepted = true,
-                spaceId = "spaceId",
-                environmentId = "environmentId",
-                entryId = "entryId",
-                fieldId = "fieldId",
-            )
+            body = tncRequest
         }
 
     }
@@ -84,6 +85,6 @@ class GraphqlTest : StringSpec({
         val response = queryGraphqlEndpoint()
 
         response.errors shouldBe null
-        response.data shouldBe """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[{"tncId":"platform.termsAndConditions","version":"version","accepted":true,"spaceId":"spaceId","environmentId":"environmentId","entryId":"entryId","fieldId":"fieldId","timestamp":"${tnc!!.timestamp}"}]}"""
+        response.data shouldBe """{"user":{"userId":"$userId","analyticsId":"${user!!.analyticsId}"},"termsAndConditions":[{"tncId":"platform.termsAndConditions","version":"${tncRequest.version}","accepted":${tncRequest.accepted},"spaceId":"${tncRequest.spaceId}","environmentId":"${tncRequest.environmentId}","entryId":"${tncRequest.entryId}","fieldId":"${tncRequest.fieldId}","timestamp":"${tnc!!.timestamp}"}]}"""
     }
 })

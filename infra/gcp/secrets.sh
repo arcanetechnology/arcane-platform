@@ -17,29 +17,29 @@ fi
 
 declare -A gcp_secrets
 
-gcp_secrets[0, "name"]="contentful_config"
-gcp_secrets[0, "src"]="infra/gcp/secrets/contentful-gcp.conf"
-gcp_secrets[0, "target"]="/config/contentful-gcp.conf"
-
-gcp_secrets[1, "name"]="sendgrid_api_key"
-gcp_secrets[1, "src"]="infra/gcp/secrets/sendgrid_api_key.txt"
-gcp_secrets[1, "target"]="SENDGRID_API_KEY"
+gcp_secrets[0]="SENDGRID_API_KEY"
+gcp_secrets[1]="LEGAL_SPACE_ID"
+gcp_secrets[2]="LEGAL_SPACE_TOKEN"
+gcp_secrets[3]="RESEARCH_SPACE_ID"
+gcp_secrets[4]="RESEARCH_SPACE_TOKEN"
+gcp_secrets[5]="ALGOLIA_APP_ID"
+gcp_secrets[6]="ALGOLIA_API_KEY"
 
 index=0
 
-while [ -n "${gcp_secrets["$index", "name"]}" ]; do
+while [ -n "${gcp_secrets["$index"]}" ]; do
 
-#  echo Creating secret: "${gcp_secrets["$index", "name"]}"
+#  echo Creating secret: "${gcp_secrets["$index"]}"
 #
-#  gcloud secrets create "${gcp_secrets["$index", "name"]}" \
-#    --data-file="${gcp_secrets["$index", "src"]}" \
+#  printf ${!gcp_secrets["$index"]} | gcloud secrets create ${gcp_secrets["$index"]} \
+#    --data-file=- \
 #    --replication-policy=user-managed \
 #    --locations=europe-west1
 
-  echo Updating secret: "${gcp_secrets["$index", "name"]}"
+  echo Updating secret: "${gcp_secrets["$index"]}"
 
-  gcloud secrets versions add "${gcp_secrets["$index", "name"]}" \
-    --data-file="${gcp_secrets["$index", "src"]}"
+  gcloud secrets versions add "${gcp_secrets["$index"]}" \
+    --data-file=-
 
   index=$((index + 1))
 
@@ -53,15 +53,15 @@ index=0
 
 secret_string=""
 
-while [ -n "${gcp_secrets["$index", "name"]}" ]; do
+while [ -n "${gcp_secrets["$index"]}" ]; do
 
-  echo Setting secret: "${gcp_secrets["$index", "name"]}" in cloud run service "${CLOUD_RUN_SERVICE}"
+  echo Setting secret: "${gcp_secrets["$index"]}" in cloud run service "${CLOUD_RUN_SERVICE}"
 
   if [ -n "${secret_string}" ]; then
     secret_string+=","
   fi
 
-  secret_string+="${gcp_secrets["$index", "target"]}=${gcp_secrets["$index", "name"]}:latest"
+  secret_string+="${gcp_secrets["$index"]}=${gcp_secrets["$index"]}:latest"
 
   index=$((index + 1))
 
@@ -71,8 +71,4 @@ echo $secret_string
 
 gcloud run services update "${CLOUD_RUN_SERVICE}" \
   --update-secrets="${secret_string}" \
-  --region europe-west1
-
-gcloud run services update arcane-web-proxy \
-  --clear-secrets \
   --region europe-west1

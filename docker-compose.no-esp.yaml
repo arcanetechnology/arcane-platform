@@ -14,12 +14,21 @@ services:
     container_name: arcane-platform-app
     build: apps/arcane-platform-app
     environment:
-      - ENV=gcp
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
       - JAVA_OPTS=-Dlogback.configurationFile=logback.xml
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - METRICS_ENABLED=false
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENDGRID_ENABLED=false
+      - LEGAL_SPACE_ID=${LEGAL_SPACE_ID}
+      - LEGAL_SPACE_TOKEN=${LEGAL_SPACE_TOKEN}
+      - RESEARCH_SPACE_ID=${RESEARCH_SPACE_ID}
+      - RESEARCH_SPACE_TOKEN=${RESEARCH_SPACE_TOKEN}
+      - ALGOLIA_APP_ID=${ALGOLIA_APP_ID}
+      - ALGOLIA_API_KEY=${ALGOLIA_API_KEY}
     volumes:
-      - ./infra/gcp/secrets:/config/:ro
+      - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     expose:
       - 8080
     ports:
@@ -32,5 +41,12 @@ services:
     build: apps/acceptance-tests
     environment:
       - BACKEND_HOST=arcane-platform-app
+      - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
+      - LEGAL_SPACE_ID=${LEGAL_SPACE_ID}
+      - PLATFORM_TNC_VERSION=${PLATFORM_TNC_VERSION}
+      - PLATFORM_TNC_ENV_ID=${PLATFORM_TNC_ENV_ID}
+      - PLATFORM_TNC_ENTRY_ID=${PLATFORM_TNC_ENTRY_ID}
+    volumes:
+      - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     depends_on:
       - arcane-platform-app

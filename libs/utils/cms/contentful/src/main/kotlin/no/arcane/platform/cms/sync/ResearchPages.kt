@@ -8,9 +8,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import no.arcane.platform.cms.clients.ContentfulGraphqlClient
+import no.arcane.platform.cms.clients.ContentfulGraphql
 import no.arcane.platform.cms.clients.richText
 import no.arcane.platform.cms.clients.text
+import no.arcane.platform.cms.utils.forEachInArrayAt
+import no.arcane.platform.cms.utils.optional
+import no.arcane.platform.cms.utils.richToPlainText
+import no.arcane.platform.cms.utils.richToPlainTextProcessor
 import no.arcane.platform.utils.config.readResource
 
 private val transformations = mapOf(
@@ -33,11 +37,12 @@ class ResearchPage(
 
     private val client by lazy {
 
-        ContentfulGraphqlClient(
-            spaceId,
-            token,
-            readResource("/research/queryOne.graphql").replace(Regex("\\s+"), " "),
-            transformations,
+        ContentfulGraphql(
+            spaceId = spaceId,
+            token = token,
+            query = readResource("/research/queryOne.graphql").replace(Regex("\\s+"), " "),
+        ).SimpleClient(
+            transformations = transformations,
         )
     }
 
@@ -46,19 +51,36 @@ class ResearchPage(
     }
 }
 
-/*class ResearchArticles(
+class ResearchPagesV2(
     spaceId: String,
     token: String,
 ) {
 
     private val batchClient by lazy {
 
-        ContentfulGraphqlClient(
-            spaceId,
-            token,
-            readResource("/research/queryMany.graphql").replace(Regex("\\s+"), " "),
-            transformations,
-        )
+        ContentfulGraphql(
+            spaceId = spaceId,
+            token = token,
+            query = readResource("/research/queryMany.graphql").replace(Regex("\\s+"), " "),
+        ).AdvancedClient(
+            arrayPath = "data.pageCollection.items"
+        ) {
+            "objectID" *= "sys.id"
+            "title" *= "title"
+            "slug" *= "slug"
+            "publishedAt" *= "sys.publishedAt"
+            optional {
+                "subtitle" *= "content.subtitle"
+                "image" *= "content.image"
+                "tags" *= "content.tagsCollection.items[*].name"
+                "authors" *= "content.authorsCollection.items[*].name"
+                "articleText" *= {
+                    expression = "content.content.json"
+                    processor = ::richToPlainTextProcessor
+                }
+                "articleText" *= { richToPlainText("content.content.json") }
+            }
+        }
     }
 
     suspend fun fetchAll(): Collection<JsonObject> {
@@ -74,7 +96,7 @@ class ResearchPage(
         }
         return set
     }
-}*/
+}
 
 class ResearchPages(
     spaceId: String,
@@ -116,11 +138,12 @@ class ResearchPagesMetadata(
 
     private val client by lazy {
 
-        ContentfulGraphqlClient(
-            spaceId,
-            token,
-            readResource("/research/queryIds.graphql").replace(Regex("\\s+"), " "),
-            mapOf(
+        ContentfulGraphql(
+            spaceId = spaceId,
+            token = token,
+            query = readResource("/research/queryIds.graphql").replace(Regex("\\s+"), " "),
+        ).SimpleClient(
+            transformations = mapOf(
                 "objectID" to "$.data.pageCollection.items[*].sys.id".text(),
                 "publishedAt" to "$.data.pageCollection.items[*].sys.publishedAt".text(),
             ),

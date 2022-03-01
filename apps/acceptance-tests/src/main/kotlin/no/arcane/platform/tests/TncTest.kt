@@ -13,24 +13,24 @@ import java.util.*
 class TncTest : StringSpec({
 
     val tncRequest = TncRequest(
-        version = "version",
+        version = System.getenv("PLATFORM_TNC_VERSION"),
         accepted = true,
-        spaceId = "spaceId",
-        environmentId = "environmentId",
-        fieldId = "fieldId",
-        entryId = "entryId",
+        spaceId = System.getenv("LEGAL_SPACE_ID"),
+        environmentId = System.getenv("PLATFORM_TNC_ENV_ID"),
+        entryId = System.getenv("PLATFORM_TNC_ENTRY_ID"),
+        fieldId = "contentOfLegalText",
     )
 
     val now = ZonedDateTime.now(ZoneOffset.UTC).toString()
 
     val tnc = TncResponse(
         tncId = "platform.termsAndConditions",
-        version = "version",
-        accepted = true,
-        spaceId = "spaceId",
-        environmentId = "environmentId",
-        entryId = "entryId",
-        fieldId = "fieldId",
+        version = tncRequest.version,
+        accepted = tncRequest.accepted,
+        spaceId = tncRequest.spaceId,
+        environmentId = tncRequest.environmentId,
+        entryId = tncRequest.entryId,
+        fieldId = tncRequest.fieldId,
         timestamp = now,
     )
 

@@ -4,6 +4,7 @@ plugins {
     base
     kotlin("jvm") apply false
     kotlin("plugin.serialization") apply false
+    id("co.uzzu.dotenv.gradle")
 }
 
 allprojects {
@@ -27,6 +28,11 @@ allprojects {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_17.majorVersion
         }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        environment = env.allVariables
     }
 }
 

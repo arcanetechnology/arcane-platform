@@ -36,6 +36,7 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --min-instances=1 \
   --max-instances=1 \
   --concurrency=1000 \
+  --set-env-vars=GCP_PROJECT_ID="${GCP_PROJECT_ID}" \
   --service-account "${backendCloudRun["service_account"]}" \
   --no-allow-unauthenticated \
   --port=8080 \

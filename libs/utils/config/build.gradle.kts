@@ -12,7 +12,3 @@ dependencies {
     // test
     testImplementation("io.kotest:kotest-runner-junit5-jvm:_")
 }
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}

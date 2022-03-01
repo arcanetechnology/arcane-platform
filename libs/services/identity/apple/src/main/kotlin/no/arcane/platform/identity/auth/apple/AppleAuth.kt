@@ -14,8 +14,6 @@ import java.util.*
 
 private const val AUTH_CONFIG_NAME = "apple-oauth2"
 
-// private val logger by lazy { LoggerFactory.getLogger("no.arcane.platform.identity.auth.apple.AppleAuth") }
-
 object GcpHttpHeaders {
     const val UserInfo = "X-Endpoint-API-UserInfo"
 }

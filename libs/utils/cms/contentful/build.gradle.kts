@@ -23,4 +23,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:_")
 
     implementation("com.algolia:algoliasearch-client-kotlin:_")
+
+    // test
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:_")
 }

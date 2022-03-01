@@ -1,12 +1,4 @@
-POST https://graphql.contentful.com/content/v1/spaces/{space_id}
-Content-Type: application/json
-Authorization: Bearer
-
-{
-  "query": "query { legalTextCollection (limit:10) { items { titleOfLegalText contentOfLegalText { json } sys { id spaceId environmentId publishedVersion } } } }"
-}
-
-###
+### Get legal entry metadata for given T&C ID
 
 POST https://graphql.contentful.com/content/v1/spaces/{space_id}
 Content-Type: application/json
@@ -16,38 +8,32 @@ Authorization: Bearer
   "query": "query { legalTextCollection (where: { titleOfLegalText: \"platform.termsAndConditions\" }, limit:10) { items { titleOfLegalText sys { id spaceId environmentId publishedVersion } } } }"
 }
 
-###
+### Get limit 5 research pages with child articles with its rich text content and metadata
 
 POST https://graphql.contentful.com/content/v1/spaces/{space_id}
 Content-Type: application/json
 Authorization: Bearer
 
 {
-  "query": "query { pageWeeklyUpdateCollection (limit:3) { items { name content { json } sys { environmentId } } } }"
+  "query": "query { pageCollection (order:[sys_firstPublishedAt_ASC],limit: 5) { items { title slug  sys { id publishedAt } content { ... on PageWeeklyUpdate { subtitle content {json } image { fileName title description url } tagsCollection { items { name } } authorsCollection { items { name } } publishDate } } } } }"
 }
 
-###
+### Get limit 5 research pages with child articles without its rich text content
 
 POST https://graphql.contentful.com/content/v1/spaces/{space_id}
 Content-Type: application/json
 Authorization: Bearer
 
 {
-  "query": "query { pageCollection (order:[sys_firstPublishedAt_ASC],limit: 5) { items { title slug content { ... on PageWeeklyUpdate { subtitle content {json } image { fileName title description url } tagsCollection { items { name } } authorsCollection { items { name } } publishDate sys { id } } } } } }"
+  "query": "query { pageCollection (order:[sys_firstPublishedAt_ASC],limit: 10) { items { title slug  sys { id publishedAt } content { ... on PageWeeklyUpdate { subtitle image { fileName title description url } tagsCollection { items { name } } authorsCollection { items { name } } publishDate } } } } }"
 }
 
-###
+### Get all page ids along with first publishedAt
 
 POST https://graphql.contentful.com/content/v1/spaces/{space_id}
 Content-Type: application/json
 Authorization: Bearer
 
 {
-  "query": "query { pageCollection (limit: 300) { items { content { ... on PageWeeklyUpdate { sys { id } } } } } }"
+  "query": "query { pageCollection (limit: 300) { items { sys { id publishedAt } } } }"
 }
-
-###
-
-PUT https://api.contentful.com/spaces/{space_id}/entries/{entry_id}/published
-Authorization: Bearer
-X-Contentful-Version: 6

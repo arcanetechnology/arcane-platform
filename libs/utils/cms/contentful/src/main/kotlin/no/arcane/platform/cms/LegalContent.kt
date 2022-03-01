@@ -2,7 +2,7 @@ package no.arcane.platform.cms
 
 import kotlinx.serialization.json.jsonPrimitive
 import no.arcane.platform.cms.clients.ContentfulClient
-import no.arcane.platform.cms.clients.ContentfulGraphqlClient
+import no.arcane.platform.cms.clients.ContentfulGraphql
 import no.arcane.platform.cms.clients.text
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.config.readResource
@@ -12,14 +12,15 @@ object LegalContent {
 
     private val logger by getLogger()
 
-    private val contentfulConfig by loadConfig<ContentfulConfig>("contentful", "contentful")
+    internal val contentfulConfig by loadConfig<ContentfulConfig>("contentful", "contentful")
 
     private val graphqlClient by lazy {
-        ContentfulGraphqlClient(
-            contentfulConfig.spaceId,
-            contentfulConfig.token,
-            readResource("/legal/query.graphql").replace(Regex("\\s+"), " "),
-            mapOf(
+        ContentfulGraphql(
+            spaceId = contentfulConfig.spaceId,
+            token = contentfulConfig.token,
+            query = readResource("/legal/query.graphql").replace(Regex("\\s+"), " "),
+        ).SimpleClient(
+            transformations = mapOf(
                 "titleOfLegalText" to "$.data.legalTextCollection.items[*].titleOfLegalText".text(),
                 "publishedVersion" to "$.data.legalTextCollection.items[*].sys.publishedVersion".text(),
                 "spaceId" to "$.data.legalTextCollection.items[*].sys.spaceId".text(),

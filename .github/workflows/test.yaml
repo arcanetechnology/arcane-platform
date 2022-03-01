@@ -25,12 +25,10 @@ jobs:
         run: ./gradlew --no-daemon installDist --parallel
       - name: Load github env secrets
         env:
-          CONTENTFUL_CONFIG: ${{ secrets.CONTENTFUL_CONFIG }}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          echo "${CONTENTFUL_CONFIG}" >> .github/config/contentful-github.conf
-          echo "${GCP_SA_KEY}" >> .github/config/gcp-service-account.json
+          echo "${ENV_FILE}" >> .env
+          echo "${GCP_SA_KEY}" >> infra/gcp/secrets/gcp-service-account.json
       - name: Run docker compose based system integration tests
-        env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-        run: docker compose -f docker-compose.yaml -f docker-compose.github.yaml up --build --abort-on-container-exit
+        run: docker compose up --build --abort-on-container-exit

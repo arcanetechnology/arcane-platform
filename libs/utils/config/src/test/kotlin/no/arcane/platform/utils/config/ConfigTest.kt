@@ -9,10 +9,10 @@ class ConfigTest : StringSpec({
 
     "config not found" {
         val exception = shouldThrow<FileNotFoundException> {
-            val config by loadConfig<String>("missing", "null", "unit-test")
+            val config by loadConfig<String>("missing", "null")
             println(config)
         }
 
-        exception.message shouldBe "Config files not found for env: unit-test - [file:/config/missing-unit-test.conf, resource:/missing-unit-test.conf @ null, resource:/missing.conf @ null]"
+        exception.message shouldBe "Config file not found - resource:/missing.conf @ null"
     }
 })

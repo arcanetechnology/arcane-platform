@@ -22,7 +22,7 @@ fun Application.module() {
         json()
     }
     install(CallId) {
-        val prefix = System.getenv("GOOGLE_CLOUD_PROJECT")
+        val prefix = System.getenv("GCP_PROJECT_ID")
             ?.let { gcpProjectId -> "projects/$gcpProjectId/traces/" }
             ?: ""
         retrieve { call: ApplicationCall ->

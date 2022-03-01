@@ -1,7 +1,5 @@
 package no.arcane.platform.cms.sync
 
-import no.arcane.platform.utils.config.loadConfig
-
 data class ContentfulAlgoliaSyncConfig(
     val contentful: ContentfulConfig,
     val algolia: AlgoliaConfig,

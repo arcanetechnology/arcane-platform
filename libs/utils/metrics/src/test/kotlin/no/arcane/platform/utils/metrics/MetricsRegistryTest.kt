@@ -10,7 +10,7 @@ class MetricsRegistryTest : StringSpec({
     val stackDriverConfig = stackDriverConfigReader.stackDriverConfig
 
     "read config - project id" {
-        stackDriverConfig.projectId() shouldBe "arcane-platform-dev"
+        stackDriverConfig.projectId() shouldBe System.getenv("GCP_PROJECT_ID")
     }
     "read config - resource type" {
         stackDriverConfig.resourceType() shouldBe "generic_task"

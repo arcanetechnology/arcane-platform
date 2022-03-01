@@ -1,3 +1,5 @@
+### get user and array of T&C
+
 POST https://api.arcane.no/graphql
 Authorization: Bearer
 Content-Type: application/json

@@ -39,7 +39,7 @@ class ContentfulToAlgolia(
     }
 
     private val researchPages by lazy {
-        ResearchPages(
+        ResearchPagesV2(
             spaceId = syncConfig.contentful.spaceId,
             token = syncConfig.contentful.token,
         )
