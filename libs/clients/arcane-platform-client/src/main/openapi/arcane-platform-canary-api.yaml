@@ -1,18 +1,19 @@
 swagger: "2.0"
 
 info:
-  title: Arcane Platform API
-  description: "Arcane Platform API"
+  title: Arcane Platform API - Canary
+  description: "Arcane Platform API for Canary Deployment"
   version: "1.0.0"
 
-host: api.arcane.no
+host: canary.api.arcane.no
 
 schemes:
   - "https"
 
 x-google-backend:
-  address: "https://${GCP_BACKEND_HOST}"
+  address: "https://canary---${GCP_BACKEND_HOST}"
   protocol: h2
+  jwt_audience: "https://${GCP_BACKEND_HOST}"
 
 paths:
 

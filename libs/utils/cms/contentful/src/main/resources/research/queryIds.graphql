@@ -1,0 +1,10 @@
+query {
+    pageCollection (limit:300) {
+        items {
+            sys {
+                id
+                publishedAt
+            }
+        }
+    }
+}

@@ -15,4 +15,12 @@ dependencies {
     implementation(Ktor.client.cio)
     implementation(Ktor.client.logging)
     implementation(Ktor.client.serialization)
+
+    implementation(Ktor.server.core)
+
+    implementation("net.andreinc:mapneat:_")
+    implementation("org.apache.logging.log4j:log4j-to-slf4j:_")
+    implementation("org.apache.logging.log4j:log4j-core:_")
+
+    implementation("com.algolia:algoliasearch-client-kotlin:_")
 }

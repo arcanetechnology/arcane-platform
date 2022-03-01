@@ -1,4 +1,4 @@
-package no.arcane.platform.utils.graphql
+package no.arcane.platform.utils.config
 
 import java.io.BufferedReader
 import java.io.FileNotFoundException

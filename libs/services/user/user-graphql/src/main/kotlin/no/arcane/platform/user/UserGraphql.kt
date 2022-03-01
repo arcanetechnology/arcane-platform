@@ -5,10 +5,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import no.arcane.platform.user.UserService.fetchUser
 import no.arcane.platform.utils.graphql.GraphqlModulesRegistry
-import no.arcane.platform.utils.graphql.readResource
+import no.arcane.platform.utils.config.readResource
 
 fun Application.module() {
-    GraphqlModulesRegistry.registerSchema(readResource("/user.graphqls"))
+    GraphqlModulesRegistry.registerSchema(readResource("/user.graphqls").replace(Regex("\\s+"), " "))
     GraphqlModulesRegistry.registerDataFetcher("user") { env ->
         val userId = UserId(env.graphQlContext["userId"])
         async { userId.fetchUser() }.asCompletableFuture()

@@ -25,7 +25,6 @@ echo "$TMP_DIR"
 TMP_FILE="$TMP_DIR/arcane-platform-test-api.yaml"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-#### since GCP_BACKEND_URL has '/', using '~' as delimiter for sed.
 sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-test-api.yaml >"$TMP_FILE"
 
 gcloud endpoints services deploy "$TMP_FILE"

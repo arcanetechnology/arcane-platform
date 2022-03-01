@@ -1,8 +1,8 @@
 swagger: "2.0"
 
 info:
-  title: Arcane Platform Acceptance Test API
-  description: "Arcane Platform Acceptance Test API"
+  title: Arcane Platform API - Test
+  description: "Arcane Platform API for Acceptance Tests"
   version: "1.0.0"
 
 host: test.api.arcane.no
@@ -181,6 +181,28 @@ paths:
         - firebase: [ ]
 
 
+  "/contentfulEvents":
+    post:
+      description: Webhook callbacks on Contentful events
+      consumes:
+        - application/vnd.contentful.management.v1+json
+      produces:
+        - application/json
+      operationId: "reportContentfulEvent"
+      parameters:
+        - name: "request"
+          in: body
+          schema:
+            type: object
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: object
+      security:
+        - api_key: [ ]
+
+
 definitions:
 
   User:
@@ -282,3 +304,7 @@ securityDefinitions:
     x-google-issuer: "oauth2-provider-emulator"
     x-google-jwks_uri: "http://oauth2-provider-emulator:8080/auth/keys"
     x-google-audiences: "acceptance-tests"
+  api_key:
+    type: apiKey
+    name: "x-api-key"
+    in: header

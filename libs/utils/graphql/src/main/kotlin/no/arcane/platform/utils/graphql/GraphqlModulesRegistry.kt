@@ -7,6 +7,7 @@ import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.SchemaPrinter
+import no.arcane.platform.utils.config.readResource
 
 object GraphqlModulesRegistry {
 
@@ -24,7 +25,7 @@ object GraphqlModulesRegistry {
 
     private fun getGraphqlSchema(): GraphQLSchema {
         val schemaParser = SchemaParser()
-        val typeDefinitionRegistry = schemaParser.parse(readResource("/schema.graphqls"))
+        val typeDefinitionRegistry = schemaParser.parse(readResource("/schema.graphqls").replace(Regex("\\s+"), " "))
 
         // multiple schema files
         stringSchemaLists.forEach { stringSchema ->

@@ -1,0 +1,37 @@
+query($skip:Int!,$limit:Int!) {
+    pageCollection (order:[sys_firstPublishedAt_ASC], limit:$limit, skip:$skip) {
+        items {
+            title
+            slug
+            content {
+                ... on PageWeeklyUpdate {
+                    subtitle
+                    content {
+                        json
+                    }
+                    image {
+                        fileName
+                        title
+                        description
+                        url
+                    }
+                    tagsCollection {
+                        items {
+                            name
+                        }
+                    }
+                    authorsCollection {
+                        items {
+                            name
+                        }
+                    }
+                    publishDate
+                }
+            }
+            sys {
+                id
+                publishedAt
+            }
+        }
+    }
+}

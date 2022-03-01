@@ -7,11 +7,11 @@ import kotlinx.coroutines.future.asCompletableFuture
 import no.arcane.platform.tnc.TncService.getTnc
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.graphql.GraphqlModulesRegistry
-import no.arcane.platform.utils.graphql.readResource
+import no.arcane.platform.utils.config.readResource
 
 fun Application.module() {
 
-    GraphqlModulesRegistry.registerSchema(readResource("/tnc.graphqls"))
+    GraphqlModulesRegistry.registerSchema(readResource("/tnc.graphqls").replace(Regex("\\s+"), " "))
     GraphqlModulesRegistry.registerDataFetcher("termsAndConditions") { env ->
         val userId = UserId(env.graphQlContext["userId"])
         val tncIds: List<TncId> = (env.arguments["tncIds"] as? List<String> ?: emptyList()).map(::TncId)

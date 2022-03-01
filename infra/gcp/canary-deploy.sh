@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-#  Script to deploy arcane-platform-app to GCP cloud run.
+#  Script to canary deploy arcane-platform-app to GCP cloud run.
 #
 
 if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINFO[0]} -lt 4 ]; then
@@ -27,7 +27,7 @@ echo "Building and pushing docker image: ${backendCloudRun["image"]}"
 docker image build --platform linux/amd64 -t "${backendCloudRun["image"]}" apps/arcane-platform-app
 docker image push "${backendCloudRun["image"]}"
 
-echo "Deploying to cloud run: ${backendCloudRun["image"]}"
+echo "Canary deploying to cloud run: ${backendCloudRun["image"]}"
 gcloud run deploy "${backendCloudRun["service"]}" \
   --region europe-west1 \
   --image "${backendCloudRun["image"]}" \
@@ -39,4 +39,7 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --service-account "${backendCloudRun["service_account"]}" \
   --no-allow-unauthenticated \
   --port=8080 \
+  --tag canary \
+  --no-traffic \
   --platform=managed
+

@@ -1,4 +1,4 @@
-name: Deploy to GCP
+name: Canary deploy to GCP
 on:
   workflow_dispatch:
   push:
@@ -34,7 +34,7 @@ jobs:
         run: docker image build -t "$IMAGE":${GITHUB_SHA::12} apps/arcane-platform-app
       - name: Push docker image
         run: docker image push "$IMAGE":${GITHUB_SHA::12}
-      - name: Deploy to GCP Cloud Run
+      - name: Canary deploy to GCP Cloud Run
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         run: |-
@@ -50,4 +50,6 @@ jobs:
             --service-account arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
             --no-allow-unauthenticated \
             --port=8080 \
+            --tag canary \
+            --no-traffic \
             --platform=managed

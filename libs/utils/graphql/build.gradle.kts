@@ -9,6 +9,8 @@ dependencies {
     implementation(project(":libs:services:identity"))
     implementation(project(":libs:utils:logging"))
 
+    api(project(":libs:utils:config"))
+
     api("com.graphql-java:graphql-java:_")
 
     api(Ktor.server.core)
