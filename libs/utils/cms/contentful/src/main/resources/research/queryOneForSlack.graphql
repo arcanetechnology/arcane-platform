@@ -1,0 +1,43 @@
+query($pageId:String!) {
+    pageCollection (where: { sys: { id: $pageId } }, limit:1) {
+        items {
+            title
+            slug
+            content {
+                ... on PageWeeklyUpdate {
+                    subtitle
+                    image {
+                        fileName
+                        title
+                        url
+                    }
+                    socialMediaJpegOrPng {
+                        fileName
+                        title
+                        url
+                    }
+                    tagsCollection {
+                        items {
+                            name
+                        }
+                    }
+                    authorsCollection {
+                        items {
+                            name
+                            image {
+                                fileName
+                                title
+                                url
+                            }
+                        }
+                    }
+                    publishDate
+                }
+            }
+            sys {
+                publishedAt
+                firstPublishedAt
+            }
+        }
+    }
+}

@@ -4,8 +4,8 @@ import io.ktor.application.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import no.arcane.platform.user.UserService.fetchUser
-import no.arcane.platform.utils.graphql.GraphqlModulesRegistry
 import no.arcane.platform.utils.config.readResource
+import no.arcane.platform.utils.graphql.GraphqlModulesRegistry
 
 fun Application.module() {
     GraphqlModulesRegistry.registerSchema(readResource("/user.graphqls").replace(Regex("\\s+"), " "))

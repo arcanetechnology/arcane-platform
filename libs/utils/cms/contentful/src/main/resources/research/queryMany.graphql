@@ -23,6 +23,12 @@ query($skip:Int!,$limit:Int!) {
                     authorsCollection {
                         items {
                             name
+                            image {
+                                fileName
+                                title
+                                description
+                                url
+                            }
                         }
                     }
                     publishDate

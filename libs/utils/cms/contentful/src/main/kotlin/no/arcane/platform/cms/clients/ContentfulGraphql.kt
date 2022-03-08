@@ -8,6 +8,8 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
@@ -38,7 +40,7 @@ class ContentfulGraphql(
             })
         }
         install(Logging) {
-            level = LogLevel.INFO
+            level = LogLevel.NONE
         }
         defaultRequest {
             url("https://graphql.contentful.com/content/v1/spaces/$spaceId")
@@ -64,8 +66,10 @@ class ContentfulGraphql(
                 }
             )
         }
-        val response: String = client.post {
-            body = graphqlRequest
+        val response: String = withContext(Dispatchers.IO) {
+            client.post {
+                body = graphqlRequest
+            }
         }
 
         val jsonObject = Json.parseToJsonElement(response).jsonObject

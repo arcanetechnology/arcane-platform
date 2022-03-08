@@ -33,15 +33,13 @@ fun Application.module() {
         }
     }
     routing {
-        get("/ping") {
-            log.info(
-                call.request.headers.entries()
-                    .filterNot { (name, _) -> name.equals("Authorization", ignoreCase = true) }
-                    .joinToString { (name, values) ->
-                        "$name: $values"
-                    }
-            )
-            call.respondText("pong")
+        route("/ping") {
+            get {
+                log(log)
+            }
+            post {
+                log(log)
+            }
         }
         get("/utc") {
             call.respondText(Instant.now().truncatedTo(ChronoUnit.SECONDS).toString())

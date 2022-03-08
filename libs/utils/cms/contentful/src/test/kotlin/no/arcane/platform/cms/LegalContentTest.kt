@@ -1,8 +1,6 @@
 package no.arcane.platform.cms
 
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.Enabled
-import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
 
 class LegalContentTest : StringSpec({

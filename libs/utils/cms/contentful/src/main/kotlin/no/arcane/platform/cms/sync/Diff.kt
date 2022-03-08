@@ -4,6 +4,7 @@ import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
 import kotlinx.coroutines.runBlocking
+import no.arcane.platform.cms.space.research.ResearchPagesMetadata
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
 

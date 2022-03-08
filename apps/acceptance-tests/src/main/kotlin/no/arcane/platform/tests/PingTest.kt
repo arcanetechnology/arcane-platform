@@ -17,6 +17,13 @@ class PingTest : StringSpec({
         response shouldBe "pong"
     }
 
+    "POST /ping" {
+        val response: String = apiClient.post {
+            url(path = "ping")
+        }
+        response shouldBe "pong"
+    }
+
     "GET /utc" {
         val response: String = apiClient.get {
             url(path = "utc")

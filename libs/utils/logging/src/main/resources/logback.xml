@@ -1,5 +1,6 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="no.arcane.platform.utils.logging.NotifySlackFilter" />
         <encoder>
             <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %mdc - %msg%n</pattern>
         </encoder>

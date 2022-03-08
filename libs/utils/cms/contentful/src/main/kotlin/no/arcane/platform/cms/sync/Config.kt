@@ -1,13 +1,10 @@
 package no.arcane.platform.cms.sync
 
+import no.arcane.platform.cms.ContentfulConfig
+
 data class ContentfulAlgoliaSyncConfig(
     val contentful: ContentfulConfig,
     val algolia: AlgoliaConfig,
-)
-
-data class ContentfulConfig(
-    val spaceId: String,
-    val token: String,
 )
 
 data class AlgoliaConfig(

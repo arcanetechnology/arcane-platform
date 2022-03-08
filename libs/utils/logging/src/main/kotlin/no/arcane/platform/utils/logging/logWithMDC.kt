@@ -9,7 +9,7 @@ suspend fun <T> logWithMDC(
     block: suspend () -> T
 ): T = withContext(
     MDCContext(
-        MDC.getCopyOfContextMap() + pair.toMap()
+        (MDC.getCopyOfContextMap() ?: emptyMap<String, String>()) + pair.toMap()
     )
 ) {
     block()

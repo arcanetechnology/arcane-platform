@@ -23,6 +23,12 @@ query($pageId:String!) {
                     authorsCollection {
                         items {
                             name
+                            image {
+                                fileName
+                                title
+                                description
+                                url
+                            }
                         }
                     }
                     publishDate

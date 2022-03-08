@@ -26,6 +26,14 @@ paths:
           description: "pong"
           schema:
             type: string
+    post:
+      description: "Ping endpoint for checking uptime and connectivity"
+      operationId: "postPing"
+      responses:
+        200:
+          description: "pong"
+          schema:
+            type: string
   "/utc":
     get:
       description: "utc endpoint for checking server time"

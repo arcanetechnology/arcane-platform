@@ -9,6 +9,8 @@ import com.algolia.search.serialize.KeyObjectID
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import no.arcane.platform.cms.space.research.ResearchPage
+import no.arcane.platform.cms.space.research.ResearchPagesV2
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
 

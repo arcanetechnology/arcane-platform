@@ -21,7 +21,7 @@ Redirect partial traffic to canary
 * full traffic via canary.api.arcane.no (Canary ESPv2)
 
 ```shell
-gcloud run services update-traffic arcane-platform --to-revisions=arcane-platform-<version>=10
+gcloud run services update-traffic arcane-platform --to-tags=canary=10
 ```
 
 Redirect full traffic to latest

@@ -60,6 +60,9 @@ include(
 
     "libs:utils:logging",
     "libs:utils:logging:gcp-logging",
+    "libs:utils:logging:marker-api",
+    "libs:utils:logging:slack-logging",
 
     "libs:utils:metrics",
+    "libs:utils:slack",
 )
