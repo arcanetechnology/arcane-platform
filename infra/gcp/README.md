@@ -113,6 +113,17 @@ gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
   --role roles/monitoring.metricWriter
 ```
 
+Assign role to service accounts so that it can report traces
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/cloudtrace.agent
+
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/cloudtrace.agent
+```
+
 #### For arcane-platform-gateway
 Assign role to service account so that it can report Endpoint stats
 ```shell

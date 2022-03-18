@@ -1,5 +1,5 @@
-query($skip:Int!,$limit:Int!) {
-    pageCollection (order:[sys_firstPublishedAt_ASC], limit:$limit, skip:$skip) {
+query {
+    pageCollection(limit: 523) {
         items {
             title
             slug
@@ -15,12 +15,12 @@ query($skip:Int!,$limit:Int!) {
                         description
                         url
                     }
-                    tagsCollection {
+                    tagsCollection(limit: 10) {
                         items {
                             name
                         }
                     }
-                    authorsCollection {
+                    authorsCollection(limit: 4) {
                         items {
                             name
                             image {

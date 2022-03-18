@@ -1,0 +1,30 @@
+query($reportId:String!) {
+    reportCollection (where: { sys: { id: $reportId } }, limit:1) {
+        items {
+            title
+            subtitle
+            pdf {
+                fileName
+                title
+                description
+                url
+            }
+            image {
+                fileName
+                title
+                description
+                url
+            }
+            publishDate
+            tagsCollection {
+                items {
+                    name
+                }
+            }
+            sys {
+                id
+                publishedAt
+            }
+        }
+    }
+}

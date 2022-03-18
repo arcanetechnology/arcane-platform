@@ -12,6 +12,7 @@ dependencies {
 
     runtimeOnly(project(":libs:utils:ktor"))
     runtimeOnly(Ktor.server.netty)
+    runtimeOnly(project(":libs:utils:logging:slack-logging"))
     runtimeOnly(project(":libs:utils:logging:gcp-logging"))
 }
 

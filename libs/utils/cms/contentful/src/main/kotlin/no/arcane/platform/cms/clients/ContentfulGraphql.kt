@@ -11,7 +11,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -20,14 +19,13 @@ import kotlinx.serialization.json.jsonObject
 import net.andreinc.mapneat.dsl.MapNeat
 import net.andreinc.mapneat.dsl.json
 import no.arcane.platform.cms.utils.forEachInArrayAt
-import no.arcane.platform.cms.utils.getPlainText
 import no.arcane.platform.utils.logging.getLogger
-import java.util.*
 
 class ContentfulGraphql(
     spaceId: String,
     token: String,
-    private val query: String,
+    private val type: String,
+    private val transform: MapNeat.() -> Unit,
 ) {
 
     private val logger by getLogger()
@@ -50,6 +48,7 @@ class ContentfulGraphql(
     }
 
     private suspend fun fetchResponse(
+        query: String,
         vararg variables: Pair<String, Any>
     ): String? {
         val graphqlRequest = buildJsonObject {
@@ -82,62 +81,17 @@ class ContentfulGraphql(
         return response
     }
 
-    inner class SimpleClient(
-        private val transformations: Map<String, Transformation>
-    ) {
-        suspend fun fetch(vararg variables: Pair<String, Any>): List<JsonObject> {
-            val response: String = fetchResponse(*variables) ?: return emptyList()
-            val transformed = json(response) {
-                transformations.forEach { (key, transformation) ->
-                    if (transformation.isRichText) {
-                        key *= {
-                            expression = transformation.expression
-                            processor = { richTextMapList ->
-                                (richTextMapList as LinkedList<*>)
-                                    .map { richTextMap ->
-                                        getPlainText(richTextMap as LinkedHashMap<String, Any>)
-                                    }
-                            }
-                        }
-                    } else {
-                        key *= transformation.expression
-                    }
-                }
-            }
-            val flatObject = Json.parseToJsonElement(transformed.getString()).jsonObject
-            val size = flatObject[flatObject.keys.first()]!!.jsonArray.size
-            return (0 until size).map { index ->
-                JsonObject(
-                    flatObject.keys.associateWith { key ->
-                        flatObject[key]!!.jsonArray.getOrNull(index) ?: JsonNull
-                    }
-                )
-            }
+    suspend fun fetch(
+        query: String,
+        vararg variables: Pair<String, Any>
+    ): List<JsonObject> {
+        val response: String = fetchResponse(query, *variables) ?: return emptyList()
+        val transformed = json(response) {
+            "objects" /= forEachInArrayAt("data.${type}Collection.items", transform)
         }
-    }
-
-    inner class AdvancedClient(
-        private val arrayPath: String,
-        private val transform: MapNeat.() -> Unit,
-    ) {
-        suspend fun fetch(vararg variables: Pair<String, Any>): List<JsonObject> {
-            val response: String = fetchResponse(*variables) ?: return emptyList()
-            val transformed = json(response) {
-                "objects" /= forEachInArrayAt(arrayPath, transform)
-            }
-            return Json.parseToJsonElement(transformed.getString())
-                .jsonObject["objects"]!!
-                .jsonArray
-                .map { it.jsonObject }
-        }
+        return Json.parseToJsonElement(transformed.getString())
+            .jsonObject["objects"]!!
+            .jsonArray
+            .map { it.jsonObject }
     }
 }
-
-data class Transformation(
-    val expression: String,
-    val isRichText: Boolean = false
-)
-
-fun String.text() = Transformation(this)
-fun String.richText() = Transformation(this, true)
-

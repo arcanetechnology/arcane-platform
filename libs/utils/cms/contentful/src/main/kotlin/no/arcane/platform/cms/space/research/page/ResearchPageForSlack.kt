@@ -1,11 +1,11 @@
-package no.arcane.platform.cms.space.research
+package no.arcane.platform.cms.space.research.page
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import no.arcane.platform.cms.clients.ContentfulGraphql
 import no.arcane.platform.cms.utils.optional
-import no.arcane.platform.utils.config.readResource
+import no.arcane.platform.utils.config.lazyResourceWithoutWhitespace
 import no.arcane.platform.utils.logging.getLogger
 
 class ResearchPageForSlack(
@@ -20,9 +20,7 @@ class ResearchPageForSlack(
         ContentfulGraphql(
             spaceId = spaceId,
             token = token,
-            query = readResource("/research/queryOneForSlack.graphql").replace(Regex("\\s+"), " "),
-        ).AdvancedClient(
-            arrayPath = "data.pageCollection.items"
+            type = "page"
         ) {
             "title" *= "title"
             "slug" *= "slug"
@@ -31,13 +29,14 @@ class ResearchPageForSlack(
             optional {
                 "subtitle" *= "content.subtitle"
                 "image" *= "content.image"
-                "socialMediaImage" *= "content.socialMediaJpegOrPng"
                 "tags" *= "content.tagsCollection.items[*].name"
                 "authors" *= "content.authorsCollection.items[*]"
                 "publishDate" *= "content.publishDate"
             }
         }
     }
+
+    private val query by lazyResourceWithoutWhitespace("/research/page/queryOneForSlack.graphql")
 
     private val json by lazy {
         Json {
@@ -47,7 +46,7 @@ class ResearchPageForSlack(
 
     suspend fun fetch(pageId: String): Page? {
         return try {
-            val jsonObject = client.fetch("pageId" to pageId).singleOrNull() ?: return null
+            val jsonObject = client.fetch(query, "pageId" to pageId).singleOrNull() ?: return null
             json.decodeFromJsonElement(jsonObject)
         } catch (e: Exception) {
             logger.error("Decoding page failed", e)
@@ -62,7 +61,6 @@ data class Page(
     val slug: String,
     val subtitle: String,
     val image: Image,
-    val socialMediaImage: Image?,
     val tags: List<String>,
     val authors: List<Author>,
     val publishDate: String,

@@ -1,0 +1,16 @@
+query {
+    pageWeeklyUpdateCollection (limit: 5500) {
+        items {
+            linkedFrom {
+                pageCollection (limit: 1) {
+                    items {
+                        sys {
+                            id
+                            publishedAt
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

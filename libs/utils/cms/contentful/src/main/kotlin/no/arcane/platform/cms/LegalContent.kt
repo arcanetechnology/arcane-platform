@@ -3,9 +3,8 @@ package no.arcane.platform.cms
 import kotlinx.serialization.json.jsonPrimitive
 import no.arcane.platform.cms.clients.ContentfulClient
 import no.arcane.platform.cms.clients.ContentfulGraphql
-import no.arcane.platform.cms.clients.text
+import no.arcane.platform.utils.config.lazyResourceWithoutWhitespace
 import no.arcane.platform.utils.config.loadConfig
-import no.arcane.platform.utils.config.readResource
 import no.arcane.platform.utils.logging.getLogger
 
 object LegalContent {
@@ -18,17 +17,17 @@ object LegalContent {
         ContentfulGraphql(
             spaceId = contentfulConfig.spaceId,
             token = contentfulConfig.token,
-            query = readResource("/legal/query.graphql").replace(Regex("\\s+"), " "),
-        ).SimpleClient(
-            transformations = mapOf(
-                "titleOfLegalText" to "$.data.legalTextCollection.items[*].titleOfLegalText".text(),
-                "publishedVersion" to "$.data.legalTextCollection.items[*].sys.publishedVersion".text(),
-                "spaceId" to "$.data.legalTextCollection.items[*].sys.spaceId".text(),
-                "environmentId" to "$.data.legalTextCollection.items[*].sys.environmentId".text(),
-                "entryId" to "$.data.legalTextCollection.items[*].sys.id".text(),
-            )
-        )
+            type = "legalText"
+        ) {
+            "titleOfLegalText" *= "titleOfLegalText"
+            "publishedVersion" *= "sys.publishedVersion"
+            "spaceId" *= "sys.spaceId"
+            "environmentId" *= "sys.environmentId"
+            "entryId" *= "sys.id"
+        }
     }
+
+    private val queryOne by lazyResourceWithoutWhitespace("/legal/legalText/queryOne.graphql")
 
     private val client by lazy {
         ContentfulClient(
@@ -46,7 +45,7 @@ object LegalContent {
     }
 
     suspend fun fetchLegalEntryMetadata(id: String): LegalEntryMetadata? {
-        val jsonObject = graphqlClient.fetch("id" to id).singleOrNull() ?: return null
+        val jsonObject = graphqlClient.fetch(queryOne, "id" to id).singleOrNull() ?: return null
         return LegalEntryMetadata(
             id = jsonObject["titleOfLegalText"]!!.jsonPrimitive.content,
             version = jsonObject["publishedVersion"]!!.jsonPrimitive.content,

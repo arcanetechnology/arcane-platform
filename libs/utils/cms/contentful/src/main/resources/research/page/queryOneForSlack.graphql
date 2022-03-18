@@ -11,11 +11,6 @@ query($pageId:String!) {
                         title
                         url
                     }
-                    socialMediaJpegOrPng {
-                        fileName
-                        title
-                        url
-                    }
                     tagsCollection {
                         items {
                             name

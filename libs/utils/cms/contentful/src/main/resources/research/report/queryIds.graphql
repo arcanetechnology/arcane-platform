@@ -1,5 +1,5 @@
 query {
-    pageCollection (limit:300) {
+    reportCollection {
         items {
             sys {
                 id

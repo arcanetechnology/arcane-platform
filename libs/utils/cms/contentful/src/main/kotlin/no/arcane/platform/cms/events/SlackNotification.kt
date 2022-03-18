@@ -2,8 +2,8 @@ package no.arcane.platform.cms.events
 
 import kotlinx.coroutines.runBlocking
 import no.arcane.platform.cms.ContentfulConfig
-import no.arcane.platform.cms.space.research.Author
-import no.arcane.platform.cms.space.research.ResearchPageForSlack
+import no.arcane.platform.cms.space.research.page.Author
+import no.arcane.platform.cms.space.research.page.ResearchPageForSlack
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.slack.ChannelId
 import no.arcane.platform.utils.slack.ChannelName
@@ -11,6 +11,12 @@ import no.arcane.platform.utils.slack.SlackClient
 import java.time.ZonedDateTime
 
 object SlackNotification {
+
+    init {
+        EventHub.subscribe(eventPattern = EventPattern(Resource.page, Action.publish)) { _, pageId ->
+            notifySlack(pageId = pageId)
+        }
+    }
 
     private val contentfulConfig by loadConfig<ContentfulConfig>(
         "contentful",
@@ -72,11 +78,15 @@ object SlackNotification {
                 }
             }
             // image
-            val image = page.socialMediaImage ?: page.image
             image {
-                title(image.title)
-                imageUrl(image.url)
-                altText(image.fileName)
+                val nonSvgUrl = page.image.url + if (page.image.url.endsWith(".svg", ignoreCase = true)) {
+                    "?fm=jpg"
+                } else {
+                    ""
+                }
+                title(page.image.title)
+                imageUrl(nonSvgUrl)
+                altText(page.image.fileName)
             }
             section {
                 plainText(subTitle)

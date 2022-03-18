@@ -9,8 +9,12 @@ import com.algolia.search.serialize.KeyObjectID
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import no.arcane.platform.cms.space.research.ResearchPage
-import no.arcane.platform.cms.space.research.ResearchPagesV2
+import no.arcane.platform.cms.content.ContentFactory
+import no.arcane.platform.cms.events.Action
+import no.arcane.platform.cms.events.EventHub
+import no.arcane.platform.cms.events.EventPattern
+import no.arcane.platform.cms.events.EventType
+import no.arcane.platform.cms.events.Resource
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
 
@@ -20,36 +24,26 @@ class ContentfulToAlgolia(
 
     private val logger by getLogger()
 
-    private val syncConfig by loadConfig<ContentfulAlgoliaSyncConfig>(
+    private val algoliaConfig by loadConfig<AlgoliaConfig>(
         "contentful",
-        "contentfulAlgoliaSync.$syncId"
+        "contentfulAlgoliaSync.$syncId.algolia"
     )
 
     private val algoliaClient by lazy {
-        AlgoliaClient(
-            ApplicationID(syncConfig.algolia.applicationId),
-            APIKey(syncConfig.algolia.apiKey),
-            IndexName("articles")
-        )
+        with(algoliaConfig) {
+            AlgoliaClient(
+                ApplicationID(applicationId),
+                APIKey(apiKey),
+                IndexName(indexName)
+            )
+        }
     }
 
-    private val researchPage by lazy {
-        ResearchPage(
-            spaceId = syncConfig.contentful.spaceId,
-            token = syncConfig.contentful.token,
-        )
-    }
-
-    private val researchPages by lazy {
-        ResearchPagesV2(
-            spaceId = syncConfig.contentful.spaceId,
-            token = syncConfig.contentful.token,
-        )
-    }
+    private val content by lazy { ContentFactory.getContent(syncId) }
 
     suspend fun upsert(entryId: String) {
-        val record = researchPage.fetch(pageId = entryId) ?: return
-        logger.warn("Exporting record with objectID: ${record.objectID} to algolia")
+        val record = content.fetch(entityId = entryId) ?: return
+        logger.info("Exporting record with objectID: ${record.objectID} to algolia")
         algoliaClient.upsert(
             objectID = record.objectID,
             record = record
@@ -57,7 +51,7 @@ class ContentfulToAlgolia(
     }
 
     suspend fun upsertAll() {
-        val records = researchPages
+        val records = content
             .fetchAll()
             .map {
                 it.objectID to it
@@ -73,6 +67,35 @@ class ContentfulToAlgolia(
     }
 
     private val JsonObject.objectID get() = getValue(KeyObjectID).jsonPrimitive.content.toObjectID()
+
+    companion object {
+        private val logger by getLogger()
+
+        init {
+            EventHub.subscribe(eventPattern = EventPattern()) { eventType: EventType, entityId: String ->
+                val syncId = when (eventType.resource) {
+                    Resource.page -> "researchArticles"
+                    Resource.report -> "researchReports"
+                }
+                val entityContentType = eventType.resource.name
+                val contentfulToAlgolia = ContentfulToAlgolia(syncId)
+                when (eventType.action) {
+                    Action.publish -> {
+                        try {
+                            logger.info("Exporting $entityContentType: $entityId from contentful to algolia")
+                            contentfulToAlgolia.upsert(entityId)
+                        } catch (e: Exception) {
+                            logger.error("Exporting $entityContentType: $entityId from contentful to algolia failed", e)
+                        }
+                    }
+                    Action.unpublish -> {
+                        logger.warn("Removing $entityContentType: $entityId from algolia")
+                        contentfulToAlgolia.delete(entityId)
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun main() {
@@ -80,5 +103,9 @@ fun main() {
 //        ContentfulToAlgolia("researchArticles").upsertAll()
 //        ContentfulToAlgolia("researchArticles").upsert("")
 //        ContentfulToAlgolia("researchArticles").delete("")
+
+//        ContentfulToAlgolia("researchReports").upsertAll()
+//        ContentfulToAlgolia("researchReports").upsert("")
+//        ContentfulToAlgolia("researchReports").delete("")
     }
 }

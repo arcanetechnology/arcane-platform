@@ -10,3 +10,11 @@ fun <R: Any> R.readResource(
     val inputSystem = this::class.java.getResourceAsStream(name) ?: throw FileNotFoundException("resource: $name")
     return BufferedReader(InputStreamReader(inputSystem)).readText()
 }
+
+fun <R: Any> R.readResourceWithoutWhitespace(
+    name: String
+): String = readResource(name).replace(Regex("\\s+"), " ")
+
+fun <R: Any> R.lazyResourceWithoutWhitespace(name: String): Lazy<String> = lazy {
+    readResourceWithoutWhitespace(name)
+}

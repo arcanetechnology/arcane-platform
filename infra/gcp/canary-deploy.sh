@@ -43,4 +43,3 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --tag canary \
   --no-traffic \
   --platform=managed
-

@@ -207,8 +207,6 @@ paths:
           description: "Success"
           schema:
             type: object
-      security:
-        - api_key: [ ]
 
 
 definitions:

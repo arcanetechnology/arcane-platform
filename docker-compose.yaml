@@ -3,7 +3,7 @@ version: "3.8"
 services:
   firestore-emulator:
     container_name: firestore-emulator
-    image: google/cloud-sdk:376.0.0-emulators
+    image: google/cloud-sdk:378.0.0-emulators
     expose:
       - 5173
     ports:
@@ -33,6 +33,8 @@ services:
       - RESEARCH_SPACE_TOKEN=${RESEARCH_SPACE_TOKEN}
       - ALGOLIA_APP_ID=${ALGOLIA_APP_ID}
       - ALGOLIA_API_KEY=${ALGOLIA_API_KEY}
+      - SLACK_ALERTS_CHANNEL_ID=${SLACK_ALERTS_CHANNEL_ID}
+      - SLACK_TOKEN=${SLACK_TOKEN}
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     expose:
@@ -70,6 +72,8 @@ services:
       - PLATFORM_TNC_VERSION=${PLATFORM_TNC_VERSION}
       - PLATFORM_TNC_ENV_ID=${PLATFORM_TNC_ENV_ID}
       - PLATFORM_TNC_ENTRY_ID=${PLATFORM_TNC_ENTRY_ID}
+      - TEST_PAGE_ID=${TEST_PAGE_ID}
+      - TEST_REPORT_ID=${TEST_REPORT_ID}
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     depends_on:

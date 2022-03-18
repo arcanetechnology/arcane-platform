@@ -1,12 +1,15 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="no.arcane.platform.utils.logging.NotifySlackFilter" />
         <encoder>
             <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %mdc - %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="NOP" class="ch.qos.logback.core.helpers.NOPAppender">
+        <filter class="no.arcane.platform.utils.logging.NotifySlackFilter" />
+    </appender>
     <logger name="net.andreinc.mapneat" level="WARN" />
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="NOP"/>
     </root>
 </configuration>
