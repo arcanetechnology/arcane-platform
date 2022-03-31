@@ -32,7 +32,7 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --region europe-west1 \
   --image "${backendCloudRun["image"]}" \
   --cpu=1 \
-  --memory=512Mi \
+  --memory=1Gi \
   --min-instances=1 \
   --max-instances=1 \
   --concurrency=1000 \

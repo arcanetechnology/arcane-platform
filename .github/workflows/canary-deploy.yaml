@@ -42,7 +42,7 @@ jobs:
             --region europe-west1 \
             --image "${IMAGE}":${GITHUB_SHA::12} \
             --cpu=1 \
-            --memory=512Mi \
+            --memory=1Gi \
             --min-instances=1 \
             --max-instances=1 \
             --concurrency=1000 \
