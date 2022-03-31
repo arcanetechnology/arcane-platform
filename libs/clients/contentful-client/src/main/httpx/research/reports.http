@@ -1,3 +1,9 @@
+### Get all reports
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
 query {
     reportCollection {
         items {

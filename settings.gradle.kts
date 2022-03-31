@@ -21,6 +21,7 @@ include(
     // libs
     // libs / clients
     "libs:clients:arcane-platform-client",
+    "libs:clients:contentful-client",
 
     // libs / services
 

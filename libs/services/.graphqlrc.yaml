@@ -1,0 +1,4 @@
+schema:
+  - ../utils/graphql/src/main/resources/schema.graphqls
+  - user/user-graphql/src/main/resources/user.graphqls
+  - terms-and-conditions/terms-and-conditions-graphql/src/main/resources/tnc.graphqls

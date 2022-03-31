@@ -2,7 +2,11 @@ query($reportId:String!) {
     reportCollection (where: { sys: { id: $reportId } }, limit:1) {
         items {
             title
+            slug
             subtitle
+            description {
+                json
+            }
             pdf {
                 fileName
                 title
@@ -16,9 +20,21 @@ query($reportId:String!) {
                 url
             }
             publishDate
-            tagsCollection {
+            tagsCollection(limit: 10) {
                 items {
                     name
+                }
+            }
+            sponsorsCollection(limit: 10) {
+                items {
+                    name
+                    logo
+                    {
+                        fileName
+                        title
+                        description
+                        url
+                    }
                 }
             }
             sys {

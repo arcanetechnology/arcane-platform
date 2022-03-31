@@ -4,3 +4,5 @@ build
 
 .env*
 !.env.template
+
+http-client.private.env.json

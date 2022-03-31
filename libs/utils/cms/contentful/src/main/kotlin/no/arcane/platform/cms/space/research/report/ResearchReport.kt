@@ -5,6 +5,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import no.arcane.platform.cms.clients.ContentfulGraphql
 import no.arcane.platform.cms.content.Content
+import no.arcane.platform.cms.utils.richToPlainText
 import no.arcane.platform.utils.config.lazyResourceWithoutWhitespace
 
 class ResearchReport(
@@ -21,11 +22,14 @@ class ResearchReport(
         ) {
             "objectID" *= "sys.id"
             "title" *= "title"
+            "slug" *= "slug"
             "subtitle" *= "subtitle"
+            "description" *= { richToPlainText("description.json") }
             "pdf" *= "pdf"
             "image" *= "image"
             "publishDate" *= "publishDate"
             "tags" *= "tagsCollection.items[*].name"
+            "sponsors" *= "sponsorsCollection.items[*]"
             "publishedAt" *= "sys.publishedAt"
         }
     }

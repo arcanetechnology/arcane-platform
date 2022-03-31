@@ -1,0 +1,7 @@
+schema: schema.graphqls
+extensions:
+  endpoints:
+    prod:
+      url: https://graphql.contentful.com/content/v1/spaces/${env:RESEARCH_SPACE_ID}
+      headers:
+        Authorization: Bearer ${env:RESEARCH_SPACE_TOKEN}

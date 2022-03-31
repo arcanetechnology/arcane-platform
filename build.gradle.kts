@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm") apply false
     kotlin("plugin.serialization") apply false
     id("co.uzzu.dotenv.gradle")
+    id("com.apollographql.apollo3") apply false
 }
 
 allprojects {

@@ -1,0 +1,71 @@
+### Get article and its parent page
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    pageWeeklyUpdateCollection (limit: 1) {
+        items {
+            subtitle
+            publishDate
+            sys {
+                id
+            }
+            linkedFrom {
+                pageCollection {
+                    items {
+                        title
+                        slug
+                        sys {
+                            id
+                            publishedAt
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+### Get latest articles and its parent page
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    pageWeeklyUpdateCollection (order:[publishDate_DESC], limit: 1) {
+        items {
+            linkedFrom {
+                pageCollection {
+                    items {
+                        title
+                        sys {
+                            publishedAt
+                        }
+                    }
+                }
+            }
+            subtitle
+            image {
+                url
+            }
+            tagsCollection(limit: 10) {
+                items {
+                    name
+                }
+            }
+            authorsCollection(limit: 4) {
+                items {
+                    name
+                    image {
+                        url
+                    }
+                }
+            }
+            publishDate
+        }
+    }
+}
+

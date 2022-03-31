@@ -1,0 +1,130 @@
+### Get limit 5 research pages with child articles with its rich text content and metadata
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    pageCollection (order:[sys_firstPublishedAt_ASC],limit: 5) {
+        items {
+            title
+            slug
+            sys {
+                id
+                publishedAt
+            }
+            content {
+                ... on PageWeeklyUpdate {
+                    subtitle
+                    content {
+                        json
+                    }
+                    image {
+                        fileName
+                        title
+                        description
+                        url
+                    }
+                    tagsCollection {
+                        items {
+                            name
+                        }
+                    }
+                    authorsCollection {
+                        items {
+                            name
+                            image {
+                                fileName
+                                title
+                                description
+                                url
+                            }
+                        }
+                    }
+                    publishDate
+                }
+            }
+        }
+    }
+}
+
+### Get limit 5 research pages with child articles without its rich text content
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    pageCollection (order:[sys_firstPublishedAt_ASC],limit: 10) {
+        items {
+            title
+            slug
+            sys {
+                id
+                publishedAt
+            }
+            content {
+                ... on PageWeeklyUpdate {
+                    subtitle
+                    image {
+                        fileName
+                        title
+                        description
+                        url
+                    }
+                    tagsCollection {
+                        items {
+                            name
+                        }
+                    }
+                    authorsCollection {
+                        items {
+                            name
+                            image {
+                                fileName
+                                title
+                                description
+                                url
+                            }
+                        }
+                    }
+                    publishDate
+                }
+            }
+        }
+    }
+}
+
+### Get all page ids along with first publishedAt
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    pageCollection (limit: 300) {
+        items {
+            sys {
+                id
+                publishedAt
+            }
+        }
+    }
+}
+
+### Get all page slugs along with first publishedAt for sitemap
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    pageCollection (limit: 11000) {
+        items {
+            slug
+            sys {
+                publishedAt
+            }
+        }
+    }
+}

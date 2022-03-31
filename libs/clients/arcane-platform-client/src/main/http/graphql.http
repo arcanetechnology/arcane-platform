@@ -1,9 +1,0 @@
-### get user and array of T&C
-
-POST https://api.arcane.no/graphql
-Authorization: Bearer
-Content-Type: application/json
-
-{
-  "query": "{ user { userId analyticsId } termsAndConditions(tncIds: [\"platform.termsAndConditions\", \"platform.privacyPolicy\"]) { tncId version accepted spaceId entryId fieldId timestamp } }"
-}

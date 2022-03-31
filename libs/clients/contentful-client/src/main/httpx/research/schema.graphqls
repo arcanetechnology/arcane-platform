@@ -1,0 +1,2047 @@
+type Query {
+  asset(id: String!, preview: Boolean, locale: String): Asset
+
+  assetCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AssetFilter, order: [AssetOrder]): AssetCollection
+
+  report(id: String!, preview: Boolean, locale: String): Report
+
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: ReportFilter, order: [ReportOrder]): ReportCollection
+
+  reportSponsor(id: String!, preview: Boolean, locale: String): ReportSponsor
+
+  reportSponsorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: ReportSponsorFilter, order: [ReportSponsorOrder]): ReportSponsorCollection
+
+  pageWeeklyUpdate(id: String!, preview: Boolean, locale: String): PageWeeklyUpdate
+
+  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: PageWeeklyUpdateFilter, order: [PageWeeklyUpdateOrder]): PageWeeklyUpdateCollection
+
+  author(id: String!, preview: Boolean, locale: String): Author
+
+  authorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AuthorFilter, order: [AuthorOrder]): AuthorCollection
+
+  mainReport(id: String!, preview: Boolean, locale: String): MainReport
+
+  mainReportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: MainReportFilter, order: [MainReportOrder]): MainReportCollection
+
+  pageMainArticle(id: String!, preview: Boolean, locale: String): PageMainArticle
+
+  pageMainArticleCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: PageMainArticleFilter, order: [PageMainArticleOrder]): PageMainArticleCollection
+
+  tag(id: String!, preview: Boolean, locale: String): Tag
+
+  tagCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: TagFilter, order: [TagOrder]): TagCollection
+
+  page(id: String!, preview: Boolean, locale: String): Page
+
+  pageCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: PageFilter, order: [PageOrder]): PageCollection
+
+  seo(id: String!, preview: Boolean, locale: String): Seo
+
+  seoCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: SeoFilter, order: [SeoOrder]): SeoCollection
+
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EntryFilter, order: [EntryOrder]): EntryCollection
+}
+
+"""
+Represents a binary file in a space. An asset can be any file type.
+"""
+type Asset {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  title(locale: String): String
+
+  description(locale: String): String
+
+  contentType(locale: String): String
+
+  fileName(locale: String): String
+
+  size(locale: String): Int
+
+  url(transform: ImageTransformOptions, locale: String): String
+
+  width(locale: String): Int
+
+  height(locale: String): Int
+
+  linkedFrom(allowedLocales: [String]): AssetLinkingCollections
+}
+
+type Sys {
+  id: String!
+
+  spaceId: String!
+
+  environmentId: String!
+
+  publishedAt: DateTime
+
+  firstPublishedAt: DateTime
+
+  publishedVersion: Int
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z,
+    compliant with the 'date-time' format outlined in section 5.6 of
+    the RFC 3339 profile of the ISO 8601 standard for representation
+    of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+type ContentfulMetadata {
+  tags: [ContentfulTag]!
+}
+
+"""
+Represents a tag entity for finding and organizing content easily.
+    Find out more here: https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/content-tags
+"""
+type ContentfulTag {
+  id: String
+
+  name: String
+}
+
+input ImageTransformOptions {
+  """
+  Desired width in pixels. Defaults to the original image width.
+  """
+  width: Dimension
+
+  """
+  Desired height in pixels. Defaults to the original image height.
+  """
+  height: Dimension
+
+  """
+  Desired quality of the image in percents.
+          Used for `PNG8`, `JPG`, `JPG_PROGRESSIVE` and `WEBP` formats.
+  """
+  quality: Quality
+
+  """
+  Desired corner radius in pixels.
+          Results in an image with rounded corners (pass `-1` for a full circle/ellipse).
+          Defaults to `0`. Uses desired background color as padding color,
+          unless the format is `JPG` or `JPG_PROGRESSIVE` and resize strategy is `PAD`, then defaults to white.
+  """
+  cornerRadius: Int
+
+  """
+  Desired resize strategy. Defaults to `FIT`.
+  """
+  resizeStrategy: ImageResizeStrategy
+
+  """
+  Desired resize focus area. Defaults to `CENTER`.
+  """
+  resizeFocus: ImageResizeFocus
+
+  """
+  Desired background color, used with corner radius or `PAD` resize strategy.
+          Defaults to transparent (for `PNG`, `PNG8` and `WEBP`) or white (for `JPG` and `JPG_PROGRESSIVE`).
+  """
+  backgroundColor: HexColor
+
+  """
+  Desired image format. Defaults to the original image format.
+  """
+  format: ImageFormat
+}
+
+"""
+The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`.
+"""
+scalar Dimension
+
+"""
+The 'Quality' type represents quality as whole numeric values between `1` and `100`.
+"""
+scalar Quality
+
+enum ImageResizeStrategy {
+  """
+  Resizes the image to fit into the specified dimensions.
+  """
+  FIT
+
+  """
+  Resizes the image to the specified dimensions, padding the image if needed.
+          Uses desired background color as padding color.
+  """
+  PAD
+
+  """
+  Resizes the image to the specified dimensions, cropping the image if needed.
+  """
+  FILL
+
+  """
+  Resizes the image to the specified dimensions, changing the original aspect ratio if needed.
+  """
+  SCALE
+
+  """
+  Crops a part of the original image to fit into the specified dimensions.
+  """
+  CROP
+
+  """
+  Creates a thumbnail from the image.
+  """
+  THUMB
+}
+
+enum ImageResizeFocus {
+  """
+  Focus the resizing on the center.
+  """
+  CENTER
+
+  """
+  Focus the resizing on the top.
+  """
+  TOP
+
+  """
+  Focus the resizing on the top right.
+  """
+  TOP_RIGHT
+
+  """
+  Focus the resizing on the right.
+  """
+  RIGHT
+
+  """
+  Focus the resizing on the bottom right.
+  """
+  BOTTOM_RIGHT
+
+  """
+  Focus the resizing on the bottom.
+  """
+  BOTTOM
+
+  """
+  Focus the resizing on the bottom left.
+  """
+  BOTTOM_LEFT
+
+  """
+  Focus the resizing on the left.
+  """
+  LEFT
+
+  """
+  Focus the resizing on the top left.
+  """
+  TOP_LEFT
+
+  """
+  Focus the resizing on the largest face.
+  """
+  FACE
+
+  """
+  Focus the resizing on the area containing all the faces.
+  """
+  FACES
+}
+
+"""
+The 'HexColor' type represents color in `rgb:ffffff` string format.
+"""
+scalar HexColor
+
+enum ImageFormat {
+  """
+  JPG image format.
+  """
+  JPG
+
+  """
+  Progressive JPG format stores multiple passes of an image in progressively higher detail.
+          When a progressive image is loading, the viewer will first see a lower quality pixelated version which
+          will gradually improve in detail, until the image is fully downloaded. This is to display an image as
+          early as possible to make the layout look as designed.
+  """
+  JPG_PROGRESSIVE
+
+  """
+  PNG image format
+  """
+  PNG
+
+  """
+  8-bit PNG images support up to 256 colors and weigh less than the standard 24-bit PNG equivalent.
+          The 8-bit PNG format is mostly used for simple images, such as icons or logos.
+  """
+  PNG8
+
+  """
+  WebP image format.
+  """
+  WEBP
+
+  AVIF
+}
+
+type AssetLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
+
+  reportSponsorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportSponsorCollection
+
+  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
+
+  authorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): AuthorCollection
+}
+
+type EntryCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Entry]!
+}
+
+interface Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+}
+
+type ReportCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Report]!
+}
+
+"""
+[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/report)
+"""
+type Report implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): ReportLinkingCollections
+
+  title(locale: String): String
+
+  slug(locale: String): String
+
+  subtitle(locale: String): String
+
+  description(locale: String): ReportDescription
+
+  pdf(preview: Boolean, locale: String): Asset
+
+  image(preview: Boolean, locale: String): Asset
+
+  publishDate(locale: String): DateTime
+
+  tagsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportTagsCollection
+
+  sponsorsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportSponsorsCollection
+}
+
+type ReportLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
+
+  mainReportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): MainReportCollection
+}
+
+type PageWeeklyUpdateCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [PageWeeklyUpdate]!
+}
+
+"""
+A defined piece of written content with at least one image [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/pageWeeklyUpdate)
+"""
+type PageWeeklyUpdate implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): PageWeeklyUpdateLinkingCollections
+
+  name(locale: String): String
+
+  subtitle(locale: String): String
+
+  publicSnippet(locale: String): PageWeeklyUpdatePublicSnippet
+
+  content(locale: String): PageWeeklyUpdateContent
+
+  image(preview: Boolean, locale: String): Asset
+
+  socialMediaJpegOrPng(preview: Boolean, locale: String): Asset
+
+  tagsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateTagsCollection
+
+  publishDate(locale: String): DateTime
+
+  authorsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateAuthorsCollection
+
+  linkToReport(preview: Boolean, locale: String): Report
+}
+
+type PageWeeklyUpdateLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  pageMainArticleCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageMainArticleCollection
+
+  pageCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageCollection
+}
+
+type PageMainArticleCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [PageMainArticle]!
+}
+
+"""
+The article that appears on the top of the Research website, with content prominently displayed [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/pageMainArticle)
+"""
+type PageMainArticle implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): PageMainArticleLinkingCollections
+
+  name(locale: String): String
+
+  article(preview: Boolean, locale: String): PageWeeklyUpdate
+
+  frontPageExcerpt(locale: String): String
+}
+
+type PageMainArticleLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  pageCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageCollection
+}
+
+type PageCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Page]!
+}
+
+"""
+Represents a web page in Compose. DO NOT DELETE [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/page)
+"""
+type Page implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): PageLinkingCollections
+
+  name(locale: String): String
+
+  title(locale: String): String
+
+  slug(locale: String): String
+
+  seo(preview: Boolean, locale: String): Seo
+
+  content(preview: Boolean, locale: String): PageContent
+}
+
+type PageLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+}
+
+"""
+SEO Metadata for web pages in Compose. DO NOT DELETE [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/seo)
+"""
+type Seo implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): SeoLinkingCollections
+
+  name(locale: String): String
+
+  title(locale: String): String
+
+  description(locale: String): String
+
+  keywords(locale: String): [String]
+
+  noIndex(locale: String): Boolean
+
+  noFollow(locale: String): Boolean
+}
+
+type SeoLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  pageCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageCollection
+}
+
+union PageContent = PageWeeklyUpdate|PageMainArticle
+
+type PageWeeklyUpdatePublicSnippet {
+  json: JSON!
+
+  links: PageWeeklyUpdatePublicSnippetLinks!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type PageWeeklyUpdatePublicSnippetLinks {
+  entries: PageWeeklyUpdatePublicSnippetEntries!
+
+  assets: PageWeeklyUpdatePublicSnippetAssets!
+}
+
+type PageWeeklyUpdatePublicSnippetEntries {
+  inline: [Entry]!
+
+  hyperlink: [Entry]!
+
+  block: [Entry]!
+}
+
+type PageWeeklyUpdatePublicSnippetAssets {
+  hyperlink: [Asset]!
+
+  block: [Asset]!
+}
+
+type PageWeeklyUpdateContent {
+  json: JSON!
+
+  links: PageWeeklyUpdateContentLinks!
+}
+
+type PageWeeklyUpdateContentLinks {
+  entries: PageWeeklyUpdateContentEntries!
+
+  assets: PageWeeklyUpdateContentAssets!
+}
+
+type PageWeeklyUpdateContentEntries {
+  inline: [Entry]!
+
+  hyperlink: [Entry]!
+
+  block: [Entry]!
+}
+
+type PageWeeklyUpdateContentAssets {
+  hyperlink: [Asset]!
+
+  block: [Asset]!
+}
+
+type PageWeeklyUpdateTagsCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Tag]!
+}
+
+"""
+A theme, topic, or area covered in the content [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/tag)
+"""
+type Tag implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): TagLinkingCollections
+
+  name(locale: String): String
+}
+
+type TagLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
+
+  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
+}
+
+type PageWeeklyUpdateAuthorsCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Author]!
+}
+
+"""
+The author(s) of the content [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/author)
+"""
+type Author implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): AuthorLinkingCollections
+
+  name(locale: String): String
+
+  image(preview: Boolean, locale: String): Asset
+
+  description(locale: String): String
+
+  title(locale: String): String
+
+  weight(locale: String): Int
+
+  twitterLink(locale: String): String
+}
+
+type AuthorLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
+}
+
+type MainReportCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [MainReport]!
+}
+
+"""
+[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/mainReport)
+"""
+type MainReport implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): MainReportLinkingCollections
+
+  report(preview: Boolean, locale: String): Report
+}
+
+type MainReportLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+}
+
+type ReportDescription {
+  json: JSON!
+
+  links: ReportDescriptionLinks!
+}
+
+type ReportDescriptionLinks {
+  entries: ReportDescriptionEntries!
+
+  assets: ReportDescriptionAssets!
+}
+
+type ReportDescriptionEntries {
+  inline: [Entry]!
+
+  hyperlink: [Entry]!
+
+  block: [Entry]!
+}
+
+type ReportDescriptionAssets {
+  hyperlink: [Asset]!
+
+  block: [Asset]!
+}
+
+type ReportTagsCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Tag]!
+}
+
+type ReportSponsorsCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [ReportSponsor]!
+}
+
+"""
+[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/reportSponsor)
+"""
+type ReportSponsor implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): ReportSponsorLinkingCollections
+
+  name(locale: String): String
+
+  logo(preview: Boolean, locale: String): Asset
+}
+
+type ReportSponsorLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
+}
+
+type ReportSponsorCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [ReportSponsor]!
+}
+
+type AuthorCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Author]!
+}
+
+type AssetCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Asset]!
+}
+
+input AssetFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  description_exists: Boolean
+
+  description: String
+
+  description_not: String
+
+  description_in: [String]
+
+  description_not_in: [String]
+
+  description_contains: String
+
+  description_not_contains: String
+
+  url_exists: Boolean
+
+  url: String
+
+  url_not: String
+
+  url_in: [String]
+
+  url_not_in: [String]
+
+  url_contains: String
+
+  url_not_contains: String
+
+  size_exists: Boolean
+
+  size: Int
+
+  size_not: Int
+
+  size_in: [Int]
+
+  size_not_in: [Int]
+
+  size_gt: Int
+
+  size_gte: Int
+
+  size_lt: Int
+
+  size_lte: Int
+
+  contentType_exists: Boolean
+
+  contentType: String
+
+  contentType_not: String
+
+  contentType_in: [String]
+
+  contentType_not_in: [String]
+
+  contentType_contains: String
+
+  contentType_not_contains: String
+
+  fileName_exists: Boolean
+
+  fileName: String
+
+  fileName_not: String
+
+  fileName_in: [String]
+
+  fileName_not_in: [String]
+
+  fileName_contains: String
+
+  fileName_not_contains: String
+
+  width_exists: Boolean
+
+  width: Int
+
+  width_not: Int
+
+  width_in: [Int]
+
+  width_not_in: [Int]
+
+  width_gt: Int
+
+  width_gte: Int
+
+  width_lt: Int
+
+  width_lte: Int
+
+  height_exists: Boolean
+
+  height: Int
+
+  height_not: Int
+
+  height_in: [Int]
+
+  height_not_in: [Int]
+
+  height_gt: Int
+
+  height_gte: Int
+
+  height_lt: Int
+
+  height_lte: Int
+
+  OR: [AssetFilter]
+
+  AND: [AssetFilter]
+}
+
+input SysFilter {
+  id_exists: Boolean
+
+  id: String
+
+  id_not: String
+
+  id_in: [String]
+
+  id_not_in: [String]
+
+  id_contains: String
+
+  id_not_contains: String
+
+  publishedAt_exists: Boolean
+
+  publishedAt: DateTime
+
+  publishedAt_not: DateTime
+
+  publishedAt_in: [DateTime]
+
+  publishedAt_not_in: [DateTime]
+
+  publishedAt_gt: DateTime
+
+  publishedAt_gte: DateTime
+
+  publishedAt_lt: DateTime
+
+  publishedAt_lte: DateTime
+
+  firstPublishedAt_exists: Boolean
+
+  firstPublishedAt: DateTime
+
+  firstPublishedAt_not: DateTime
+
+  firstPublishedAt_in: [DateTime]
+
+  firstPublishedAt_not_in: [DateTime]
+
+  firstPublishedAt_gt: DateTime
+
+  firstPublishedAt_gte: DateTime
+
+  firstPublishedAt_lt: DateTime
+
+  firstPublishedAt_lte: DateTime
+
+  publishedVersion_exists: Boolean
+
+  publishedVersion: Float
+
+  publishedVersion_not: Float
+
+  publishedVersion_in: [Float]
+
+  publishedVersion_not_in: [Float]
+
+  publishedVersion_gt: Float
+
+  publishedVersion_gte: Float
+
+  publishedVersion_lt: Float
+
+  publishedVersion_lte: Float
+}
+
+input ContentfulMetadataFilter {
+  tags_exists: Boolean
+
+  tags: ContentfulMetadataTagsFilter
+}
+
+input ContentfulMetadataTagsFilter {
+  id_contains_all: [String]
+
+  id_contains_some: [String]
+
+  id_contains_none: [String]
+}
+
+enum AssetOrder {
+  url_ASC
+
+  url_DESC
+
+  size_ASC
+
+  size_DESC
+
+  contentType_ASC
+
+  contentType_DESC
+
+  fileName_ASC
+
+  fileName_DESC
+
+  width_ASC
+
+  width_DESC
+
+  height_ASC
+
+  height_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input ReportFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  slug_exists: Boolean
+
+  slug: String
+
+  slug_not: String
+
+  slug_in: [String]
+
+  slug_not_in: [String]
+
+  slug_contains: String
+
+  slug_not_contains: String
+
+  subtitle_exists: Boolean
+
+  subtitle: String
+
+  subtitle_not: String
+
+  subtitle_in: [String]
+
+  subtitle_not_in: [String]
+
+  subtitle_contains: String
+
+  subtitle_not_contains: String
+
+  description_exists: Boolean
+
+  description_contains: String
+
+  description_not_contains: String
+
+  pdf_exists: Boolean
+
+  image_exists: Boolean
+
+  publishDate_exists: Boolean
+
+  publishDate: DateTime
+
+  publishDate_not: DateTime
+
+  publishDate_in: [DateTime]
+
+  publishDate_not_in: [DateTime]
+
+  publishDate_gt: DateTime
+
+  publishDate_gte: DateTime
+
+  publishDate_lt: DateTime
+
+  publishDate_lte: DateTime
+
+  tagsCollection_exists: Boolean
+
+  sponsorsCollection_exists: Boolean
+
+  OR: [ReportFilter]
+
+  AND: [ReportFilter]
+}
+
+enum ReportOrder {
+  title_ASC
+
+  title_DESC
+
+  slug_ASC
+
+  slug_DESC
+
+  publishDate_ASC
+
+  publishDate_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input ReportSponsorFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  logo_exists: Boolean
+
+  OR: [ReportSponsorFilter]
+
+  AND: [ReportSponsorFilter]
+}
+
+enum ReportSponsorOrder {
+  name_ASC
+
+  name_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input PageWeeklyUpdateFilter {
+  linkToReport: cfReportNestedFilter
+
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  subtitle_exists: Boolean
+
+  subtitle: String
+
+  subtitle_not: String
+
+  subtitle_in: [String]
+
+  subtitle_not_in: [String]
+
+  subtitle_contains: String
+
+  subtitle_not_contains: String
+
+  publicSnippet_exists: Boolean
+
+  publicSnippet_contains: String
+
+  publicSnippet_not_contains: String
+
+  content_exists: Boolean
+
+  content_contains: String
+
+  content_not_contains: String
+
+  image_exists: Boolean
+
+  socialMediaJpegOrPng_exists: Boolean
+
+  tagsCollection_exists: Boolean
+
+  publishDate_exists: Boolean
+
+  publishDate: DateTime
+
+  publishDate_not: DateTime
+
+  publishDate_in: [DateTime]
+
+  publishDate_not_in: [DateTime]
+
+  publishDate_gt: DateTime
+
+  publishDate_gte: DateTime
+
+  publishDate_lt: DateTime
+
+  publishDate_lte: DateTime
+
+  authorsCollection_exists: Boolean
+
+  linkToReport_exists: Boolean
+
+  OR: [PageWeeklyUpdateFilter]
+
+  AND: [PageWeeklyUpdateFilter]
+}
+
+input cfReportNestedFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  slug_exists: Boolean
+
+  slug: String
+
+  slug_not: String
+
+  slug_in: [String]
+
+  slug_not_in: [String]
+
+  slug_contains: String
+
+  slug_not_contains: String
+
+  subtitle_exists: Boolean
+
+  subtitle: String
+
+  subtitle_not: String
+
+  subtitle_in: [String]
+
+  subtitle_not_in: [String]
+
+  subtitle_contains: String
+
+  subtitle_not_contains: String
+
+  description_exists: Boolean
+
+  description_contains: String
+
+  description_not_contains: String
+
+  pdf_exists: Boolean
+
+  image_exists: Boolean
+
+  publishDate_exists: Boolean
+
+  publishDate: DateTime
+
+  publishDate_not: DateTime
+
+  publishDate_in: [DateTime]
+
+  publishDate_not_in: [DateTime]
+
+  publishDate_gt: DateTime
+
+  publishDate_gte: DateTime
+
+  publishDate_lt: DateTime
+
+  publishDate_lte: DateTime
+
+  tagsCollection_exists: Boolean
+
+  sponsorsCollection_exists: Boolean
+
+  OR: [cfReportNestedFilter]
+
+  AND: [cfReportNestedFilter]
+}
+
+enum PageWeeklyUpdateOrder {
+  name_ASC
+
+  name_DESC
+
+  subtitle_ASC
+
+  subtitle_DESC
+
+  publishDate_ASC
+
+  publishDate_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input AuthorFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  image_exists: Boolean
+
+  description_exists: Boolean
+
+  description: String
+
+  description_not: String
+
+  description_in: [String]
+
+  description_not_in: [String]
+
+  description_contains: String
+
+  description_not_contains: String
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  weight_exists: Boolean
+
+  weight: Int
+
+  weight_not: Int
+
+  weight_in: [Int]
+
+  weight_not_in: [Int]
+
+  weight_gt: Int
+
+  weight_gte: Int
+
+  weight_lt: Int
+
+  weight_lte: Int
+
+  twitterLink_exists: Boolean
+
+  twitterLink: String
+
+  twitterLink_not: String
+
+  twitterLink_in: [String]
+
+  twitterLink_not_in: [String]
+
+  twitterLink_contains: String
+
+  twitterLink_not_contains: String
+
+  OR: [AuthorFilter]
+
+  AND: [AuthorFilter]
+}
+
+enum AuthorOrder {
+  name_ASC
+
+  name_DESC
+
+  title_ASC
+
+  title_DESC
+
+  weight_ASC
+
+  weight_DESC
+
+  twitterLink_ASC
+
+  twitterLink_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input MainReportFilter {
+  report: cfReportNestedFilter
+
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  report_exists: Boolean
+
+  OR: [MainReportFilter]
+
+  AND: [MainReportFilter]
+}
+
+enum MainReportOrder {
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input PageMainArticleFilter {
+  article: cfPageWeeklyUpdateNestedFilter
+
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  article_exists: Boolean
+
+  frontPageExcerpt_exists: Boolean
+
+  frontPageExcerpt: String
+
+  frontPageExcerpt_not: String
+
+  frontPageExcerpt_in: [String]
+
+  frontPageExcerpt_not_in: [String]
+
+  frontPageExcerpt_contains: String
+
+  frontPageExcerpt_not_contains: String
+
+  OR: [PageMainArticleFilter]
+
+  AND: [PageMainArticleFilter]
+}
+
+input cfPageWeeklyUpdateNestedFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  subtitle_exists: Boolean
+
+  subtitle: String
+
+  subtitle_not: String
+
+  subtitle_in: [String]
+
+  subtitle_not_in: [String]
+
+  subtitle_contains: String
+
+  subtitle_not_contains: String
+
+  publicSnippet_exists: Boolean
+
+  publicSnippet_contains: String
+
+  publicSnippet_not_contains: String
+
+  content_exists: Boolean
+
+  content_contains: String
+
+  content_not_contains: String
+
+  image_exists: Boolean
+
+  socialMediaJpegOrPng_exists: Boolean
+
+  tagsCollection_exists: Boolean
+
+  publishDate_exists: Boolean
+
+  publishDate: DateTime
+
+  publishDate_not: DateTime
+
+  publishDate_in: [DateTime]
+
+  publishDate_not_in: [DateTime]
+
+  publishDate_gt: DateTime
+
+  publishDate_gte: DateTime
+
+  publishDate_lt: DateTime
+
+  publishDate_lte: DateTime
+
+  authorsCollection_exists: Boolean
+
+  linkToReport_exists: Boolean
+
+  OR: [cfPageWeeklyUpdateNestedFilter]
+
+  AND: [cfPageWeeklyUpdateNestedFilter]
+}
+
+enum PageMainArticleOrder {
+  name_ASC
+
+  name_DESC
+
+  frontPageExcerpt_ASC
+
+  frontPageExcerpt_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+type TagCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Tag]!
+}
+
+input TagFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  OR: [TagFilter]
+
+  AND: [TagFilter]
+}
+
+enum TagOrder {
+  name_ASC
+
+  name_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input PageFilter {
+  seo: cfSeoNestedFilter
+
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  slug_exists: Boolean
+
+  slug: String
+
+  slug_not: String
+
+  slug_in: [String]
+
+  slug_not_in: [String]
+
+  slug_contains: String
+
+  slug_not_contains: String
+
+  seo_exists: Boolean
+
+  content_exists: Boolean
+
+  OR: [PageFilter]
+
+  AND: [PageFilter]
+}
+
+input cfSeoNestedFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  description_exists: Boolean
+
+  description: String
+
+  description_not: String
+
+  description_in: [String]
+
+  description_not_in: [String]
+
+  description_contains: String
+
+  description_not_contains: String
+
+  keywords_exists: Boolean
+
+  keywords_contains_all: [String]
+
+  keywords_contains_some: [String]
+
+  keywords_contains_none: [String]
+
+  no_index_exists: Boolean
+
+  no_index: Boolean
+
+  no_index_not: Boolean
+
+  no_follow_exists: Boolean
+
+  no_follow: Boolean
+
+  no_follow_not: Boolean
+
+  OR: [cfSeoNestedFilter]
+
+  AND: [cfSeoNestedFilter]
+}
+
+enum PageOrder {
+  name_ASC
+
+  name_DESC
+
+  title_ASC
+
+  title_DESC
+
+  slug_ASC
+
+  slug_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+type SeoCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Seo]!
+}
+
+input SeoFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  description_exists: Boolean
+
+  description: String
+
+  description_not: String
+
+  description_in: [String]
+
+  description_not_in: [String]
+
+  description_contains: String
+
+  description_not_contains: String
+
+  keywords_exists: Boolean
+
+  keywords_contains_all: [String]
+
+  keywords_contains_some: [String]
+
+  keywords_contains_none: [String]
+
+  no_index_exists: Boolean
+
+  no_index: Boolean
+
+  no_index_not: Boolean
+
+  no_follow_exists: Boolean
+
+  no_follow: Boolean
+
+  no_follow_not: Boolean
+
+  OR: [SeoFilter]
+
+  AND: [SeoFilter]
+}
+
+enum SeoOrder {
+  name_ASC
+
+  name_DESC
+
+  title_ASC
+
+  title_DESC
+
+  description_ASC
+
+  description_DESC
+
+  no_index_ASC
+
+  no_index_DESC
+
+  no_follow_ASC
+
+  no_follow_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input EntryFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  OR: [EntryFilter]
+
+  AND: [EntryFilter]
+}
+
+enum EntryOrder {
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+schema {
+  query: Query
+}
