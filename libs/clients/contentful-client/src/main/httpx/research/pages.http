@@ -39,6 +39,7 @@ query {
                                 description
                                 url
                             }
+                            twitterLink
                         }
                     }
                     publishDate
@@ -86,6 +87,7 @@ query {
                                 description
                                 url
                             }
+                            twitterLink
                         }
                     }
                     publishDate

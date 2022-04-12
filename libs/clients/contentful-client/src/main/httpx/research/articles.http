@@ -61,7 +61,9 @@ query {
                     name
                     image {
                         url
+                        title
                     }
+                    twitterLink
                 }
             }
             publishDate

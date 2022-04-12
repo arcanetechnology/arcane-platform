@@ -29,6 +29,7 @@ query($pageId:String!) {
                                 description
                                 url
                             }
+                            twitterLink
                         }
                     }
                     publishDate

@@ -29,6 +29,7 @@ query {
                                 description
                                 url
                             }
+                            twitterLink
                         }
                     }
                     publishDate
