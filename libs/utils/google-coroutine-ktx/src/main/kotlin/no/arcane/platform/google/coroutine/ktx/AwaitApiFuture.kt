@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.arcane.platform.identity.auth.gcp
+package no.arcane.platform.google.coroutine.ktx
 
 import com.google.api.core.ApiFuture
 import com.google.api.core.ApiFutureCallback

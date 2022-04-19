@@ -5,14 +5,17 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.UserRecord
+import no.arcane.platform.google.coroutine.ktx.await
 import no.arcane.platform.utils.logging.getLogger
 
 object FirebaseAuthService {
 
     private val logger by getLogger()
 
-    private val firebaseApp = FirebaseApp.initializeApp("auth")
-    private val firebaseAuth = FirebaseAuth.getInstance(firebaseApp)
+    private val firebaseAuth by lazy {
+        val firebaseApp = FirebaseApp.initializeApp("auth")
+        FirebaseAuth.getInstance(firebaseApp)
+    }
 
     suspend fun createOrMergeUser(
         email: String,

@@ -40,6 +40,7 @@ include(
     "libs:services:terms-and-conditions:terms-and-conditions-service",
 
     "libs:services:user",
+    "libs:services:user:user-analytics",
     "libs:services:user:user-endpoint",
     "libs:services:user:user-graphql",
     "libs:services:user:user-model",
@@ -54,7 +55,9 @@ include(
     "libs:utils:cms:contentful",
 
     "libs:utils:config",
+    "libs:utils:file-store",
     "libs:utils:firebase-auth",
+    "libs:utils:google-coroutine-ktx",
     "libs:utils:graphql",
 
     "libs:utils:ktor",

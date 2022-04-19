@@ -97,7 +97,7 @@ Options for `gcloud run deploy`:
 * `--no-allow-unauthenticated` for `arcane-platform`
 
 ### Verification  
-Direct access to `arcane-platform` (https://arcane-platform-s6k5oexj4q-ew.a.run.app/ping) should be blocked.  
+Direct access to `arcane-platform` (https://"$GCP_BACKEND_HOST"/ping) should be blocked.  
 Access via esp `arcane-platform-gateway` (https://api.arcane.no/ping) should be allowed.
 
 ### Additional roles
@@ -159,4 +159,25 @@ Assign role to service account so that it can access Firestore database.
 gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
   --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
   --role roles/datastore.user
+```
+
+Assign role to service account so that it can access GCS.
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/storage.objectAdmin
+```
+
+## Cron jobs using GCP scheduler invoking Cloud Run
+
+```shell
+gcloud scheduler jobs delete update-firebase-users-stats-job \
+  --location europe-west1
+
+gcloud scheduler jobs create http update-firebase-users-stats-job \
+  --location europe-west1 \
+  --schedule "55 * * * *" \
+  --uri=https://"$GCP_BACKEND_HOST"/admin/jobs/update-firebase-users-stats \
+  --oidc-service-account-email=arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com   \
+  --oidc-token-audience=https://"$GCP_BACKEND_HOST"
 ```

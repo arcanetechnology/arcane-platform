@@ -1,0 +1,31 @@
+### Count reports
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query Count {
+    pageWeeklyUpdateCollection(limit: 1) {
+        total
+    }
+    reportCollection(limit: 1) {
+        total
+    }
+    authorCollection(limit: 1, where: {weight_gt: 0}) {
+        total
+    }
+    tagCollection {
+        total
+        items {
+            name
+            linkedFrom {
+                pageWeeklyUpdateCollection(limit: 1) {
+                    total
+                }
+                reportCollection(limit: 1) {
+                    total
+                }
+            }
+        }
+    }
+}

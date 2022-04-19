@@ -1,7 +1,6 @@
 package no.arcane.platform.cms.space.research.report
 
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import no.arcane.platform.cms.clients.ContentfulGraphql
 import no.arcane.platform.cms.content.Content
