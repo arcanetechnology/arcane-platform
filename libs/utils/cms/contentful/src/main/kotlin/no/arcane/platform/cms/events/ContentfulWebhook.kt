@@ -1,6 +1,7 @@
 package no.arcane.platform.cms.events
 
 import io.ktor.application.*
+import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -38,7 +39,7 @@ fun Application.module() {
                 } else if (type == "ContentType") {
                     logger.warn("Content type is modified")
                 }
-                call.respond("")
+                call.respond(HttpStatusCode.OK)
             }
         }
     }

@@ -11,6 +11,4 @@ dependencies {
     implementation(project(":libs:utils:logging"))
 
     api(project(":libs:services:user:user-model"))
-
-    implementation("io.firestore4k:typed-api:_")
 }

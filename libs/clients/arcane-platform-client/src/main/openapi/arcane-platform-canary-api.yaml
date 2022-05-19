@@ -128,6 +128,7 @@ paths:
           required: true
         - name: tnc
           in: body
+          required: true
           schema:
             $ref: "#/definitions/TncRequest"
       responses:
@@ -183,6 +184,7 @@ paths:
         - name: "request"
           in: body
           description: "GraphQL Request."
+          required: true
           schema:
             $ref: '#/definitions/GraphQLRequest'
       responses:
@@ -205,6 +207,7 @@ paths:
       parameters:
         - name: "request"
           in: body
+          required: true
           schema:
             type: object
       responses:

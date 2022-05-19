@@ -6,6 +6,7 @@ import com.google.firebase.auth.ListUsersPage
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 import no.arcane.platform.google.coroutine.ktx.await
 import java.time.Instant
 import java.time.ZoneId
@@ -21,16 +22,25 @@ class UserAnalytics {
                 .listUsersAsync(null)
                 .await()
 
+            val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            fun Long.toDateString(): String {
+                return Instant
+                    .ofEpochMilli(this)
+                    .atZone(ZoneId.of("UTC"))
+                    .format(dateFormatter)
+            }
+
             val users = flow {
                 var localPage: ListUsersPage? = page
+
                 while (localPage != null) {
                     for (user in localPage.values) {
                         emit(
                             UserMetadata(
                                 idProviders = user.providerData.map { it.providerId },
-                                createdOn = Instant.ofEpochMilli(user.userMetadata.creationTimestamp),
-                                lastSignIn = Instant.ofEpochMilli(user.userMetadata.lastSignInTimestamp),
-                                lastActive = Instant.ofEpochMilli(user.userMetadata.lastRefreshTimestamp),
+                                createdOn = user.userMetadata.creationTimestamp.toDateString(),
+                                lastSignIn = user.userMetadata.lastSignInTimestamp.toDateString(),
+                                lastActive = user.userMetadata.lastRefreshTimestamp.toDateString(),
                             )
                         )
                     }
@@ -41,10 +51,9 @@ class UserAnalytics {
         }
     }
 
-    private fun usersTimeline(map: (UserMetadata) -> Instant) = userMetadataList
+    private fun usersTimeline(map: (UserMetadata) -> String) = userMetadataList
         .map(map)
-        .map { it.atZone(ZoneId.of("UTC")) }
-        .groupBy { it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) }
+        .groupBy { it }
         .mapValues { (_, values) -> values.count() }
         .toSortedMap()
 
@@ -64,9 +73,10 @@ class UserAnalytics {
     }
 }
 
-private data class UserMetadata(
+@Serializable
+data class UserMetadata(
     val idProviders: List<String>,
-    val createdOn: Instant,
-    val lastSignIn: Instant,
-    val lastActive: Instant,
+    val createdOn: String,
+    val lastSignIn: String,
+    val lastActive: String,
 )

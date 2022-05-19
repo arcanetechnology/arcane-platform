@@ -20,6 +20,8 @@ dependencies {
     implementation(Ktor.server.core)
 
     implementation("net.andreinc:mapneat:_")
+    implementation("com.jayway.jsonpath:json-path:_")
+    implementation("org.apache.logging.log4j:log4j-api-kotlin:_")
     implementation("org.apache.logging.log4j:log4j-to-slf4j:_")
     implementation("org.apache.logging.log4j:log4j-core:_")
 

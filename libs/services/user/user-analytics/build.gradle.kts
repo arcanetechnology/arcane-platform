@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 dependencies {
@@ -10,6 +11,8 @@ dependencies {
 
     implementation(KotlinX.coroutines.core)
     implementation(Ktor.server.core)
+
+    implementation(KotlinX.serialization.json)
 
     implementation(project(":libs:utils:logging"))
 }

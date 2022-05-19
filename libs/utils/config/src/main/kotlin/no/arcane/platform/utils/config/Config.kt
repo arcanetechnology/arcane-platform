@@ -10,31 +10,35 @@ private val logger by lazy { LoggerFactory.getLogger("no.arcane.platform.utils.c
 
 fun getConfig(
     name: String,
-    path: String = "",
+    path: String? = null,
 ): Lazy<Config> = lazy {
     getConfigEager(name, path)
 }
 
 inline fun <reified CONFIG : Any> loadConfig(
     name: String,
-    path: String = "",
+    path: String? = null,
 ): Lazy<CONFIG> = lazy {
     loadConfigEager(name, path)
 }
 
 inline fun <reified CONFIG : Any> loadConfigEager(
     name: String,
-    path: String = "",
+    path: String? = null,
 ): CONFIG = getConfigEager(name, path).extract()
 
 fun getConfigEager(
     name: String,
-    path: String,
+    path: String? = null,
 ): Config {
     val configFile = ConfigAsResourceFile("/$name.conf")
     if (configFile.exists()) {
         logger.info("Loading config: $configFile")
-        return ConfigFactory.parseString(configFile.readText()).resolve().getConfig(path)
+        var config = ConfigFactory.parseString(configFile.readText())
+        if (!path.isNullOrBlank()) {
+            config = config.resolve().getConfig(path)
+        }
+        return config
     }
     throw FileNotFoundException("Config file not found - $configFile")
 }

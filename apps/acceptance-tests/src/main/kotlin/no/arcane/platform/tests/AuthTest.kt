@@ -26,7 +26,7 @@ class AuthTest : StringSpec({
         val firebaseCustomToken = apiClient.get<String> {
             url { path("firebase-custom-token") }
             headers {
-                appendEndpointsApiUserInfoHeader(userId)
+                appendAppleIdToken(userId)
             }
         }
         val uid = FirebaseAuthService.createOrMergeUser(

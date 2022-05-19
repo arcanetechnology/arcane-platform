@@ -12,7 +12,7 @@ class UserTest : StringSpec({
     val userId = UUID.randomUUID().toString()
 
     "GET /user -> Check if unregistered user exists" {
-        apiClient.get<Unit> {
+        apiClient.get {
             url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)

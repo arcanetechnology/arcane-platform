@@ -16,6 +16,7 @@ import java.util.*
 
 private val jsonPrinter = Json {
     prettyPrint = true
+    encodeDefaults = true
 }
 
 private val oauthProviderEmulatorClient = HttpClient(CIO) {

@@ -61,7 +61,7 @@ class TncTest : StringSpec({
 
     // TODO enable the test
     "POST /tnc/platform.privacyPolicy/email -> Send Terms and Conditions in email".config(enabled = false) {
-        apiClient.post<Unit> {
+        apiClient.post {
             url(path = "tnc/platform.privacyPolicy/email")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)

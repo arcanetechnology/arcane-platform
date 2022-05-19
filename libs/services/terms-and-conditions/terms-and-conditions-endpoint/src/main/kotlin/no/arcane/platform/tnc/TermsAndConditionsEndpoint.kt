@@ -11,6 +11,7 @@ import no.arcane.platform.identity.auth.gcp.UserInfo
 import no.arcane.platform.tnc.TncService.getTnc
 import no.arcane.platform.tnc.TncService.setTnc
 import no.arcane.platform.user.UserId
+import no.arcane.platform.utils.logging.logWithMDC
 
 fun Application.module() {
 
@@ -20,47 +21,54 @@ fun Application.module() {
 
                 post {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
-                    val tncId = TncId(call.parameters["tncId"]!!)
-                    val tncRequest = call.receive<TncRequest>()
-                    val savedTnc = userId.setTnc(
-                        tncId = tncId,
-                        version = tncRequest.version,
-                        accepted = tncRequest.accepted,
-                        spaceId = tncRequest.spaceId,
-                        environmentId = tncRequest.environmentId,
-                        entryId = tncRequest.entryId,
-                        fieldId = tncRequest.fieldId,
-                    )
-                    if (savedTnc != null) {
-                        call.respond(HttpStatusCode.Created, savedTnc)
-                    } else {
-                        log.error("Failed to store tnc")
-                        call.respond(HttpStatusCode.InternalServerError)
+                    logWithMDC("userId" to userId.value) {
+                        val tncId = TncId(call.parameters["tncId"]!!)
+                        val tncRequest = call.receive<TncRequest>()
+                        val savedTnc = userId.setTnc(
+                            tncId = tncId,
+                            version = tncRequest.version,
+                            accepted = tncRequest.accepted,
+                            spaceId = tncRequest.spaceId,
+                            environmentId = tncRequest.environmentId,
+                            entryId = tncRequest.entryId,
+                            fieldId = tncRequest.fieldId,
+                        )
+                        if (savedTnc != null) {
+                            call.respond(HttpStatusCode.Created, savedTnc)
+                        } else {
+                            log.error("Failed to store tnc")
+                            call.respond(HttpStatusCode.InternalServerError)
+                        }
                     }
                 }
 
                 get {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
-                    val tncId = TncId(call.parameters["tncId"]!!)
-                    val tnc = userId.getTnc(
-                        tncId = tncId,
-                    )
-                    if (tnc != null) {
-                        call.respond(HttpStatusCode.OK, tnc)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound)
+                    logWithMDC("userId" to userId.value) {
+                        val tncId = TncId(call.parameters["tncId"]!!)
+                        val tnc = userId.getTnc(
+                            tncId = tncId,
+                        )
+                        if (tnc != null) {
+                            call.respond(tnc)
+                        } else {
+                            call.respond(HttpStatusCode.NotFound)
+                        }
                     }
                 }
 
                 post("/email") {
-                    val userEmail = call.principal<UserInfo>()!!.email
-                    val tncId = TncId(call.parameters["tncId"]!!)
-                    val emailSent = TncService.emailTnc(
-                        email = userEmail,
-                        tncId = tncId,
-                    )
-                    if (emailSent) {
-                        call.respond(HttpStatusCode.OK)
+                    val userId = UserId(call.principal<UserInfo>()!!.userId)
+                    logWithMDC("userId" to userId.value) {
+                        val userEmail = call.principal<UserInfo>()!!.email
+                        val tncId = TncId(call.parameters["tncId"]!!)
+                        val emailSent = TncService.emailTnc(
+                            email = userEmail,
+                            tncId = tncId,
+                        )
+                        if (emailSent) {
+                            call.respond(HttpStatusCode.OK)
+                        }
                     }
                 }
             }

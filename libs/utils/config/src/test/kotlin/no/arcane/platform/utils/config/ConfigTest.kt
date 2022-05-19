@@ -15,4 +15,9 @@ class ConfigTest : StringSpec({
 
         exception.message shouldBe "Config file not found - resource:/missing.conf @ null"
     }
+
+    "root config" {
+        val testValue by getConfig("test")
+        testValue.getStringList("TEST_CONFIG_PARAM") shouldBe listOf("test-value")
+    }
 })

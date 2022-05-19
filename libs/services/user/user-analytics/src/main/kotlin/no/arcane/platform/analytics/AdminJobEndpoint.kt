@@ -1,6 +1,7 @@
 package no.arcane.platform.analytics
 
 import io.ktor.application.*
+import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import no.arcane.platform.filestore.FileStoreService
@@ -11,7 +12,7 @@ fun Application.module() {
         route("/admin/jobs/update-firebase-users-stats") {
             post {
                 updateFirebaseUsersStats()
-                call.respond("")
+                call.respond(HttpStatusCode.OK)
             }
         }
     }

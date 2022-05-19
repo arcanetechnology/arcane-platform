@@ -12,6 +12,7 @@ import io.ktor.routing.*
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.Serializable
 import no.arcane.platform.identity.auth.gcp.UserInfo
+import no.arcane.platform.utils.logging.logWithMDC
 
 fun Application.module() {
 
@@ -24,7 +25,7 @@ fun Application.module() {
     routing {
 
         get("sdl") {
-            call.respond(sdl)
+            call.respondText(sdl)
         }
 
         authenticate("esp-v2-header") {
@@ -53,17 +54,21 @@ fun Application.module() {
             }
             get ("graphql") {
                 val userId = call.principal<UserInfo>()!!.userId
-                val graphqlQuery = call.request.queryParameters["query"]
-                if (graphqlQuery == null) {
-                    call.respond(HttpStatusCode.BadRequest, "query param - 'query' is mandatory")
-                } else {
-                    handleRequest(call, graphqlQuery, userId)
+                logWithMDC("userId" to userId) {
+                    val graphqlQuery = call.request.queryParameters["query"]
+                    if (graphqlQuery == null) {
+                        call.respond(HttpStatusCode.BadRequest, "query param - 'query' is mandatory")
+                    } else {
+                        handleRequest(call, graphqlQuery, userId)
+                    }
                 }
             }
             post("graphql") {
                 val userId = call.principal<UserInfo>()!!.userId
-                val graphqlQuery = call.receive<GraphqlRequest>().query
-                handleRequest(call, graphqlQuery, userId)
+                logWithMDC("userId" to userId) {
+                    val graphqlQuery = call.receive<GraphqlRequest>().query
+                    handleRequest(call, graphqlQuery, userId)
+                }
             }
         }
     }
