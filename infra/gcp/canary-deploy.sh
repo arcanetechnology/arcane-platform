@@ -36,7 +36,11 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --min-instances=1 \
   --max-instances=1 \
   --concurrency=1000 \
-  --set-env-vars=GCP_PROJECT_ID="${GCP_PROJECT_ID}",GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
+  --set-env-vars=GCP_PROJECT_ID="${GCP_PROJECT_ID}" \
+  --set-env-vars=GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
+  --set-env-vars=^:^INVEST_DENIED_COUNTRY_CODE_LIST="${INVEST_DENIED_COUNTRY_CODE_LIST}" \
+  --set-env-vars=INVEST_EMAIL_FROM="${INVEST_EMAIL_FROM}" \
+  --set-env-vars=INVEST_EMAIL_TO="${INVEST_EMAIL_TO}" \
   --service-account "${backendCloudRun["service_account"]}" \
   --no-allow-unauthenticated \
   --port=8080 \

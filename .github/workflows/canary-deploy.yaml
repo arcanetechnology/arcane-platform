@@ -37,6 +37,9 @@ jobs:
       - name: Canary deploy to GCP Cloud Run
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          INVEST_DENIED_COUNTRY_CODE_LIST: ${{ secrets.INVEST_DENIED_COUNTRY_CODE_LIST }}
+          INVEST_EMAIL_FROM: ${{ secrets.INVEST_EMAIL_FROM }}
+          INVEST_EMAIL_TO: ${{ secrets.INVEST_EMAIL_TO }}
         run: |-
           gcloud run deploy arcane-platform \
             --region europe-west1 \
@@ -46,7 +49,11 @@ jobs:
             --min-instances=1 \
             --max-instances=1 \
             --concurrency=1000 \
-            --set-env-vars=GCP_PROJECT_ID="${GCP_PROJECT_ID}",GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
+            --set-env-vars=GCP_PROJECT_ID="${GCP_PROJECT_ID}" \
+            --set-env-vars=GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
+            --set-env-vars=^:^INVEST_DENIED_COUNTRY_CODE_LIST="${INVEST_DENIED_COUNTRY_CODE_LIST}" \
+            --set-env-vars=INVEST_EMAIL_FROM="${INVEST_EMAIL_FROM}" \
+            --set-env-vars=INVEST_EMAIL_TO="${INVEST_EMAIL_TO}" \
             --service-account arcane-platform@"${GCP_PROJECT_ID}".iam.gserviceaccount.com \
             --no-allow-unauthenticated \
             --port=8080 \

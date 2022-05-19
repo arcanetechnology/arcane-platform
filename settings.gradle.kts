@@ -19,6 +19,10 @@ include(
     "apps:oauth2-provider-emulator:oauth2-provider-api",
 
     // libs
+
+    // libs / apps
+    "libs:apps:invest",
+
     // libs / clients
     "libs:clients:arcane-platform-client",
     "libs:clients:contentful-client",
