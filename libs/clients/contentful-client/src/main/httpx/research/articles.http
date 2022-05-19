@@ -59,6 +59,7 @@ query {
             authorsCollection(limit: 4) {
                 items {
                     name
+                    slug
                     image {
                         url
                         title

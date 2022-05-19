@@ -23,6 +23,7 @@ query($pageId:String!) {
                     authorsCollection {
                         items {
                             name
+                            slug
                             image {
                                 fileName
                                 title

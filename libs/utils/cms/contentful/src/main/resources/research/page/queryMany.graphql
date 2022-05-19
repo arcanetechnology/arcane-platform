@@ -23,6 +23,7 @@ query {
                     authorsCollection(limit: 4) {
                         items {
                             name
+                            slug
                             image {
                                 fileName
                                 title

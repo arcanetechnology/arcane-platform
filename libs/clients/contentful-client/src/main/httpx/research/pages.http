@@ -33,6 +33,7 @@ query {
                     authorsCollection {
                         items {
                             name
+                            slug
                             image {
                                 fileName
                                 title
@@ -81,6 +82,7 @@ query {
                     authorsCollection {
                         items {
                             name
+                            slug
                             image {
                                 fileName
                                 title
