@@ -30,19 +30,31 @@ object SlackNotification {
         )
     }
 
-    private val slackChannel by lazy {
+    private val slackAlertsChannel by lazy {
         System.getenv("SLACK_ALERTS_CHANNEL_ID")?.let { ChannelId(it) }
             ?: System.getenv("SLACK_ALERTS_CHANNEL_NAME")?.let { ChannelName(it) }
             ?: ChannelName("gcp-alerts")
     }
 
+    private val slackResearchEventsChannel by lazy {
+        System.getenv("SLACK_RESEARCH_EVENTS_CHANNEL_ID")?.let { ChannelId(it) }
+            ?: System.getenv("SLACK_RESEARCH_EVENTS_CHANNEL_NAME")?.let { ChannelName(it) }
+            ?: ChannelName("research-events")
+    }
+
     suspend fun notifySlack(pageId: String) {
         val page = researchPageForSlack.fetch(pageId) ?: return
         val url = "https://arcane.no/research/${page.slug}"
-        val message = if (page.publishedAt != page.firstPublishedAt) {
-            "Research article is updated and republished at $url."
+        val firstTimePublish = page.publishedAt == page.firstPublishedAt
+        val slackChannel = if (firstTimePublish) {
+            slackAlertsChannel
         } else {
+            slackResearchEventsChannel
+        }
+        val message = if (firstTimePublish) {
             "New research article is published at $url."
+        } else {
+            "Research article is updated and republished at $url."
         }
         val header = page.title
         val authorsText = page.authors.joinToString(prefix = "By ", separator = ", ") { author -> "*${author.name}*" }
@@ -94,7 +106,7 @@ object SlackNotification {
             section {
                 fields {
                     tags.forEach { tag ->
-                        plainText("🔖 $tag", true)
+                        plainText("#️⃣ $tag", true)
                     }
                 }
             }

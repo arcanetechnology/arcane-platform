@@ -28,6 +28,7 @@ services:
       - ALGOLIA_APP_ID=${ALGOLIA_APP_ID}
       - ALGOLIA_API_KEY=${ALGOLIA_API_KEY}
       - SLACK_ALERTS_CHANNEL_ID=${SLACK_ALERTS_CHANNEL_ID}
+      - SLACK_RESEARCH_EVENTS_CHANNEL_ID=${SLACK_RESEARCH_EVENTS_CHANNEL_ID}
       - SLACK_TOKEN=${SLACK_TOKEN}
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
