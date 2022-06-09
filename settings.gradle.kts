@@ -23,6 +23,7 @@ include(
 
     // libs / apps
     "libs:apps:invest",
+    "libs:apps:trade",
 
     // libs / clients
     "libs:clients:arcane-platform-client",
@@ -54,6 +55,8 @@ include(
     // libs / utils
 
     "libs:utils:analytics",
+
+    "libs:utils:arrow-ktx",
 
     "libs:utils:cms",
     "libs:utils:cms:cms-api",

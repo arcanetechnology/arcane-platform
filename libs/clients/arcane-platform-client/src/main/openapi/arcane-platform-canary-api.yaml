@@ -154,6 +154,17 @@ paths:
         - firebase: [ ]
 
 
+  "/sdl":
+    get:
+      description: "GraphQL SDL"
+      produces:
+        - application/graphqls
+      operationId: "getGraphqlSdl"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: object
   "/graphql":
     get:
       description: "GraphQL GET endpoint"
@@ -176,7 +187,7 @@ paths:
     post:
       description: "GraphQL POST endpoint"
       consumes:
-        - application/json
+        - application/graphql
       produces:
         - application/json
       operationId: "graphqlPost"
@@ -277,6 +288,55 @@ paths:
           description: "Bad request"
       security:
         - firebase: [ ]
+
+
+  "/apps/trade/admin/sdl":
+    get:
+      description: "Trade Admin GraphQL SDL"
+      produces:
+        - application/graphqls
+      operationId: "getTradeAdminGraphqlSdl"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: object
+  "/apps/trade/admin/graphql":
+    get:
+      description: "Trade Admin GraphQL GET endpoint"
+      produces:
+        - application/json
+      operationId: "tradeAdminGraphqlGet"
+      parameters:
+        - name: "query"
+          in: query
+          description: "GraphQL Query."
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+    post:
+      description: "Trade Admin GraphQL POST endpoint"
+      consumes:
+        - application/graphql
+      produces:
+        - application/json
+      operationId: "tradeAdminGraphqlPost"
+      parameters:
+        - name: "request"
+          in: body
+          description: "GraphQL Request."
+          required: true
+          schema:
+            $ref: '#/definitions/GraphQLRequest'
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
 
 
 definitions:

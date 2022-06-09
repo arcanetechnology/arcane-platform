@@ -1,0 +1,81 @@
+scalar DateTime
+scalar BigInteger
+
+type Query {
+    users: [User!]
+    user(userId: String!): TradeUser
+    fiatCustodyAccounts: [CustodyAccount!]
+    cryptoCustodyAccounts: [CryptoAccount!]
+}
+
+type User {
+    id: ID!
+    email: String!
+}
+
+type TradeUser {
+    id: ID!
+    email: String!
+    createdOn: DateTime
+    profiles: [Profile]
+}
+
+enum ProfileType {
+    PERSONAL
+    BUSINESS
+}
+
+type Profile {
+    id: ID!
+    alias: String!
+    type: ProfileType!
+    createdOn: DateTime!
+    updatedOn: DateTime!
+    accounts: [StakeholderAccount!]!
+}
+
+enum Currency {
+    CHF
+    DKK
+    EUR
+    GBP
+    NOK
+    SEK
+    USD
+}
+
+type CustodyAccount {
+    id: ID!
+    balance: BigInteger!
+    currency: Currency!
+    alias: String!
+    createdOn: DateTime!
+    updatedOn: DateTime!
+}
+
+type StakeholderAccount {
+    id: ID!
+    balance: BigInteger!
+    currency: Currency!
+    alias: String!
+    createdOn: DateTime!
+    updatedOn: DateTime!
+    portfolios: [Portfolio!]!
+}
+
+type Portfolio {
+    id: ID!
+    alias: String!
+    createdOn: DateTime!
+    updatedOn: DateTime!
+    cryptoAccounts: [CryptoAccount!]!
+}
+
+type CryptoAccount {
+    id: ID!
+    balance: BigInteger!
+    currency: String!
+    alias: String!
+    createdOn: DateTime!
+    updatedOn: DateTime!
+}
