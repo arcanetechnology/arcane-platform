@@ -20,7 +20,7 @@ class InvestAppTest : StringSpec({
         }
     }
 
-    "POST /apps/invest/register -> Register app" {
+    "POST /apps/invest/register -> Unqualified investor" {
         apiClient.post {
             url(path = "apps/invest/register")
             headers {
@@ -29,7 +29,7 @@ class InvestAppTest : StringSpec({
             contentType(ContentType.Application.Json)
             setBody(
                 FundInfoRequest(
-                    investorType = InvestorType.PROFESSIONAL,
+                    investorType = InvestorType.UNQUALIFIED,
                     name = "Test",
                     phoneNumber = PhoneNumber(
                         countryCode = "47",
@@ -39,6 +39,7 @@ class InvestAppTest : StringSpec({
                     fundName = "Test fund name"
                 )
             )
+            expectSuccess = false
         }
     }
 

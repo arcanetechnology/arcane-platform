@@ -58,7 +58,12 @@ class GraphqlTest : AnnotationSpec() {
             //
 
             GraphqlModulesRegistry.getSdl() shouldBe """
+                        type App {
+                          appId: String!
+                        }
+                        
                         type Query {
+                          apps(appIds: [String]!): [App]!
                           termsAndConditions(tncIds: [String]!): [Tnc]!
                           user: User
                         }

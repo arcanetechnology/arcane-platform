@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 class ValidatePhoneNumberTest: StringSpec({
 
     "Test valid phone number" {
-        PhoneNumber("47", "12345678").validate() shouldBe true
+        PhoneNumber("47", "41234567").validate() shouldBe true
     }
     "Test invalid phone number" {
         PhoneNumber("47", "123456789").validate() shouldBe false
