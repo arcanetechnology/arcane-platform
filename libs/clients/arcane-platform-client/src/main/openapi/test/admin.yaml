@@ -1,0 +1,81 @@
+swagger: "2.0"
+
+info:
+  title: Arcane Platform API - Test
+  description: "Arcane Platform API for Acceptance Tests"
+  version: "1.0.0"
+
+host: test.api.arcane.no
+
+x-google-api-name: test.admin
+
+schemes:
+  - "https"
+
+paths:
+
+  "/apps/admin/user":
+    get:
+      description: Get user status by email
+      produces:
+        - application/json
+      operationId: "getUserStatusByEmail"
+      parameters:
+        - name: "email"
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: "User is registered to platform"
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: "User is not registered to platform"
+      security:
+        - firebase: [ ]
+
+  "/apps/admin/users/{user-id}":
+    get:
+      description: Get user status
+      produces:
+        - application/json
+      operationId: "getUserStatus"
+      parameters:
+        - name: "user-id"
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: "User is registered to platform"
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: "User is not registered to platform"
+      security:
+        - firebase: [ ]
+
+
+definitions:
+
+  User:
+    type: object
+    properties:
+      userId:
+        type: string
+      analyticsId:
+        type: string
+    required:
+      - userId
+      - analyticsId
+
+
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "oauth2-provider-emulator"
+    x-google-jwks_uri: "http://oauth2-provider-emulator:8080/auth/keys"
+    x-google-audiences: "acceptance-tests"

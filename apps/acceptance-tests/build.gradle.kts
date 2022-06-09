@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":libs:utils:logging"))
     implementation(project(":apps:oauth2-provider-emulator:oauth2-provider-api"))
     implementation(project(":libs:utils:firebase-auth"))
+    implementation(project(":libs:apps:trade:test-db-setup"))
     implementation("com.nimbusds:nimbus-jose-jwt:_")
     implementation(Ktor.client.cio)
     implementation(Ktor.client.logging)
@@ -17,6 +18,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:_")
     implementation("io.kotest:kotest-runner-junit5-jvm:_")
+    implementation("io.kotest:kotest-assertions-json-jvm:_")
     implementation("org.junit.platform:junit-platform-console:_")
 }
 

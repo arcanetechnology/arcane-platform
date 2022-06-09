@@ -1,0 +1,71 @@
+swagger: "2.0"
+
+info:
+  title: Arcane Platform API
+  description: "Arcane Platform API"
+  version: "1.0.0"
+
+host: ${GCP_API_HOST}
+
+x-google-api-name: misc
+
+schemes:
+  - "https"
+
+x-google-backend:
+  address: "https://${GCP_BACKEND_HOST}"
+  protocol: h2
+
+paths:
+
+  "/ping":
+    get:
+      description: "Ping endpoint for checking uptime and connectivity"
+      operationId: "ping"
+      responses:
+        200:
+          description: "pong"
+          schema:
+            type: string
+    post:
+      description: "Ping endpoint for checking uptime and connectivity"
+      operationId: "postPing"
+      responses:
+        200:
+          description: "pong"
+          schema:
+            type: string
+  "/utc":
+    get:
+      description: "utc endpoint for checking server time"
+      operationId: "utc"
+      responses:
+        200:
+          description: "UTC timestamp"
+          schema:
+            type: string
+      security:
+        - firebase: [ ]
+
+
+  "/whoami":
+    get:
+      description: "Get OAuth2 JWT payload"
+      operationId: "whoami"
+      responses:
+        200:
+          description: "Get OAuth2 JWT payload json"
+          schema:
+            type: string
+      security:
+        - firebase: [ ]
+
+
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://securetoken.google.com/${GCP_PROJECT_ID}"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "${GCP_PROJECT_ID}"

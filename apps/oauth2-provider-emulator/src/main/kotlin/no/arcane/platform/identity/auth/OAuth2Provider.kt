@@ -77,5 +77,24 @@ fun Application.module() {
 
             call.respondText(jwt.serialize())
         }
+
+        get("admin-id-token") {
+            val adminIdTokenPayload = call.receive<AdminIdTokenPayload>()
+
+            val claims = JWTClaimsSet.Builder()
+                .issuer(adminIdTokenPayload.issuer)
+                .audience(adminIdTokenPayload.audience)
+                .claim("user_id", adminIdTokenPayload.subject)
+                .subject(adminIdTokenPayload.subject)
+                .claim("email", adminIdTokenPayload.email)
+                .claim("email_verified", adminIdTokenPayload.emailVerified)
+                .claim("firebase", adminIdTokenPayload.firebase)
+                .build()
+
+            val jwt = SignedJWT(jwtHeader, claims)
+            jwt.sign(signer)
+
+            call.respondText(jwt.serialize())
+        }
     }
 }

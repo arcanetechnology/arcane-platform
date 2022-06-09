@@ -28,6 +28,7 @@ allprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_18.majorVersion
+            freeCompilerArgs += "-Xcontext-receivers"
         }
     }
 

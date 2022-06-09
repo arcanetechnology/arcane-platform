@@ -290,8 +290,21 @@ enum class ISO3CountyCode(
 }
 
 fun main() {
-    Locale.getISOCountries().forEach { iso2CountryCode ->
-        val locale = Locale("", iso2CountryCode)
-        println("""${locale.isO3Country}("${locale.displayName}"),""")
-    }
+    Locale
+        .getISOCountries()
+        .map { iso2CountryCode ->
+            val locale = Locale("en", iso2CountryCode)
+            locale.isO3Country to locale.displayCountry
+        }
+        // .sortedBy { (_, displayCountry) -> displayCountry }
+        .forEach { (iso3CountryCode, displayCountry) ->
+            println("""$iso3CountryCode("$displayCountry"),""")
+        }
+    println("===")
+    Locale
+        .getISOCountries(Locale.IsoCountryCode.PART1_ALPHA3)
+        .sorted()
+        .forEach { iso3CountryCode ->
+            println(iso3CountryCode)
+        }
 }

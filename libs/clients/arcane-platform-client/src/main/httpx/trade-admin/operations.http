@@ -1,0 +1,24 @@
+### Get custody account opertions
+
+GET https://dev.api.arcane.no/apps/trade-admin/custody-accounts/{{account-id}}/operations?offset=2022-08-15T00:00:00Z&limit=25
+Authorization: Bearer {{firebase-id-token}}
+
+### Get crypto account opertions
+
+GET https://dev.api.arcane.no/apps/trade-admin/crypto-custody-accounts/{{account-id}}/operations?offset=2022-08-15T00:00:00Z&limit=25
+Authorization: Bearer {{firebase-id-token}}
+
+### Get account operations
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/accounts/{{accountId}}/operations?offset=2022-08-15T00:00:00Z&limit=25
+Authorization: Bearer {{firebase-id-token}}
+
+### Get crypto account operations
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/crypto-accounts/{{accountId}}/operations?offset=2022-08-15T00:00:00Z&limit=25
+Authorization: Bearer {{firebase-id-token}}
+
+### Get Transaction operations
+
+GET https://dev.api.arcane.no/apps/trade-admin/transactions/{{transactionId}}/operations?offset=2022-08-15T00:00:00Z&limit=25
+Authorization: Bearer {{firebase-id-token}}

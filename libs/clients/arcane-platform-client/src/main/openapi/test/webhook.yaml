@@ -1,0 +1,42 @@
+swagger: "2.0"
+
+info:
+  title: Arcane Platform API - Test
+  description: "Arcane Platform API for Acceptance Tests"
+  version: "1.0.0"
+
+host: test.api.arcane.no
+
+x-google-api-name: test.webhook
+
+schemes:
+  - "https"
+
+paths:
+
+  "/contentfulEvents":
+    post:
+      description: Webhook callbacks on Contentful events
+      consumes:
+        - application/vnd.contentful.management.v1+json
+      produces:
+        - application/json
+      operationId: "reportContentfulEvent"
+      parameters:
+        - name: "request"
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: object
+
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: "x-api-key"
+    in: header

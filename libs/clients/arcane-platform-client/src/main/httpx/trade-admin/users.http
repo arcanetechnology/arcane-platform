@@ -1,0 +1,9 @@
+### Get trade user
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/<user-id>
+Authorization: Bearer <firebase-id-token>
+
+### Register trade user
+
+POST https://dev.api.arcane.no/apps/trade-admin/users/<user-id>
+Authorization: Bearer <firebase-id-token>

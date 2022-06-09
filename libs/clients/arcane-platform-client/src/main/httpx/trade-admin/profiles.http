@@ -1,0 +1,28 @@
+### Get all profiles
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles
+Authorization: Bearer {{firebase-id-token}}
+
+### Add profile
+
+POST https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles
+Authorization: Bearer {{firebase-id-token}}
+
+{
+  "alias": "Alias",
+  "type": "PERSONAL"
+}
+
+### Get profile
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}
+Authorization: Bearer {{firebase-id-token}}
+
+### Update profile
+
+PUT https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}
+Authorization: Bearer {{firebase-id-token}}
+
+{
+  "alias": "Alias"
+}

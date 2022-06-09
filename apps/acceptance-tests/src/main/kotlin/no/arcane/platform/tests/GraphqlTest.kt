@@ -6,6 +6,8 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
+import no.arcane.platform.tests.utils.apiClient
+import no.arcane.platform.tests.utils.appendEndpointsApiUserInfoHeader
 import java.util.*
 
 class GraphqlTest : StringSpec({

@@ -28,18 +28,20 @@ class GcpEndpointsAuthProvider internal constructor(
     class Configuration internal constructor(name: String?) : Config(name)
 
     override suspend fun onAuthenticate(context: AuthenticationContext) {
-        when (val espV2Header = context.call.request.espV2Header()) {
-            null -> context.challenge(
+        val espV2Header = context.call.request.espV2Header()
+        if (espV2Header == null) {
+            context.challenge(
                 OAuthKey,
                 AuthenticationFailedCause.NoCredentials,
             ) { challenge, call ->
                 call.respond(UnauthorizedResponse())
                 challenge.complete()
             }
-            else -> context.principal(
-                UserIdPrincipal(espV2Header.email)
-            )
+            return
         }
+        context.principal(
+            UserIdPrincipal(espV2Header.email)
+        )
     }
 }
 

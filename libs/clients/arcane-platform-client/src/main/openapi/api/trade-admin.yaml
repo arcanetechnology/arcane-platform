@@ -1,0 +1,980 @@
+swagger: "2.0"
+
+info:
+  title: Arcane Platform API
+  description: "Arcane Platform API"
+  version: "1.0.0"
+
+host: ${GCP_API_HOST}
+
+x-google-api-name: trade.admin
+
+schemes:
+  - "https"
+
+x-google-backend:
+  address: "https://${GCP_BACKEND_HOST}"
+  protocol: h2
+
+paths:
+
+  "/apps/trade-admin/custody-accounts":
+    get:
+      description: Get all custody accounts
+      produces:
+        - application/json
+      operationId: getCustodyAccounts
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CustodyAccount'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/custody-accounts/{account-id}":
+    get:
+      description: Get custody account
+      produces:
+        - application/json
+      operationId: getCustodyAccount
+      parameters:
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/CustodyAccount'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/custody-accounts/{account-id}/operations":
+    get:
+      description: Get custody account operations
+      produces:
+        - application/json
+      operationId: getCustodyAccountOperations
+      parameters:
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AccountOperation'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+
+  "/apps/trade-admin/crypto-custody-accounts":
+    get:
+      description: Get all crypto custody accounts
+      produces:
+        - application/json
+      operationId: getCryptoCustodyAccounts
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CustodyAccount'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/crypto-custody-accounts/{account-id}":
+    get:
+      description: Get crypto custody account
+      produces:
+        - application/json
+      operationId: getCryptoCustodyAccount
+      parameters:
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/CustodyAccount'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/crypto-custody-accounts/{account-id}/operations":
+    get:
+      description: Get crypto custody account operations
+      produces:
+        - application/json
+      operationId: getCryptoCustodyAccountOperations
+      parameters:
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AccountOperation'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+
+  "/apps/trade-admin/users/{user-id}":
+    get:
+      description: Get trade app user
+      produces:
+        - application/json
+      operationId: getTradeAppUser
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+    post:
+      description: Register trade app for user
+      produces:
+        - application/json
+      operationId: registerTradeApp
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Bad request
+      security:
+        - firebase: [ ]
+
+  "/apps/trade-admin/users/{user-id}/profiles":
+    get:
+      description: Get all Trade app user profiles
+      produces:
+        - application/json
+      operationId: getAllTradeAppUserProfiles
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Profile'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+    post:
+      description: Add profile for trade app user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: addTradeAppUserProfile
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              alias:
+                type: string
+              type:
+                type: string
+                enum:
+                  - PERSONAL
+                  - BUSINESS
+            required:
+              - alias
+              - type
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Profile'
+        400:
+          description: Bad request
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/users/{user-id}/profiles/{profile-id}":
+    get:
+      description: Get Trade app user profile
+      produces:
+        - application/json
+      operationId: getTradeAppUserProfile
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Profile'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+    put:
+      description: Update Trade app user profiles
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: updateTradeAppUserProfile
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: profile
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              alias:
+                type: string
+            required:
+              - alias
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Profile'
+        404:
+          description: Bad request
+      security:
+        - firebase: [ ]
+  #    delete:
+  #      description: Delete Trade app user profiles
+  #      operationId: deleteTradeAppUserProfile
+  #      parameters:
+  #        - name: user-id
+  #          in: path
+  #          required: true
+  #          type: string
+  #        - name: profile-id
+  #          in: path
+  #          required: true
+  #          type: string
+  #      responses:
+  #        200:
+  #          description: Success
+  #        400:
+  #          description: Bad request
+  #      security:
+  #        - firebase: [ ]
+
+  "/apps/trade-admin/users/{user-id}/profiles/{profile-id}/accounts":
+    get:
+      description: Get all Trade app user profile accounts
+      produces:
+        - application/json
+      operationId: getAllTradeAppUserProfileAccounts
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Account'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+    post:
+      description: Add Trade app user profile account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: addTradeAppUserProfileAccount
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              custodyAccountId:
+                type: string
+              currency:
+                type: string
+              alias:
+                type: string
+            required:
+              - custodyAccountId
+              - currency
+              - alias
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Account'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/users/{user-id}/profiles/{profile-id}/accounts/{account-id}":
+    get:
+      description: Get Trade app user profile account
+      produces:
+        - application/json
+      operationId: getTradeAppUserProfileAccount
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Account'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+    put:
+      description: Update Trade app user profile account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: updateTradeAppUserProfileAccount
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account-id
+          in: path
+          required: true
+          type: string
+        - name: account
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              alias:
+                type: string
+            required:
+              - alias
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Account'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/users/{user-id}/profiles/{profile-id}/accounts/{account-id}/operations":
+    get:
+      description: Get Trade app user profile account operations
+      produces:
+        - application/json
+      operationId: getTradeAppUserProfileAccountOperations
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AccountOperation'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+
+  "/apps/trade-admin/users/{user-id}/profiles/{profile-id}/crypto-accounts":
+    get:
+      description: Get all Trade app user profile crypto accounts
+      produces:
+        - application/json
+      operationId: getAllTradeAppUserProfileCryptoAccounts
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Account'
+        404:
+          description: Not found
+      security:
+        - firebase: [ ]
+    post:
+      description: Add Trade app user profile crypto account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: addTradeAppUserProfileCryptoAccount
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              custodyAccountId:
+                type: string
+              currency:
+                type: string
+              alias:
+                type: string
+            required:
+              - custodyAccountId
+              - currency
+              - alias
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Account'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/users/{user-id}/profiles/{profile-id}/crypto-accounts/{account-id}":
+    get:
+      description: Get Trade app user profile crypto account
+      produces:
+        - application/json
+      operationId: getTradeAppUserProfileCryptoAccount
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Account'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+    put:
+      description: Update Trade app user profile crypto account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: updateTradeAppUserProfileCryptoAccount
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account-id
+          in: path
+          required: true
+          type: string
+        - name: account
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              alias:
+                type: string
+            required:
+              - alias
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Account'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/users/{user-id}/profiles/{profile-id}/crypto-accounts/{account-id}/operations":
+    get:
+      description: Get Trade app user profile crypto account operations
+      produces:
+        - application/json
+      operationId: getTradeAppUserProfileCryptoAccountOperations
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          type: string
+        - name: profile-id
+          in: path
+          required: true
+          type: string
+        - name: account-id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AccountOperation'
+        404:
+          description: Bad Request
+      security:
+        - firebase: [ ]
+
+  "/apps/trade-admin/transactions":
+    get:
+      description: "Get transactions"
+      produces:
+        - application/json
+      operationId: getTransactions
+      parameters:
+        - name: offset
+          in: query
+          type: string
+          format: date-time
+          required: false
+          default: "7 days from now"
+        - name: limit
+          in: query
+          type: integer
+          required: false
+          default: 10
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Transaction"
+    post:
+      description: "Add new transaction to ledger."
+      consumes:
+        - application/json
+      operationId: addTransaction
+      parameters:
+        - name: "Transaction"
+          in: body
+          description: "Array of Operations"
+          required: true
+          schema:
+            type: object
+            description: "Array of AddOperation"
+#            type: array
+#            items:
+#              $ref: "#/definitions/AddOperation"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Transaction"
+        400:
+          description: "Bad request"
+          schema:
+            type: object
+      security:
+        - firebase: [ ]
+  "/apps/trade-admin/transactions/{transaction-id}":
+    get:
+      description: "Get Transaction"
+      produces:
+        - application/json
+      operationId: getTransaction
+      parameters:
+        - name: transaction-id
+          in: path
+          type: string
+          description: "Transaction ID"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Transaction"
+        404:
+          description: "Not found"
+  "/apps/trade-admin/transactions/{transaction-id}/operations":
+    get:
+      description: "Get Transaction Operations"
+      produces:
+        - application/json
+      operationId: getTransactionOperations
+      parameters:
+        - name: transaction-id
+          in: path
+          type: string
+          description: "Transaction ID"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TransactionOperation"
+        404:
+          description: "Not found"
+
+  "/apps/trade-admin/sdl":
+    get:
+      description: "Trade Admin GraphQL SDL"
+      produces:
+        - application/graphqls
+      operationId: "getTradeAdminGraphqlSdl"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: object
+  "/apps/trade-admin/graphql":
+    get:
+      description: "Trade Admin GraphQL GET endpoint"
+      produces:
+        - application/json
+      operationId: "tradeAdminGraphqlGet"
+      parameters:
+        - name: "query"
+          in: query
+          description: "GraphQL Query."
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+    post:
+      description: "Trade Admin GraphQL POST endpoint"
+      consumes:
+        - application/graphql
+      produces:
+        - application/json
+      operationId: "tradeAdminGraphqlPost"
+      parameters:
+        - name: "request"
+          in: body
+          description: "GraphQL Request."
+          required: true
+          schema:
+            $ref: '#/definitions/GraphQLRequest'
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+
+
+definitions:
+
+  CustodyAccount:
+    type: object
+    properties:
+      id:
+        type: string
+      balance:
+        type: number
+      reservedBalance:
+        type: number
+      currency:
+        type: string
+      alias:
+        type: string
+      createdOn:
+        type: string
+        format: date-time
+      updatedOn:
+        type: string
+        format: date-time
+    required:
+      - id
+      - balance
+      - reservedBalance
+      - currency
+      - alias
+      - createdOn
+      - updatedOn
+
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      createdOn:
+        type: string
+        format: date-time
+    required:
+      - id
+      - createdOn
+
+  Profile:
+    type: object
+    properties:
+      id:
+        type: string
+      alias:
+        type: string
+      type:
+        type: string
+        enum:
+          - PERSONAL
+          - BUSINESS
+      createdOn:
+        type: string
+        format: date-time
+      updatedOn:
+        type: string
+        format: date-time
+    required:
+      - id
+      - alias
+      - type
+      - createdOn
+      - updatedOn
+
+  Account:
+    type: object
+    properties:
+      id:
+        type: string
+      custodyAccountId:
+        type: string
+      balance:
+        type: number
+      reservedBalance:
+        type: number
+      currency:
+        type: string
+      alias:
+        type: string
+      createdOn:
+        type: string
+        format: date-time
+      updatedOn:
+        type: string
+        format: date-time
+    required:
+      - id
+      - custodyAccountId
+      - balance
+      - reservedBalance
+      - currency
+      - alias
+      - createdOn
+      - updatedOn
+
+  GraphQLRequest:
+    type: object
+    properties:
+      query:
+        description: "GraphQL query."
+        type: string
+    required:
+      - query
+  GraphQLResponse:
+    type: object
+    properties:
+      data:
+        type: object
+      errors:
+        type: array
+        items:
+          type: string
+
+  AddOperation:
+    type: object
+    properties:
+      accountId:
+        type: string
+      amount:
+        type: integer
+    required:
+      - accountId
+      - amount
+
+  AccountOperation:
+    type: object
+    properties:
+      transactionId:
+        type: string
+      amount:
+        type: integer
+      balance:
+        type: integer
+      createdOn:
+        type: string
+        format: date-time
+    required:
+      - transactionId
+      - amount
+      - balance
+      - createdOn
+
+  Transaction:
+    type: object
+    properties:
+      transactionId:
+        type: string
+      createdOn:
+        type: string
+        format: date-time
+    required:
+      - transactionId
+      - createdOn
+
+  TransactionOperation:
+    type: object
+    properties:
+      operationId:
+        type: string
+      accountId:
+        type: string
+      amount:
+        type: integer
+      balance:
+        type: integer
+      createdOn:
+        type: string
+        format: date-time
+    required:
+      - operationId
+      - accountId
+      - amount
+      - balance
+      - createdOn
+
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://securetoken.google.com/${GCP_PROJECT_ID}"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "${GCP_PROJECT_ID}"

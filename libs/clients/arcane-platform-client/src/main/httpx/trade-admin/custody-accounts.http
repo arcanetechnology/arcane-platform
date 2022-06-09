@@ -1,0 +1,19 @@
+### Get all custody accounts
+
+GET https://dev.api.arcane.no/apps/trade-admin/custody-accounts
+Authorization: Bearer {{firebase-id-token}}
+
+### Get a custody account
+
+GET https://dev.api.arcane.no/apps/trade-admin/custody-accounts/{{account-id}}
+Authorization: Bearer {{firebase-id-token}}
+
+### Get all fiat crypto custody accounts
+
+GET https://dev.api.arcane.no/apps/trade-admin/crypto-custody-accounts
+Authorization: Bearer {{firebase-id-token}}
+
+### Get a crypto custody account
+
+GET https://dev.api.arcane.no/apps/trade-admin/crypto-custody-accounts/{{account-id}}
+Authorization: Bearer {{firebase-id-token}}

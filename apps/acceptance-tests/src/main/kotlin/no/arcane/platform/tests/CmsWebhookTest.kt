@@ -2,6 +2,7 @@ package no.arcane.platform.tests
 
 import io.kotest.core.spec.style.StringSpec
 import io.ktor.client.request.*
+import no.arcane.platform.tests.utils.apiClient
 
 class CmsWebhookTest : StringSpec({
 

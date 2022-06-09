@@ -1,0 +1,270 @@
+swagger: "2.0"
+
+info:
+  title: Arcane Platform API
+  description: "Arcane Platform API"
+  version: "1.0.0"
+
+host: ${GCP_API_HOST}
+
+x-google-api-name: platform
+
+schemes:
+  - "https"
+
+x-google-backend:
+  address: "https://${GCP_BACKEND_HOST}"
+  protocol: h2
+
+paths:
+
+  "/firebase-custom-token":
+    get:
+      description: |
+        Pass Apple id_token as Bearer value to Auth header.
+        If the token is valid, it will try to find an existing user using email from id_token.
+        If the user does not exist, it will create a new user.
+        For valid Apple id_token, it returns Firebase custom token for new/existing user.
+      operationId: "getFirebaseCustomToken"
+      responses:
+        200:
+          description: "Firebase custom token"
+          schema:
+            type: string
+      security:
+        - apple: [ ]
+
+
+  "/user":
+    get:
+      description: "Get user"
+      operationId: getUser
+      responses:
+        200:
+          description: User
+          schema:
+            $ref: "#/definitions/User"
+      security:
+        - firebase: [ ]
+    post:
+      description: |
+        Create user using userId from JWT OAuth Identity token in Authentication Bearer header.
+        New Analytics ID will be assigned to this user.
+      operationId: createUser
+      responses:
+        200:
+          description: "Created User"
+          schema:
+            $ref: "#/definitions/User"
+      security:
+        - firebase: [ ]
+
+
+  "/tnc/{tnc-id}":
+    get:
+      description: "Get Terms & Conditions response"
+      operationId: "getTnc"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Terms & Conditions"
+          schema:
+            $ref: "#/definitions/TncResponse"
+        404:
+          description: "Terms & Conditions were not submitted"
+      security:
+        - firebase: [ ]
+    post:
+      description: "Save Terms & Conditions response"
+      operationId: "setTnc"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+        - name: tnc
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TncRequest"
+      responses:
+        200:
+          description: "Saved Terms & Conditions"
+          schema:
+            $ref: "#/definitions/TncResponse"
+      security:
+        - firebase: [ ]
+  "/tnc/{tnc-id}/email":
+    post:
+      description: "Send Terms & Conditions in email"
+      operationId: "sendTncEmail"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Terms & Conditions sent in email"
+      security:
+        - firebase: [ ]
+
+
+  "/sdl":
+    get:
+      description: "GraphQL SDL"
+      produces:
+        - application/graphqls
+      operationId: "getGraphqlSdl"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: object
+  "/graphql":
+    get:
+      description: "GraphQL GET endpoint"
+      produces:
+        - application/json
+      operationId: "graphqlGet"
+      parameters:
+        - name: "query"
+          in: query
+          description: "GraphQL Query."
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+    post:
+      description: "GraphQL POST endpoint"
+      consumes:
+        - application/graphql
+      produces:
+        - application/json
+      operationId: "graphqlPost"
+      parameters:
+        - name: "request"
+          in: body
+          description: "GraphQL Request."
+          required: true
+          schema:
+            $ref: '#/definitions/GraphQLRequest'
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+
+
+definitions:
+
+  User:
+    type: object
+    properties:
+      userId:
+        type: string
+      analyticsId:
+        type: string
+    required:
+      - userId
+      - analyticsId
+
+
+  TncRequest:
+    type: object
+    properties:
+      version:
+        type: string
+      accepted:
+        type: boolean
+      spaceId:
+        type: string
+      environmentId:
+        type: string
+      entryId:
+        type: string
+      fieldId:
+        type: string
+    required:
+      - version
+      - accepted
+      - spaceId
+      - environmentId
+      - entryId
+      - fieldId
+  TncResponse:
+    type: object
+    properties:
+      tncId:
+        type: string
+      version:
+        type: string
+      accepted:
+        type: boolean
+      spaceId:
+        type: string
+      environmentId:
+        type: string
+      entryId:
+        type: string
+      fieldId:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+    required:
+      - tncId
+      - version
+      - accepted
+      - spaceId
+      - environmentId
+      - entryId
+      - fieldId
+      - timestamp
+
+
+  GraphQLRequest:
+    type: object
+    properties:
+      query:
+        description: "GraphQL query."
+        type: string
+    required:
+      - query
+  GraphQLResponse:
+    type: object
+    properties:
+      data:
+        type: object
+      errors:
+        type: array
+        items:
+          type: string
+
+
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://securetoken.google.com/${GCP_PROJECT_ID}"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "${GCP_PROJECT_ID}"
+  apple:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://appleid.apple.com"
+    x-google-jwks_uri: "https://appleid.apple.com/auth/keys"
+    x-google-audiences: "no.arcane.platform.client.web"

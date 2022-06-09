@@ -16,17 +16,23 @@
 
 ### Tech stack
 
- * Kotlin
-   * Ktor
-   * Arrow-kt
+ * [Kotlin](https://kotlinlang.org/)
+   * [Ktor](https://ktor.io/)
+   * [Arrow-kt](https://arrow-kt.io/)
    * JDK
  * GCP
-   * ESPv2
-   * Cloud Run (KNative)
-   * Firestore
- * Docker
-   * Docker compose
- * Gradle
-   * Kotlin Script
+   * OpenAPI v2 + [ESPv2](https://cloud.google.com/endpoints/docs/openapi/architecture-overview)
+   * [Cloud Run](https://cloud.google.com/run) ([KNative](https://knative.dev/docs/))
+   * [Firestore](https://cloud.google.com/firestore) DB + [firestore4k](https://firestore4k.io)
+   * [Spanner](https://cloud.google.com/spanner) DB
+   * [Firebase Auth](https://firebase.google.com/docs/auth) + [Identity Platform](https://cloud.google.com/identity-platform)
+     * Login with Google
+     * Login with Apple ID
+     * SSO using SAML
+   * [Cloud Armor](https://cloud.google.com/armor)
+ * [Docker](https://www.docker.com/)
+   * [Docker compose](https://docs.docker.com/compose/)
+ * [Gradle](https://gradle.org/)
+   * [Kotlin Script](https://gradle.org/kotlin/)
  * Structured Monolith
  * Monorepo

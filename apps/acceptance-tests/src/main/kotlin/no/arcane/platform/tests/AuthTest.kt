@@ -8,8 +8,10 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.arcane.platform.identity.auth.FirebaseIdTokenPayload
 import no.arcane.platform.identity.auth.gcp.FirebaseAuthService
+import no.arcane.platform.tests.utils.apiClient
+import no.arcane.platform.tests.utils.appendAppleIdToken
+import no.arcane.platform.tests.utils.appendEndpointsApiUserInfoHeader
 import java.util.*
-
 
 class AuthTest : StringSpec({
 

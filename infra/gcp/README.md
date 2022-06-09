@@ -168,6 +168,13 @@ gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
   --role roles/storage.objectAdmin
 ```
 
+Assign role to service account so that it can access Cloud Spanner database.
+```shell
+gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" \
+  --member serviceAccount:arcane-platform@"$GCP_PROJECT_ID".iam.gserviceaccount.com \
+  --role roles/spanner.databaseUser
+```
+
 ## Cron jobs using GCP scheduler invoking Cloud Run
 
 ```shell
@@ -287,4 +294,31 @@ Ref: https://cloud.google.com/load-balancing/docs/https/setting-up-global-http-h
 gcloud compute backend-services update web-backend-service \
   --global \
   --custom-response-header='Strict-Transport-Security:max-age=31536000; includeSubDomains; preload'
+```
+
+## Setup Spanner
+
+Create instance
+```shell
+gcloud spanner instances create trade \
+  --config=regional-europe-west1 \
+  --description="Trade" \
+  --processing-units=100
+
+gcloud spanner instances list
+```
+
+Create database
+```shell
+gcloud spanner databases create trade \
+  --instance=trade \
+  --database-dialect=GOOGLE_STANDARD_SQL \
+  --async
+```
+
+Create Schema
+```shell
+gcloud spanner databases ddl update trade \
+  --ddl-file=libs/apps/trade/src/main/resources/schema.ddl \
+  --async
 ```

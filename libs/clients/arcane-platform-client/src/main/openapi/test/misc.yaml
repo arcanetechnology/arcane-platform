@@ -1,0 +1,67 @@
+swagger: "2.0"
+
+info:
+  title: Arcane Platform API - Test
+  description: "Arcane Platform API for Acceptance Tests"
+  version: "1.0.0"
+
+host: test.api.arcane.no
+
+x-google-api-name: test.misc
+
+schemes:
+  - "https"
+
+paths:
+
+  "/ping":
+    get:
+      description: "Ping endpoint for checking uptime and connectivity"
+      operationId: "ping"
+      responses:
+        200:
+          description: "pong"
+          schema:
+            type: string
+    post:
+      description: "Ping endpoint for checking uptime and connectivity"
+      operationId: "postPing"
+      responses:
+        200:
+          description: "pong"
+          schema:
+            type: string
+  "/utc":
+    get:
+      description: "utc endpoint for checking server time"
+      operationId: "utc"
+      responses:
+        200:
+          description: "UTC timestamp"
+          schema:
+            type: string
+      security:
+        - firebase: [ ]
+
+
+  "/whoami":
+    get:
+      description: "Get OAuth2 JWT payload"
+      operationId: "whoami"
+      responses:
+        200:
+          description: "Get OAuth2 JWT payload json"
+          schema:
+            type: string
+      security:
+        - firebase: [ ]
+
+
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "oauth2-provider-emulator"
+    x-google-jwks_uri: "http://oauth2-provider-emulator:8080/auth/keys"
+    x-google-audiences: "acceptance-tests"

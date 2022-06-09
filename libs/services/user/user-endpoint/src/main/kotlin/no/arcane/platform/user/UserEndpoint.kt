@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import no.arcane.platform.identity.auth.gcp.UserInfo
 import no.arcane.platform.user.UserService.createUser
 import no.arcane.platform.user.UserService.fetchUser
+import no.arcane.platform.utils.logging.logWithMDC
 
 fun Application.module() {
 
@@ -16,25 +17,29 @@ fun Application.module() {
             route("/user") {
                 get {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
-                    val user = userId.fetchUser()
-                    if (user != null) {
-                        call.application.log.info("Found user: {}", user)
-                        call.respond(HttpStatusCode.OK, user)
-                    } else {
-                        call.application.log.info("User: {} does not exists", userId)
-                        call.respond(HttpStatusCode.NotFound)
+                    logWithMDC("userId" to userId.value) {
+                        val user = userId.fetchUser()
+                        if (user != null) {
+                            call.application.log.info("Found user: {}", user)
+                            call.respond(HttpStatusCode.OK, user)
+                        } else {
+                            call.application.log.info("User: {} does not exists", userId)
+                            call.respond(HttpStatusCode.NotFound)
+                        }
                     }
                 }
 
                 post {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
-                    call.application.log.info("Creating user: {}", userId)
-                    val user = userId.createUser()
-                    if (user == null) {
-                        call.application.log.error("Failed to create a user: $userId")
-                        call.respond(HttpStatusCode.InternalServerError)
-                    } else {
-                        call.respond(HttpStatusCode.OK, user)
+                    logWithMDC("userId" to userId.value) {
+                        call.application.log.info("Creating user: {}", userId)
+                        val user = userId.createUser()
+                        if (user == null) {
+                            call.application.log.error("Failed to create a user: $userId")
+                            call.respond(HttpStatusCode.InternalServerError)
+                        } else {
+                            call.respond(HttpStatusCode.OK, user)
+                        }
                     }
                 }
             }

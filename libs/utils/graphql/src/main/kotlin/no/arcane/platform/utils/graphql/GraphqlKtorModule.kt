@@ -16,11 +16,33 @@ import no.arcane.platform.utils.logging.logWithMDC
 
 fun Application.module() {
 
-    val graphQL by lazy { GraphqlModulesRegistry.getGraphQL() }
-
     val sdl by lazy { GraphqlModulesRegistry.getSdl() }
+    val jacksonObjectMapper = lazy { jacksonObjectMapper() }
+    val graphql by lazy { GraphqlModulesRegistry.getGraphQL() }
 
-    val jacksonObjectMapper by lazy { jacksonObjectMapper() }
+    suspend fun handleRequest(
+        call: ApplicationCall,
+        graphqlQuery: String,
+        userId: String,
+    ) {
+        val executionInput: ExecutionInput = ExecutionInput.newExecutionInput()
+            .query(graphqlQuery)
+            .graphQLContext(mapOf("userId" to userId))
+            .build()
+
+        val executionResult: ExecutionResult = graphql.executeAsync(executionInput).await()
+        val data = jacksonObjectMapper.value.writeValueAsString(executionResult.getData())
+        call.respond(
+            GraphqlResponse(
+                data = data,
+                errors = if (executionResult.errors.isNullOrEmpty()) {
+                    null
+                } else {
+                    executionResult.errors.map { it.toString() }
+                }
+            )
+        )
+    }
 
     routing {
 
@@ -29,30 +51,8 @@ fun Application.module() {
         }
 
         authenticate("esp-v2-header") {
-            suspend fun handleRequest(
-                call: ApplicationCall,
-                graphqlQuery: String,
-                userId: String,
-            ) {
-                val executionInput: ExecutionInput = ExecutionInput.newExecutionInput()
-                    .query(graphqlQuery)
-                    .graphQLContext(mapOf("userId" to userId))
-                    .build()
 
-                val executionResult: ExecutionResult = graphQL.executeAsync(executionInput).await()
-                val data = jacksonObjectMapper.writeValueAsString(executionResult.getData())
-                call.respond(
-                    GraphqlResponse(
-                        data = data,
-                        errors = if (executionResult.errors.isNullOrEmpty()) {
-                            null
-                        } else {
-                            executionResult.errors.map { it.toString() }
-                        }
-                    )
-                )
-            }
-            get ("graphql") {
+            get("graphql") {
                 val userId = call.principal<UserInfo>()!!.userId
                 logWithMDC("userId" to userId) {
                     val graphqlQuery = call.request.queryParameters["query"]
@@ -63,6 +63,7 @@ fun Application.module() {
                     }
                 }
             }
+
             post("graphql") {
                 val userId = call.principal<UserInfo>()!!.userId
                 logWithMDC("userId" to userId) {

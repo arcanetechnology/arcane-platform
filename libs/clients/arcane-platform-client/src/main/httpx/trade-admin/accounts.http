@@ -1,0 +1,59 @@
+### Get all accounts
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/accounts
+Authorization: Bearer {{firebase-id-token}}
+
+### Add account
+
+POST https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/accounts
+Authorization: Bearer {{firebase-id-token}}
+
+{
+  "currency": "NOK",
+  "alias": "Alias",
+  "custodyAccountId": "{{custody-account-id}}"
+}
+
+### Get account
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/accounts/{{accountId}}
+Authorization: Bearer {{firebase-id-token}}
+
+### Update account
+
+PUT https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/accounts/{{accountId}}
+Authorization: Bearer {{firebase-id-token}}
+
+{
+  "alias": "Alias"
+}
+
+### Get all crypto accounts
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/crypto-accounts
+Authorization: Bearer {{firebase-id-token}}
+
+### Add crypto account
+
+POST https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/crypto-accounts
+Authorization: Bearer {{firebase-id-token}}
+
+{
+  "currency": "ETH",
+  "alias": "Alias",
+  "custodyAccountId": "{{custody-account-id}}"
+}
+
+### Get crypto account
+
+GET https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/crypto-accounts/{{accountId}}
+Authorization: Bearer {{firebase-id-token}}
+
+### Update crypto account
+
+PUT https://dev.api.arcane.no/apps/trade-admin/users/{{user-id}}/profiles/{{profile-id}}/crypto-accounts/{{accountId}}
+Authorization: Bearer {{firebase-id-token}}
+
+{
+  "alias": "Alias"
+}

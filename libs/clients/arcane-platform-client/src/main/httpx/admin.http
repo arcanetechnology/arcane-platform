@@ -1,0 +1,9 @@
+### Check platfrom user by email
+
+GET https://dev.api.arcane.no/apps/admin/user?email=<email>
+Authorization: Bearer <firebase-id-token>
+
+### Check platform user by id
+
+GET https://dev.api.arcane.no/apps/admin/users/<user-id>
+Authorization: Bearer <firebase-id-token>

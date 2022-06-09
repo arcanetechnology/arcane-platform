@@ -1,0 +1,65 @@
+### Test data for Arcane Trade Admin
+
+GRAPHQL https://canary.api.arcane.no/apps/trade/admin/graphql
+Content-Type: application/graphql
+
+{
+    users {
+        id
+        email
+    }
+    user(userId: "foo") {
+        id
+        email
+        createdOn
+        profiles {
+            id
+            alias
+            type
+            createdOn
+            updatedOn
+            accounts {
+                id
+                balance
+                currency
+                alias
+                createdOn
+                updatedOn
+                portfolios {
+                    id
+                    alias
+                    createdOn
+                    updatedOn
+                    cryptoAccounts {
+                        id
+                        balance
+                        currency
+                        alias
+                        createdOn
+                        updatedOn
+                    }
+                }
+            }
+        }
+    }
+    fiatCustodyAccounts {
+        id
+        balance
+        currency
+        alias
+        createdOn
+        updatedOn
+    }
+    cryptoCustodyAccounts {
+        id
+        balance
+        currency
+        alias
+        createdOn
+        updatedOn
+    }
+}
+
+### Get SDL
+
+GET https://canary.api.arcane.no/apps/trade/admin/sdl

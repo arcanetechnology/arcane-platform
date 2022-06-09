@@ -2,10 +2,4 @@ schema {
     query: Query
 }
 
-type Query {
-    apps(appIds: [String]!) : [App]!
-}
-
-type App {
-    appId: String!
-}
+type Query

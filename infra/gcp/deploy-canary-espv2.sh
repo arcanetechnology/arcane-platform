@@ -24,12 +24,19 @@ fi
 ## temp dir to store modified OpenAPI file
 TMP_DIR=$(mktemp -d)
 echo "$TMP_DIR"
-TMP_FILE="$TMP_DIR/arcane-platform-canary-api.yaml"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_BACKEND_HOST}~'"${GCP_BACKEND_HOST}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-canary-api.yaml >"$TMP_FILE"
+files=(admin invest misc platform trade-admin webhook)
 
-gcloud endpoints services deploy "$TMP_FILE"
+files_string=""
+
+for file in "${files[@]}"; do
+  sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_BACKEND_HOST}~'"${GCP_BACKEND_HOST}"'~g' \
+    libs/clients/arcane-platform-client/src/main/openapi/canary/${file}.yaml > "$TMP_DIR/${file}.yaml"
+  files_string+=" ${TMP_DIR}/${file}.yaml"
+done
+
+gcloud endpoints services deploy ${files_string}
 
 # Build ESP docker
 
@@ -91,7 +98,7 @@ echo "espCloudRun[image]: ${espCloudRun["image"]}"
 gcloud run deploy "${espCloudRun["service"]}" \
   --region europe-west1 \
   --image "${espCloudRun["image"]}" \
-  --set-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex='^https:\/\/(dev\.)?arcane\.no$'++--cors_max_age=5m \
+  --set-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex="${CORS_REGEX}"++--cors_max_age=5m \
   --cpu=1 \
   --memory=512Mi \
   --min-instances=1 \

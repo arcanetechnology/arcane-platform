@@ -21,12 +21,12 @@ fi
 
 # Deploy endpoints service
 
-## temp dir to store modified OpenAPI file
-TMP_DIR=$(mktemp -d)
-echo "$TMP_DIR"
-TMP_FILE="$TMP_DIR/arcane-platform-test-api.yaml"
-trap 'rm -rf "$TMP_DIR"' EXIT
+files=(admin invest misc platform trade-admin webhook)
 
-sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-test-api.yaml >"$TMP_FILE"
+files_string=""
 
-gcloud endpoints services deploy "$TMP_FILE"
+for file in "${files[@]}"; do
+  files_string+=" libs/clients/arcane-platform-client/src/main/openapi/test/${file}.yaml"
+done
+
+gcloud endpoints services deploy ${files_string}

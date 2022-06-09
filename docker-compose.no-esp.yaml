@@ -10,10 +10,18 @@ services:
       - "5173:5173"
     command: [ "gcloud", "beta", "emulators", "firestore", "start", "--host-port=0.0.0.0:5173" ]
 
+  spanner-emulator:
+    container_name: spanner-emulator
+    image: gcr.io/cloud-spanner-emulator/emulator:latest
+    ports:
+      - "9010:9010"
+      - "9020:9020"
+
   arcane-platform-app:
     container_name: arcane-platform-app
     build: apps/arcane-platform-app
     environment:
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
       - JAVA_OPTS=-Dlogback.configurationFile=logback.xml
@@ -40,6 +48,7 @@ services:
       - INVEST_EMAIL_TO_LIST=${INVEST_EMAIL_TO_LIST}
       - INVEST_EMAIL_CC_LIST=${INVEST_EMAIL_CC_LIST}
       - INVEST_EMAIL_BCC_LIST=${INVEST_EMAIL_BCC_LIST}
+      - SPANNER_EMULATOR_HOST=spanner-emulator:9010
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     expose:
@@ -48,12 +57,14 @@ services:
       - "8080:8080"
     depends_on:
       - firestore-emulator
+      - spanner-emulator
 
   acceptance-tests:
     container_name: acceptance-tests
     build: apps/acceptance-tests
     environment:
       - BACKEND_HOST=arcane-platform-app
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - LEGAL_SPACE_ID=${LEGAL_SPACE_ID}
       - PLATFORM_TNC_VERSION=${PLATFORM_TNC_VERSION}
@@ -61,7 +72,9 @@ services:
       - PLATFORM_TNC_ENTRY_ID=${PLATFORM_TNC_ENTRY_ID}
       - TEST_PAGE_ID=${TEST_PAGE_ID}
       - TEST_REPORT_ID=${TEST_REPORT_ID}
+      - SPANNER_EMULATOR_HOST=spanner-emulator:9010
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
+      - "./libs/apps/trade/src/main/resources/schema.ddl:/config/schema.ddl:ro"
     depends_on:
       - arcane-platform-app

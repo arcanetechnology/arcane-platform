@@ -6,6 +6,8 @@ import io.kotest.matchers.date.shouldBeBefore
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import no.arcane.platform.tests.utils.apiClient
+import no.arcane.platform.tests.utils.appendEndpointsApiUserInfoHeader
 import java.time.Instant
 import java.util.*
 

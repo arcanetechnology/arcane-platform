@@ -24,7 +24,10 @@ include(
     // libs
 
     // libs / apps
+    "libs:apps:admin",
     "libs:apps:invest",
+    "libs:apps:trade",
+    "libs:apps:trade:test-db-setup",
 
     // libs / clients
     "libs:clients:arcane-platform-client",
@@ -37,6 +40,7 @@ include(
     "libs:services:email:sendgrid",
 
     "libs:services:identity",
+    "libs:services:identity:admin-auth",
     "libs:services:identity:apple",
     "libs:services:identity:identity-api",
     "libs:services:identity:gcp",
@@ -56,6 +60,8 @@ include(
     // libs / utils
 
     "libs:utils:analytics",
+
+    "libs:utils:arrow-ktx",
 
     "libs:utils:cms",
     "libs:utils:cms:cms-api",

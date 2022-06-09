@@ -1,0 +1,31 @@
+### Get Transactions
+
+GET https://dev.api.arcane.no/apps/trade-admin/transactions?offset=2022-08-15T00:00:00Z&limit=25
+Authorization: Bearer {{firebase-id-token}}
+
+### Get Transaction
+
+GET https://dev.api.arcane.no/apps/trade-admin/transactions/{{transactionId}}
+Authorization: Bearer {{firebase-id-token}}
+
+### Add transaction
+
+POST https://dev.api.arcane.no/apps/trade-admin/transactions
+Authorization: Bearer {{firebase-id-token}}
+
+[
+  {
+    "accountId": "/virtual-accounts/user-external-nok",
+    "amount": -1000
+  },
+  {
+    "accountId": "/custody-accounts/real-nok-sp1",
+    "amount": 1000
+  },
+  {
+    "accountId": "/users/{{userId}}/profiles/{{profileId}}/accounts/{{accountId}}",
+    "amount": 1000
+  }
+]
+
+
