@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.arcane.platform.filestore.FileStoreService
+import kotlin.math.roundToInt
 
 fun Application.module() {
 
@@ -21,9 +22,11 @@ fun Application.module() {
 fun updateFirebaseUsersStats() {
     val userAnalytics = UserAnalytics()
     val csvFileContents = buildString {
-        appendLine("""DATE, USER_CREATED_COUNT""")
+        appendLine("""DATE, USER_CREATED_COUNT, MOVING_AVG_LAST_SEVEN""")
+        val userCountList = mutableListOf<Int>()
         userAnalytics.usersCreatedTimeline().forEach { (time, count) ->
-            appendLine(""""$time", $count""")
+            userCountList += count
+            appendLine(""""$time", $count, ${userCountList.takeLast(7).average().roundToInt()}""")
         }
     }
     FileStoreService.upload(
