@@ -43,7 +43,7 @@ jobs:
           gcloud run deploy arcane-platform-gateway \
             --region europe-west1 \
             --image europe-docker.pkg.dev/$GCP_PROJECT_ID/platform/endpoints-runtime-serverless:$ESP_FULL_VERSION-$SERVICE_ID-$SERVICE_CONFIG_ID \
-            --set-env-vars=ESPv2_ARGS=^++^--cors_preset=basic++--cors_allow_origin=https://arcane.no++--cors_max_age=5m \
+            --set-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex='^https:\/\/(dev\.)?arcane\.no$'++--cors_max_age=5m \
             --cpu=1 \
             --memory=512Mi \
             --min-instances=1 \
