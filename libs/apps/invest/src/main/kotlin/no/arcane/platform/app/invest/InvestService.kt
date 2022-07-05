@@ -38,7 +38,7 @@ object InvestService {
         fundInfoRequest: FundInfoRequest,
         email: String
     ): Boolean {
-        if (fundInfoRequest.fundName.equals(config.fundName, ignoreCase = true)) {
+        if (!fundInfoRequest.fundName.equals(config.fundName, ignoreCase = true)) {
             logger.info("Incorrect fund name")
             return false
         }

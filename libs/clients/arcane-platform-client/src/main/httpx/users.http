@@ -1,9 +1,9 @@
 ### Get user
 
 GET https://api.arcane.no/user
-Authorization: Bearer
+Authorization: Bearer <firebase-id-token>
 
 ### Create user
 
 POST https://api.arcane.no/user
-Authorization: Bearer
+Authorization: Bearer <firebase-id-token>

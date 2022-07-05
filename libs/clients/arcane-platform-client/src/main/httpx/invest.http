@@ -1,0 +1,19 @@
+POST https://canary.api.arcane.no/apps/invest/register
+Authorization: Bearer <firebase-id-token>
+Content-Type: application/json
+
+{
+  "investorType": "PROFESSIONAL",
+  "name": "Test",
+  "phoneNumber": {
+    "countryCode": "47",
+    "nationalNumber": "12345678"
+  },
+  "countryCode": "NOR",
+  "fundName": "Arcane Assets Fund"
+}
+
+###
+
+GET https://canary.api.arcane.no/apps/invest/register
+Authorization: Bearer <firebase-id-token>

@@ -5,7 +5,9 @@ import no.arcane.platform.user.UserId
 import no.arcane.platform.user.users
 
 class Void
-data class AppId(val id: String)
+data class AppId(val value: String) {
+    override fun toString(): String = value
+}
 
 val INVEST_APP = AppId("invest")
 

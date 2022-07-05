@@ -59,7 +59,7 @@ class InvestAppTest : StringSpec({
                         nationalNumber = "12345678"
                     ),
                     countryCode = "NOR",
-                    fundName = "Test fund name"
+                    fundName = "Arcane Assets Fund Limited"
                 )
             )
         }

@@ -1,7 +1,7 @@
 ### get user and array of T&C
 
 GRAPHQL https://api.arcane.no/graphql
-Authorization: Bearer
+Authorization: Bearer <firebase-id-token>
 Content-Type: application/graphql
 
 {
