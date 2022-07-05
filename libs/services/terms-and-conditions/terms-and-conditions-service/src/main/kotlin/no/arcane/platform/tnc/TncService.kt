@@ -8,12 +8,14 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import no.arcane.platform.cms.LegalEntryMetadata
 import no.arcane.platform.cms.getCmsService
+import no.arcane.platform.email.ContentType
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.user.users
 import no.arcane.platform.utils.logging.getLogger
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import javax.swing.text.html.HTML
 
 object TncService {
 
@@ -79,6 +81,7 @@ object TncService {
             from = "do-not-reply@arcane.no",
             to = email,
             subject = "Privacy Policy",
+            contentType = ContentType.HTML,
             body = html,
         )
     }

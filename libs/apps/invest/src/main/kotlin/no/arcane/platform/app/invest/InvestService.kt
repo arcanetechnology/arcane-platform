@@ -4,6 +4,7 @@ import io.firestore4k.typed.add
 import io.firestore4k.typed.div
 import io.firestore4k.typed.get
 import io.firestore4k.typed.put
+import no.arcane.platform.email.ContentType
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.config.loadConfig
@@ -36,7 +37,7 @@ object InvestService {
 
     suspend fun UserId.register(
         fundInfoRequest: FundInfoRequest,
-        email: String
+        email: String,
     ): Boolean {
         if (!fundInfoRequest.fundName.equals(config.fundName, ignoreCase = true)) {
             logger.info("Incorrect fund name")
@@ -54,23 +55,34 @@ object InvestService {
         }
         put(inInvestAppContext() / fundInfoRequests / this, fundInfoRequest)
         add(inInvestAppContext() / fundInfoRequests / this / history, fundInfoRequest)
+        sendEmail(
+            fundInfoRequest = fundInfoRequest,
+            email = email,
+        )
+        return true
+    }
+
+    internal suspend fun sendEmail(
+        fundInfoRequest: FundInfoRequest,
+        email: String,
+    ) {
         emailService.sendEmail(
             from = config.email.from,
             to = config.email.to,
             subject = "Arcane Fund Inquiry Request",
+            contentType = ContentType.MONOSPACE_TEXT,
             body = """
             Details of Investor submitting inquiry for the Arcane Fund.
 
             Investor category ..... ${fundInfoRequest.investorType.label}
             Full Name ............. ${fundInfoRequest.name}
-            Company ............... ${fundInfoRequest.company ?: "-"} 
-            E-mail ................ $email 
-            Phone ................. ${fundInfoRequest.phoneNumber} 
-            Country of residence .. ${fundInfoRequest.countryCode.let { "${it.displayName} (${it.name})" }} 
-            Name of fund .......... ${fundInfoRequest.fundName} 
+            Company ............... ${fundInfoRequest.company ?: "-"}
+            E-mail ................ $email
+            Phone ................. ${fundInfoRequest.phoneNumber}
+            Country of residence .. ${fundInfoRequest.countryCode.let { "${it.displayName} (${it.name})" }}
+            Name of fund .......... ${fundInfoRequest.fundName}
             Action taken .......... Approved
             """.trimIndent()
         )
-        return true
     }
 }
