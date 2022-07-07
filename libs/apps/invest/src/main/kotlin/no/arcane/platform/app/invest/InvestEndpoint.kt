@@ -6,8 +6,11 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.arcane.platform.app.invest.InvestService.isRegistered
-import no.arcane.platform.app.invest.InvestService.register
+import no.arcane.platform.app.invest.InvestService.getStatus
+import no.arcane.platform.app.invest.InvestService.isApproved
+import no.arcane.platform.app.invest.InvestService.saveFundInfoRequest
+import no.arcane.platform.app.invest.InvestService.saveStatus
+import no.arcane.platform.app.invest.InvestService.sendEmail
 import no.arcane.platform.identity.auth.gcp.UserInfo
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.logging.logWithMDC
@@ -19,15 +22,31 @@ fun Application.module() {
                 post {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
                     logWithMDC("userId" to userId.value) {
-                        val userEmail = call.principal<UserInfo>()!!.email
                         val fundInfoRequest = call.receive<FundInfoRequest>()
                         val validationErrors = fundInfoRequest.validate()
                         if (validationErrors.isEmpty()) {
-                            if (userId.register(fundInfoRequest, userEmail)) {
+                            if (fundInfoRequest.isApproved()) {
+                                // store
+                                userId.saveFundInfoRequest(
+                                    fundInfoRequest = fundInfoRequest
+                                )
+                                userId.saveStatus(
+                                    status = Status.REGISTERED,
+                                )
+                                // email
+                                val userEmail = call.principal<UserInfo>()!!.email
+                                fundInfoRequest.sendEmail(to = userEmail)
+                                // respond
                                 call.respond(HttpStatusCode.OK)
                             } else {
+                                // store
+                                userId.saveStatus(
+                                    status = Status.NOT_AUTHORIZED,
+                                )
+                                // respond
                                 call.respond(HttpStatusCode.Forbidden)
                             }
+
                         } else {
                             call.respond(HttpStatusCode.BadRequest, validationErrors)
                         }
@@ -37,11 +56,14 @@ fun Application.module() {
                 get {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
                     logWithMDC("userId" to userId.value) {
-                        if (userId.isRegistered()) {
-                            call.respond(HttpStatusCode.OK)
-                        } else {
-                            call.respond(HttpStatusCode.Forbidden)
-                        }
+                        val status = userId.getStatus()
+                        call.respond(
+                            when (status) {
+                                Status.NOT_REGISTERED -> HttpStatusCode.NotFound
+                                Status.NOT_AUTHORIZED -> HttpStatusCode.Forbidden
+                                Status.REGISTERED -> HttpStatusCode.OK
+                            }
+                        )
                     }
                 }
             }

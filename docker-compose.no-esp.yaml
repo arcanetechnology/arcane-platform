@@ -30,6 +30,9 @@ services:
       - SLACK_ALERTS_CHANNEL_ID=${SLACK_ALERTS_CHANNEL_ID}
       - SLACK_RESEARCH_EVENTS_CHANNEL_ID=${SLACK_RESEARCH_EVENTS_CHANNEL_ID}
       - SLACK_TOKEN=${SLACK_TOKEN}
+      - INVEST_DENIED_COUNTRY_CODE_LIST=${INVEST_DENIED_COUNTRY_CODE_LIST}
+      - INVEST_EMAIL_FROM=${INVEST_EMAIL_FROM}
+      - INVEST_EMAIL_TO=${INVEST_EMAIL_TO}
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     expose:

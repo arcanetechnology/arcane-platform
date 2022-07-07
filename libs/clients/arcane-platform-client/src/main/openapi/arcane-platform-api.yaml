@@ -233,6 +233,8 @@ paths:
         200:
           description: "App is registered"
         403:
+          description: "User not qualified for app registration"
+        404:
           description: "App is not registered"
       security:
         - firebase: [ ]
@@ -254,6 +256,8 @@ paths:
           description: "Success"
         403:
           description: "Registration not allowed"
+        400:
+          description: "Bad request"
       security:
         - firebase: [ ]
 
@@ -622,10 +626,7 @@ definitions:
         type: string
     required:
       - investorType
-      - name
-      - phoneNumber
-      - countryCode
-      - fundName
+
 
 securityDefinitions:
   firebase:

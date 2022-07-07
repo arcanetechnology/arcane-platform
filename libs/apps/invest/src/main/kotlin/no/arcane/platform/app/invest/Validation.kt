@@ -5,8 +5,21 @@ import java.util.*
 
 fun FundInfoRequest.validate(): List<String> {
     val errors = mutableListOf<String>()
-    if (!phoneNumber.validate()) {
-        errors += "Invalid phone number: $phoneNumber"
+    if (investorType != InvestorType.NON_PROFESSIONAL) {
+        if (name.isNullOrBlank()) {
+            errors += "Name is mandatory"
+        }
+        if (phoneNumber == null) {
+            errors += "Phone number is mandatory"
+        } else if (!phoneNumber.validate()) {
+            errors += "Invalid phone number: $phoneNumber"
+        }
+        if (countryCode == null) {
+            errors += "Country is mandatory"
+        }
+        if (fundName.isNullOrBlank()) {
+            errors += "Fund name is mandatory"
+        }
     }
     return errors
 }

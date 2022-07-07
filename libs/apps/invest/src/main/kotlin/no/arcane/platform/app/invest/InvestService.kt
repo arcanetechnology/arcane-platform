@@ -25,46 +25,42 @@ object InvestService {
 
     private val emailService by getEmailService()
 
-    suspend fun UserId.isRegistered(): Boolean {
-        val fundInfoRequest: FundInfoRequest? = get(inInvestAppContext() / fundInfoRequests / this)
-        if (fundInfoRequest == null) {
-            logger.info("Not registered")
-            return false
-        }
-        return setOf(InvestorType.PROFESSIONAL, InvestorType.ELECTIVE_PROFESSIONAL)
-            .contains(fundInfoRequest.investorType)
-    }
-
-    suspend fun UserId.register(
-        fundInfoRequest: FundInfoRequest,
-        email: String,
-    ): Boolean {
-        if (!fundInfoRequest.fundName.equals(config.fundName, ignoreCase = true)) {
-            logger.info("Incorrect fund name")
-            return false
-        }
-
-        if (fundInfoRequest.investorType == InvestorType.UNQUALIFIED) {
+    fun FundInfoRequest.isApproved(): Boolean {
+        if (investorType == InvestorType.NON_PROFESSIONAL) {
             logger.info("Unqualified investor")
             return false
         }
 
-        if (deniedCountryCodeList.contains(fundInfoRequest.countryCode)) {
-            logger.info("${fundInfoRequest.countryCode} is in denied list of countries")
+        if (deniedCountryCodeList.contains(countryCode)) {
+            logger.info("$countryCode is in denied list of countries")
             return false
         }
-        put(inInvestAppContext() / fundInfoRequests / this, fundInfoRequest)
-        add(inInvestAppContext() / fundInfoRequests / this / history, fundInfoRequest)
-        sendEmail(
-            fundInfoRequest = fundInfoRequest,
-            email = email,
-        )
+
+        if (!fundName.equals(config.fundName, ignoreCase = true)) {
+            logger.info("Incorrect fund name")
+            return false
+        }
+
         return true
     }
 
-    internal suspend fun sendEmail(
+    suspend fun UserId.getStatus(): Status = get(inInvestAppContext())?.status ?: Status.NOT_REGISTERED
+
+    suspend fun UserId.saveStatus(
+        status: Status,
+    ) {
+        put(inInvestAppContext(), InvestApp(status))
+    }
+
+    suspend fun UserId.saveFundInfoRequest(
         fundInfoRequest: FundInfoRequest,
-        email: String,
+    ) {
+        put(inInvestAppContext() / fundInfoRequests / "latest", fundInfoRequest)
+        add(inInvestAppContext() / fundInfoRequests / "latest" / history, fundInfoRequest)
+    }
+
+    suspend fun FundInfoRequest.sendEmail(
+        to: String,
     ) {
         emailService.sendEmail(
             from = config.email.from,
@@ -74,13 +70,14 @@ object InvestService {
             body = """
             Details of Investor submitting inquiry for the Arcane Fund.
 
-            Investor category ..... ${fundInfoRequest.investorType.label}
-            Full Name ............. ${fundInfoRequest.name}
-            Company ............... ${fundInfoRequest.company ?: "-"}
-            E-mail ................ $email
-            Phone ................. ${fundInfoRequest.phoneNumber}
-            Country of residence .. ${fundInfoRequest.countryCode.let { "${it.displayName} (${it.name})" }}
-            Name of fund .......... ${fundInfoRequest.fundName}
+            Investor category ..... ${investorType.label}
+            Full Name ............. $name
+            Company ............... ${company ?: "-"}
+            E-mail ................ $to
+            Phone ................. $phoneNumber
+            Country of residence .. ${countryCode?.let { "${it.displayName} (${it.name})" }}
+            Name of fund .......... $fundName
+
             Action taken .......... Approved
             """.trimIndent()
         )

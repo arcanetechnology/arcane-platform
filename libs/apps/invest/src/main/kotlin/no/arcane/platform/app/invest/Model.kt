@@ -8,17 +8,17 @@ enum class InvestorType(
 ) {
     PROFESSIONAL("Professional"),
     ELECTIVE_PROFESSIONAL("Elective professional"),
-    UNQUALIFIED("Unqualified"),
+    NON_PROFESSIONAL("Unqualified"),
 }
 
 @Serializable
 data class FundInfoRequest(
     val investorType: InvestorType,
-    val name: String,
+    val name: String? = null,
     val company: String? = null,
-    val phoneNumber: PhoneNumber,
-    val countryCode: ISO3CountyCode, // ISO 3166 3 character alpha-3 code
-    val fundName: String,
+    val phoneNumber: PhoneNumber? = null,
+    val countryCode: ISO3CountyCode? = null, // ISO 3166 3 character alpha-3 code
+    val fundName: String? = null,
 )
 
 @Serializable
@@ -27,6 +27,12 @@ data class PhoneNumber(
     val nationalNumber: String,
 ) {
     override fun toString(): String = "+$countryCode $nationalNumber"
+}
+
+enum class Status {
+    NOT_REGISTERED,
+    NOT_AUTHORIZED,
+    REGISTERED,
 }
 
 enum class ISO3CountyCode(
@@ -283,7 +289,7 @@ enum class ISO3CountyCode(
     ZWE("Zimbabwe"),
 }
 
-fun main() {
+fun main2() {
     Locale.getISOCountries().forEach { iso2CountryCode ->
         val locale = Locale("", iso2CountryCode)
         println("""${locale.isO3Country}("${locale.displayName}"),""")
