@@ -212,10 +212,10 @@ paths:
             type: object
 
 
-  "/apps/{app-id}/register":
+  "/apps/{app-id}/funds":
     get:
-      description: Check if app is registered
-      operationId: "isAppRegistered"
+      description: Get fund info access status
+      operationId: "getFundInfoAccessStatus"
       parameters:
         - name: "app-id"
           in: path
@@ -226,20 +226,22 @@ paths:
       responses:
         200:
           description: "App is registered"
-        403:
-          description: "User not qualified for app registration"
-        404:
-          description: "App is not registered"
+          schema:
+            type: object
       security:
         - firebase: [ ]
 
-  "/apps/invest/register":
+  "/apps/invest/funds/{fund-id}":
     post:
-      description: Register Invest App
+      description: Submit FundInfoRequest
       consumes:
         - application/json
-      operationId: "registerInvestApp"
+      operationId: "submitFundInfoRequest"
       parameters:
+        - name: "fund-id"
+          in: query
+          required: true
+          type: string
         - name: "fundInfoRequest"
           in: body
           required: true

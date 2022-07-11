@@ -3,6 +3,7 @@ package no.arcane.platform.app.invest
 import io.firestore4k.typed.div
 import no.arcane.platform.user.UserId
 import no.arcane.platform.user.users
+import kotlinx.serialization.Serializable
 
 data class AppId(val value: String) {
     override fun toString(): String = value
@@ -10,13 +11,17 @@ data class AppId(val value: String) {
 
 val INVEST_APP = AppId("invest")
 
-@kotlinx.serialization.Serializable
-data class InvestApp(
+data class FundId(val value: String) {
+    override fun toString(): String = value
+}
+
+@Serializable
+data class Fund(
     val status: Status
 )
 
-val apps = users.subCollection<InvestApp, AppId>("apps")
-val fundInfoRequests = apps.subCollection<FundInfoRequest, String>("fund-info-requests")
-val history = fundInfoRequests.subCollection<FundInfoRequest, String>("history")
+val apps = users.subCollection<Unit, AppId>("apps")
+val funds = apps.subCollection<Fund, FundId>("funds")
+val fundInfoRequests = funds.subCollection<FundInfoRequest, String>("fund-info-requests")
 
 fun UserId.inInvestAppContext() = users / this / apps / INVEST_APP

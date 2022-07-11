@@ -1,4 +1,4 @@
-POST https://canary.api.arcane.no/apps/invest/register
+POST https://canary.api.arcane.no/apps/invest/funds/arcane-assets-fund-limited
 Authorization: Bearer <firebase-id-token>
 Content-Type: application/json
 
@@ -15,5 +15,5 @@ Content-Type: application/json
 
 ###
 
-GET https://canary.api.arcane.no/apps/invest/register
+GET https://canary.api.arcane.no/apps/invest/funds
 Authorization: Bearer <firebase-id-token>

@@ -289,7 +289,7 @@ enum class ISO3CountyCode(
     ZWE("Zimbabwe"),
 }
 
-fun main2() {
+fun main() {
     Locale.getISOCountries().forEach { iso2CountryCode ->
         val locale = Locale("", iso2CountryCode)
         println("""${locale.isO3Country}("${locale.displayName}"),""")

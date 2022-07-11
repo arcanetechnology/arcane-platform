@@ -4,6 +4,8 @@
 #  Run acceptance tests
 #
 
+set -x
+
 ./gradlew installDist --parallel
 
 docker compose up --build --abort-on-container-exit

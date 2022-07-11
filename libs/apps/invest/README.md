@@ -2,11 +2,11 @@
 
 ## User states
 
-| Status         | HTTP status code | Description                                            |
-|----------------|------------------|--------------------------------------------------------|
-| NOT_REGISTERED | 404 Not found    | For new user (no info found in database)               |
-| NOT_AUTHORISED | 403 Forbidden    | For user **NOT** authorised to see fund information    |
-| REGISTERED     | 200 OK           | For registered user authorised to see fund information |
+| Status         | Description                                            |
+|----------------|--------------------------------------------------------|
+| NOT_REGISTERED | For new user (no info found in database)               |
+| NOT_AUTHORISED | For user **NOT** authorised to see fund information    |
+| REGISTERED     | For registered user authorised to see fund information |
 
 ## Investor types
 

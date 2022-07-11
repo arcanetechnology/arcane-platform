@@ -2,7 +2,7 @@ package no.arcane.platform.app.invest
 
 data class Config(
     val deniedCountryCodeList: String,
-    val fundName: String,
+    val funds: Map<String, String>,
     val email: Email,
 )
 data class Email(

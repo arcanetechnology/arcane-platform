@@ -4,6 +4,10 @@ import io.firestore4k.typed.add
 import io.firestore4k.typed.div
 import io.firestore4k.typed.get
 import io.firestore4k.typed.put
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import no.arcane.platform.app.invest.InvestService.associateWithAsync
 import no.arcane.platform.email.ContentType
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
@@ -25,9 +29,9 @@ object InvestService {
 
     private val emailService by getEmailService()
 
-    fun FundInfoRequest.isApproved(): Boolean {
+    fun FundInfoRequest.isApproved(fundId: FundId): Boolean {
         if (investorType == InvestorType.NON_PROFESSIONAL) {
-            logger.info("Unqualified investor")
+            logger.info("Non-professional investor")
             return false
         }
 
@@ -36,7 +40,7 @@ object InvestService {
             return false
         }
 
-        if (!fundName.equals(config.fundName, ignoreCase = true)) {
+        if (config.funds[fundId.value]?.equals(fundName, ignoreCase = true) != true) {
             logger.info("Incorrect fund name")
             return false
         }
@@ -44,19 +48,42 @@ object InvestService {
         return true
     }
 
-    suspend fun UserId.getStatus(): Status = get(inInvestAppContext())?.status ?: Status.NOT_REGISTERED
+    suspend fun UserId.getAllFunds(): Map<FundId, Fund?> {
+        return coroutineScope {
+            config
+                .funds
+                .keys
+                .map(::FundId)
+                .associateWithAsync { fundId ->
+                    get(inInvestAppContext() / funds / fundId)
+                }
+        }
+    }
+
+    private suspend fun <K, V> List<K>.associateWithAsync(valueSelector: suspend (K) -> V): Map<K, V> {
+        return coroutineScope {
+            this@associateWithAsync.map { key ->
+                async {
+                    key to valueSelector(key)
+                }
+            }
+                .awaitAll()
+                .toMap()
+        }
+    }
 
     suspend fun UserId.saveStatus(
+        fundId: FundId,
         status: Status,
     ) {
-        put(inInvestAppContext(), InvestApp(status))
+        put(inInvestAppContext() / funds / fundId, Fund(status))
     }
 
     suspend fun UserId.saveFundInfoRequest(
+        fundId: FundId,
         fundInfoRequest: FundInfoRequest,
     ) {
-        put(inInvestAppContext() / fundInfoRequests / "latest", fundInfoRequest)
-        add(inInvestAppContext() / fundInfoRequests / "latest" / history, fundInfoRequest)
+        add(inInvestAppContext() / funds / fundId / fundInfoRequests, fundInfoRequest)
     }
 
     suspend fun FundInfoRequest.sendEmail(
