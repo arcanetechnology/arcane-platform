@@ -29,6 +29,8 @@ object InvestService {
 
     private val emailService by getEmailService()
 
+    fun getAllFundIds() = config.funds.keys
+
     fun FundInfoRequest.isApproved(fundId: FundId): Boolean {
         if (investorType == InvestorType.NON_PROFESSIONAL) {
             logger.info("Non-professional investor")
@@ -59,6 +61,8 @@ object InvestService {
                 }
         }
     }
+
+    suspend fun UserId.getFund(fundId: FundId): Fund? = get(inInvestAppContext() / funds / fundId)
 
     private suspend fun <K, V> List<K>.associateWithAsync(valueSelector: suspend (K) -> V): Map<K, V> {
         return coroutineScope {

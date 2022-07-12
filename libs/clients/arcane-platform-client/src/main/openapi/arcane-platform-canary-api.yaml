@@ -219,26 +219,40 @@ paths:
         - api_key: [ ]
 
 
-  "/apps/{app-id}/funds":
+  "/apps/invest/funds":
     get:
-      description: Get fund info access status
-      operationId: "getFundInfoAccessStatus"
-      parameters:
-        - name: "app-id"
-          in: path
-          type: string
-          enum:
-            - invest
-          required: true
+      description: Get all fund info access status
+      operationId: "getAllFundInfoAccessStatus"
       responses:
         200:
-          description: "App is registered"
+          description: "List of funds and their status"
           schema:
             type: object
       security:
         - firebase: [ ]
 
   "/apps/invest/funds/{fund-id}":
+    get:
+      description: Get fund info access status
+      operationId: "getFundInfoAccessStatus"
+      parameters:
+        - name: "fund-id"
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: "User is registered for given fund"
+        400:
+          description: "Bad request"
+        403:
+          description: "User not qualified to see fund info"
+        404:
+          description: "User is not registered"
+          schema:
+            type: object
+      security:
+        - firebase: [ ]
     post:
       description: Submit FundInfoRequest
       consumes:
@@ -246,7 +260,7 @@ paths:
       operationId: "submitFundInfoRequest"
       parameters:
         - name: "fund-id"
-          in: query
+          in: path
           required: true
           type: string
         - name: "fundInfoRequest"

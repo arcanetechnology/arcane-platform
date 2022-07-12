@@ -10,10 +10,15 @@ Content-Type: application/json
     "nationalNumber": "12345678"
   },
   "countryCode": "NOR",
-  "fundName": "Arcane Assets Fund"
+  "fundName": "Arcane Assets Fund Limited"
 }
 
-###
+### Get status as HTTP response status code for a given fund
+
+GET https://canary.api.arcane.no/apps/invest/funds/arcane-assets-fund-limited
+Authorization: Bearer <firebase-id-token>
+
+### Get status for all funds as map in response body
 
 GET https://canary.api.arcane.no/apps/invest/funds
 Authorization: Bearer <firebase-id-token>

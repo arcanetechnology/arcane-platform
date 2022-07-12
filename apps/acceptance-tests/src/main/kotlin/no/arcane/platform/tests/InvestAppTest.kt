@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 const val fundId = "arcane-assets-fund-limited"
+const val invalidFundId = "arcane-fund"
 
 class InvestAppTest : BehaviorSpec({
 
@@ -26,21 +27,34 @@ class InvestAppTest : BehaviorSpec({
 
     suspend fun getStatus(
         userId: String,
-    ): String? {
+        fundIdValue: String = fundId,
+    ): HttpStatusCode {
+        return apiClient.get {
+            url(path = "apps/invest/funds/$fundIdValue")
+            headers {
+                appendEndpointsApiUserInfoHeader(userId)
+            }
+        }.status
+    }
+
+    suspend fun getStatusMap(
+        userId: String,
+    ): Map<String, String> {
         return apiClient.get {
             url(path = "apps/invest/funds")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
-        }.body<Map<String, String>>()[fundId]
+        }.body()
     }
 
     suspend fun sendFundInfoRequest(
         userId: String,
-        fundInfoRequest: FundInfoRequest
+        fundInfoRequest: FundInfoRequest,
+        fundIdValue: String = fundId,
     ): HttpStatusCode {
         return apiClient.post {
-            url(path = "apps/invest/funds/$fundId")
+            url(path = "apps/invest/funds/$fundIdValue")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
             }
@@ -52,10 +66,33 @@ class InvestAppTest : BehaviorSpec({
 
     given("User is not registered") {
         val userId = UUID.randomUUID().toString()
-        `when`("GET apps/invest/funds") {
-            val status = getStatus(userId)
-            then("Status should be NOT_REGISTERED") {
-                status shouldBe "NOT_REGISTERED"
+        `when`("GET apps/invest/funds/$fundId") {
+            then("Status should be 404 NOT FOUND") {
+                getStatus(userId) shouldBe HttpStatusCode.NotFound
+                and("GET apps/invest/funds should be NOT_REGISTERED") {
+                    getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
+                }
+            }
+        }
+        `when`("POST /apps/invest/funds/$invalidFundId with Invalid Fund ID") {
+            val status = sendFundInfoRequest(
+                userId = userId,
+                fundInfoRequest = FundInfoRequest(
+                    investorType = InvestorType.NON_PROFESSIONAL,
+                ),
+                fundIdValue = invalidFundId
+            )
+            then("Status should be 404 Not Found") {
+                status shouldBe HttpStatusCode.NotFound
+            }
+        }
+        `when`("GET /apps/invest/funds/$invalidFundId with Invalid Fund ID") {
+            val status = getStatus(
+                userId = userId,
+                fundIdValue = invalidFundId
+            )
+            then("Status should be 404 Not Found") {
+                status shouldBe HttpStatusCode.NotFound
             }
         }
         `when`("POST /apps/invest/funds/$fundId") {
@@ -68,13 +105,14 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 400 BadRequest") {
                     status shouldBe HttpStatusCode.BadRequest
-                    and("GET apps/invest/funds should be NOT_REGISTERED") {
-                        getStatus(userId) shouldBe "NOT_REGISTERED"
+                    and("GET apps/invest/funds/$fundId should be 404 NOT FOUND") {
+                        getStatus(userId) shouldBe HttpStatusCode.NotFound
+                        and("GET apps/invest/funds should be NOT_REGISTERED") {
+                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
+                        }
                     }
                 }
             }
-        }
-        `when`("POST /apps/invest/funds/$fundId") {
             and("Invalid phone number") {
                 val status = sendFundInfoRequest(
                     userId = userId,
@@ -88,13 +126,14 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 400 BadRequest") {
                     status shouldBe HttpStatusCode.BadRequest
-                    and("GET apps/invest/funds should be NOT_REGISTERED") {
-                        getStatus(userId) shouldBe "NOT_REGISTERED"
+                    and("GET apps/invest/funds/$fundId should be 404 NOT FOUND") {
+                        getStatus(userId) shouldBe HttpStatusCode.NotFound
+                        and("GET apps/invest/funds should be NOT_REGISTERED") {
+                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
+                        }
                     }
                 }
             }
-        }
-        `when`("POST /apps/invest/funds/$fundId") {
             and("Incorrect fund name") {
                 val status = sendFundInfoRequest(
                     userId = userId,
@@ -108,13 +147,14 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 403 Forbidden") {
                     status shouldBe HttpStatusCode.Forbidden
-                    and("GET apps/invest/funds should be NOT_AUTHORIZED") {
-                        getStatus(userId) shouldBe "NOT_AUTHORIZED"
+                    and("GET apps/invest/funds/$fundId should be 403 FORBIDDEN") {
+                        getStatus(userId) shouldBe HttpStatusCode.Forbidden
+                        and("GET apps/invest/funds should be NOT_AUTHORIZED") {
+                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_AUTHORIZED")
+                        }
                     }
                 }
             }
-        }
-        `when`("POST /apps/invest/funds/$fundId") {
             and("Investor Type: Non professional") {
                 val status = sendFundInfoRequest(
                     userId = userId,
@@ -124,27 +164,33 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 403 Forbidden") {
                     status shouldBe HttpStatusCode.Forbidden
-                    and("GET apps/invest/register should be NOT_AUTHORIZED") {
-                        getStatus(userId) shouldBe "NOT_AUTHORIZED"
+                    and("GET apps/invest/funds/$fundId should be 403 FORBIDDEN") {
+                        getStatus(userId) shouldBe HttpStatusCode.Forbidden
+                        and("GET apps/invest/funds should be NOT_AUTHORIZED") {
+                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_AUTHORIZED")
+                        }
                     }
                 }
             }
-        }
-        `when`("POST /apps/invest/funds/$fundId") {
-            val status = sendFundInfoRequest(
-                userId = userId,
-                fundInfoRequest = FundInfoRequest(
-                    investorType = InvestorType.PROFESSIONAL,
-                    name = "Test",
-                    phoneNumber = validPhoneNumber,
-                    countryCode = "NOR",
-                    fundName = "Arcane Assets Fund Limited"
+            and("with Valid FundInfoRequest") {
+                val status = sendFundInfoRequest(
+                    userId = userId,
+                    fundInfoRequest = FundInfoRequest(
+                        investorType = InvestorType.PROFESSIONAL,
+                        name = "Test",
+                        phoneNumber = validPhoneNumber,
+                        countryCode = "NOR",
+                        fundName = "Arcane Assets Fund Limited"
+                    )
                 )
-            )
-            then("Status should be 200 OK") {
-                status shouldBe HttpStatusCode.OK
-                and("GET apps/invest/funds should be REGISTERED") {
-                    getStatus(userId) shouldBe "REGISTERED"
+                then("Status should be 200 OK") {
+                    status shouldBe HttpStatusCode.OK
+                    and("GET apps/invest/funds/$fundId should be 200 OK") {
+                        getStatus(userId) shouldBe HttpStatusCode.OK
+                        and("GET apps/invest/funds should be REGISTERED") {
+                            getStatusMap(userId) shouldBe mapOf(fundId to "REGISTERED")
+                        }
+                    }
                 }
             }
         }
