@@ -7,7 +7,6 @@ import io.firestore4k.typed.put
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import no.arcane.platform.app.invest.InvestService.associateWithAsync
 import no.arcane.platform.email.ContentType
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId

@@ -15,7 +15,6 @@ import no.arcane.platform.user.users
 import no.arcane.platform.utils.logging.getLogger
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import javax.swing.text.html.HTML
 
 object TncService {
 

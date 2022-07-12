@@ -5,7 +5,7 @@ import io.ktor.client.request.*
 
 class CmsWebhookTest : StringSpec({
 
-    "POST /contentfulEvents - page" {
+    "POST /contentfulEvents - page".config(enabled = false) {
         apiClient.post {
             url (path = "/contentfulEvents")
             headers {

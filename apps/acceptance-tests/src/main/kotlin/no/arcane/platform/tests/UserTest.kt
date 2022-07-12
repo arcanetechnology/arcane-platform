@@ -1,43 +1,48 @@
 package no.arcane.platform.tests
 
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import java.util.*
 
 @kotlin.time.ExperimentalTime
-class UserTest : StringSpec({
+class UserTest : BehaviorSpec({
 
-    val userId = UUID.randomUUID().toString()
-
-    "GET /user -> Check if unregistered user exists" {
-        apiClient.get {
+    suspend fun getUser(userId: String): HttpResponse {
+        return apiClient.get {
             url(path = "user")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
+                expectSuccess = false
             }
-            expectSuccess = false
         }
     }
 
-    "POST /user -> Register user" {
-        apiClient.post {
-            url(path = "user")
-            headers {
-                appendEndpointsApiUserInfoHeader(userId)
+    given("user does not exists") {
+        val userId = UUID.randomUUID().toString()
+        `when`("GET /user to check if unregistered user exists") {
+            then("response is 404 NOT FOUND") {
+                getUser(userId = userId).status shouldBe HttpStatusCode.NotFound
             }
-        }.body<User>()
-    }
-
-    "GET /user -> Check if registered user exists" {
-        apiClient.get {
-            url(path = "user")
-            headers {
-                appendEndpointsApiUserInfoHeader(userId)
+        }
+        `when`("POST /user to register a user") {
+            then("response should be user object") {
+                apiClient.post {
+                    url(path = "user")
+                    headers {
+                        appendEndpointsApiUserInfoHeader(userId)
+                    }
+                }.body<User>().userId shouldBe userId
+                and("GET /user to check if registered user exists, should be user object") {
+                    getUser(userId = userId).body<User>().userId shouldBe userId
+                }
             }
-        }.body<User>()
+        }
     }
 })
 

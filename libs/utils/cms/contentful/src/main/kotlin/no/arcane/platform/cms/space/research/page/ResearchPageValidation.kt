@@ -3,7 +3,6 @@ package no.arcane.platform.cms.space.research.page
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import no.arcane.platform.cms.ContentfulConfig

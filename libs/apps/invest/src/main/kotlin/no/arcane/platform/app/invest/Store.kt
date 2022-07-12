@@ -2,9 +2,9 @@ package no.arcane.platform.app.invest
 
 import io.firestore4k.typed.div
 import io.ktor.server.plugins.*
+import kotlinx.serialization.Serializable
 import no.arcane.platform.user.UserId
 import no.arcane.platform.user.users
-import kotlinx.serialization.Serializable
 
 data class AppId(val value: String) {
     override fun toString(): String = value

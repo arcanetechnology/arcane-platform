@@ -1,7 +1,6 @@
 package no.arcane.platform.app.invest
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
-import java.util.*
 
 fun FundInfoRequest.validate(): List<String> {
     val errors = mutableListOf<String>()

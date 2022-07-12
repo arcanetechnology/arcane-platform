@@ -4,7 +4,7 @@
 #  Run acceptance tests
 #
 
-set -x
+set -e
 
 ./gradlew installDist --parallel
 

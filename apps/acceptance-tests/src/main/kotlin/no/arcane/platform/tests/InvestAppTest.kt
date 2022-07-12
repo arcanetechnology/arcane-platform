@@ -1,7 +1,6 @@
 package no.arcane.platform.tests
 
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*

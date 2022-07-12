@@ -1,9 +1,11 @@
 package no.arcane.platform.tests
 
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import java.time.ZoneOffset
@@ -11,7 +13,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @kotlin.time.ExperimentalTime
-class TncTest : StringSpec({
+class TncTest : BehaviorSpec({
 
     val tncRequest = TncRequest(
         version = System.getenv("PLATFORM_TNC_VERSION"),
@@ -35,11 +37,18 @@ class TncTest : StringSpec({
         timestamp = now,
     )
 
-    val userId = UUID.randomUUID().toString()
+    suspend fun getTnc(userId: String): HttpResponse {
+        return apiClient.get {
+            url(path = "tnc/platform.termsAndConditions")
+            headers {
+                appendEndpointsApiUserInfoHeader(userId)
+            }
+            expectSuccess = false
+        }
+    }
 
-    "POST /tnc/platform.termsAndConditions -> Submit Terms and Conditions" {
-
-        val savedTnc: TncResponse = apiClient.post {
+    suspend fun saveTnc(userId: String):TncResponse {
+        return apiClient.post {
             url(path = "tnc/platform.termsAndConditions")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
@@ -47,25 +56,36 @@ class TncTest : StringSpec({
             contentType(ContentType.Application.Json)
             setBody(tncRequest)
         }.body()
-        savedTnc.copy(timestamp = now) shouldBe tnc
     }
 
-    "GET /tnc/platform.termsAndConditions -> Check if Terms and Conditions are saved" {
-        val savedTnc: TncResponse = apiClient.get {
-            url(path = "tnc/platform.termsAndConditions")
-            headers {
-                appendEndpointsApiUserInfoHeader(userId)
+    given("User has not accepted T&C") {
+        val userId = UUID.randomUUID().toString()
+        `when`("GET /tnc/platform.termsAndConditions") {
+            then("response should be 404") {
+                getTnc(userId = userId).status shouldBe HttpStatusCode.NotFound
             }
-        }.body()
-        savedTnc.copy(timestamp = now) shouldBe tnc
-    }
+        }
+        `when`("POST /tnc/platform.termsAndConditions to Submit Terms and Conditions") {
+            then("response should be 404") {
+                val savedTnc = saveTnc(userId = userId)
+                savedTnc shouldBe tnc.copy(timestamp = savedTnc.timestamp)
+                and("GET /tnc/platform.termsAndConditions to Check if Terms and Conditions are saved should be 200 OK") {
+                    val response = getTnc(userId = userId)
+                    response.status shouldBe HttpStatusCode.OK
+                    response.body<TncResponse>() shouldBe savedTnc
+                }
+            }
+        }
 
-    // TODO enable the test
-    "POST /tnc/platform.privacyPolicy/email -> Send Terms and Conditions in email".config(enabled = false) {
-        apiClient.post {
-            url(path = "tnc/platform.privacyPolicy/email")
-            headers {
-                appendEndpointsApiUserInfoHeader(userId)
+        // TODO enable the test
+        xwhen("POST /tnc/platform.privacyPolicy/email to send email") {
+            then("Send Terms and Conditions in email") {
+                apiClient.post {
+                    url(path = "tnc/platform.privacyPolicy/email")
+                    headers {
+                        appendEndpointsApiUserInfoHeader(userId)
+                    }
+                }
             }
         }
     }

@@ -2,7 +2,6 @@ package no.arcane.platform.tests
 
 import io.kotest.common.runBlocking
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
