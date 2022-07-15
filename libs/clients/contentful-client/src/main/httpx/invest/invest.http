@@ -1,0 +1,29 @@
+### Get fund info
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    fundInfoCollection(order: [date_DESC], limit: 1) {
+        items {
+            title
+            infoCardsCollection(limit: 4) {
+                items {
+                    title
+                    caption
+                }
+            }
+            portfolioCollection {
+                items {
+                    name
+                    units
+                }
+            }
+            chart {
+                title
+                url
+            }
+        }
+    }
+}

@@ -4,6 +4,10 @@ plugins {
 }
 
 apollo {
+    service("invest") {
+        srcDir("src/main/httpx/invest")
+        packageName.set("no.arcane.platform.cms.space.invest")
+    }
     service("legal") {
         srcDir("src/main/httpx/legal")
         packageName.set("no.arcane.platform.cms.space.legal")

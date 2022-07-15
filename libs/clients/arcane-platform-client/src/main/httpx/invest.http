@@ -7,7 +7,7 @@ Content-Type: application/json
   "name": "Test",
   "phoneNumber": {
     "countryCode": "47",
-    "nationalNumber": "12345678"
+    "nationalNumber": "41234567"
   },
   "countryCode": "NOR",
   "fundName": "Arcane Assets Fund Limited"
