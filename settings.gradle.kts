@@ -6,6 +6,7 @@ refreshVersions {
     rejectVersionIf {
         candidate.stabilityLevel != de.fayard.refreshVersions.core.StabilityLevel.Stable
     }
+    extraArtifactVersionKeyRules(file("refreshVersions-extra-rules.txt"))
 }
 
 rootProject.name = "arcane-platform"
