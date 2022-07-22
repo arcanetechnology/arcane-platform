@@ -181,3 +181,46 @@ gcloud scheduler jobs create http update-firebase-users-stats-job \
   --oidc-service-account-email=arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com   \
   --oidc-token-audience=https://"$GCP_BACKEND_HOST"
 ```
+
+## GCP Workload Identity Federation for GitHub Actions
+
+Create workload id pool for GitHub Actions.
+```shell
+gcloud iam workload-identity-pools create "github-actions-workload-id-pool" \
+  --project="${GCP_PROJECT_ID}" \
+  --location="global" \
+  --display-name="Github Actions workload ID pool"
+```
+
+Verify Pool ID
+```shell
+gcloud iam workload-identity-pools describe github-actions-workload-id-pool \
+  --location="global" \
+  --format="value(name)"
+```
+
+It should be of this format:
+
+    projects/<GCP project id number>/locations/global/workloadIdentityPools/github-actions-workload-id-pool
+
+Create ID provider for workload ID pool.
+```shell
+gcloud iam workload-identity-pools providers create-oidc "github-workload-id-provider" \
+  --project="${GCP_PROJECT_ID}" \
+  --location="global" \
+  --workload-identity-pool="github-actions-workload-id-pool" \
+  --display-name="Github workload ID provider" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.aud=assertion.aud,attribute.repository_owner=assertion.repository_owner,attribute.repository=assertion.repository" \
+  --issuer-uri="https://token.actions.githubusercontent.com"
+```
+
+Allow authentication by GitHub workload ID providers to impersonate GCP service account.
+
+```shell
+GCP_PROJECT_NUMBER=$(gcloud projects describe "${GCP_PROJECT_ID}" --format="value(projectNumber)")
+
+gcloud iam service-accounts add-iam-policy-binding "github@${GCP_PROJECT_ID}.iam.gserviceaccount.com" \
+  --project="${GCP_PROJECT_ID}" \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/github-actions-workload-id-pool/attribute.repository_owner/arcanetechnology"
+```

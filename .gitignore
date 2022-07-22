@@ -1,8 +1,16 @@
-.gradle
+# jetbrains
 .idea
+
+# gradle
+.gradle
 build
 
+# .env files
 .env*
 !.env.template
 
+# httpx
 http-client.private.env.json
+
+# Ignore generated credentials from google-github-actions/auth
+gha-creds-*.json
