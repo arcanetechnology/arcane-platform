@@ -7,6 +7,7 @@ import com.sendgrid.helpers.mail.Mail
 import com.sendgrid.helpers.mail.objects.Content
 import com.sendgrid.helpers.mail.objects.Email
 import com.sendgrid.helpers.mail.objects.MailSettings
+import com.sendgrid.helpers.mail.objects.Personalization
 import com.sendgrid.helpers.mail.objects.Setting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,19 +18,34 @@ import kotlinx.html.style
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
 
+
+typealias ArcaneEmail = no.arcane.platform.email.Email
 object SendGridService : EmailService {
 
     private val logger by getLogger()
 
     private val sendGridConfig by loadConfig<SendGridConfig>(name = "sendgrid", path = "sendgrid")
 
+
     override suspend fun sendEmail(
-        from: String,
-        to: String,
+        from: ArcaneEmail,
+        toList: List<ArcaneEmail>,
+        ccList: List<ArcaneEmail>,
+        bccList: List<ArcaneEmail>,
         subject: String,
         contentType: ContentType,
-        body: String,
+        body: String
     ): Boolean {
+
+
+        fun ArcaneEmail.toSendgridEmail(): Email {
+            return if (label.isNullOrBlank()) {
+                Email(address)
+            } else {
+                Email(address, label)
+            }
+        }
+
         try {
             val content = when (contentType) {
                 ContentType.HTML -> Content("text/html", body)
@@ -47,12 +63,19 @@ object SendGridService : EmailService {
                     }
                 )
             }
-            val mail = Mail(
-                Email(from),
-                subject,
-                Email(to),
-                content
-            )
+
+            val mail = Mail().apply {
+                this.from = from.toSendgridEmail()
+                this.subject = subject
+                addPersonalization(
+                    Personalization().apply {
+                        toList.map(ArcaneEmail::toSendgridEmail).forEach(this::addTo)
+                        ccList.map(ArcaneEmail::toSendgridEmail).forEach(this::addCc)
+                        bccList.map(ArcaneEmail::toSendgridEmail).forEach(this::addBcc)
+                    }
+                )
+                addContent(content)
+            }
 
             if (sendGridConfig.enabled.not()) {
                 mail.mailSettings = MailSettings().apply {
@@ -64,10 +87,11 @@ object SendGridService : EmailService {
                 }
             }
 
-            val request = Request()
-            request.method = Method.POST
-            request.endpoint = "mail/send"
-            request.body = mail.build()
+            val request = Request().apply {
+                method = Method.POST
+                endpoint = "mail/send"
+                this.body = mail.build()
+            }
 
             val sendGrid = SendGrid(sendGridConfig.apiKey)
             val response = withContext(Dispatchers.IO) {

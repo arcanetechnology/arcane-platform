@@ -79,7 +79,7 @@ fun Application.module() {
                                 )
                                 // email
                                 val userEmail = call.principal<UserInfo>()!!.email
-                                fundInfoRequest.sendEmail(to = userEmail)
+                                fundInfoRequest.sendEmail(investorEmail = userEmail)
                                 // respond
                                 call.respond(HttpStatusCode.OK)
                             } else {

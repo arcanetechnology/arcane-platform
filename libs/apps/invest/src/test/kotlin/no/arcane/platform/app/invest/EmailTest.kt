@@ -16,7 +16,7 @@ class EmailTest: StringSpec({
             countryCode = ISO3CountyCode.NOR,
             fundName = "Arcane Assets Fund Limited"
         ).sendEmail(
-            to = "test@arcane.no"
+            investorEmail = "test@arcane.no"
         )
     }
 })

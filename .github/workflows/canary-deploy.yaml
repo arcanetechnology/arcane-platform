@@ -32,7 +32,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          version: 394.0.0
+          version: 395.0.0
       - name: Authorize Docker push
         run: gcloud auth configure-docker europe-docker.pkg.dev
       - name: Build with Gradle
@@ -46,7 +46,9 @@ jobs:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
           INVEST_DENIED_COUNTRY_CODE_LIST: ${{ secrets.INVEST_DENIED_COUNTRY_CODE_LIST }}
           INVEST_EMAIL_FROM: ${{ secrets.INVEST_EMAIL_FROM }}
-          INVEST_EMAIL_TO: ${{ secrets.INVEST_EMAIL_TO }}
+          INVEST_EMAIL_TO_LIST: ${{ secrets.INVEST_EMAIL_TO_LIST }}
+          INVEST_EMAIL_CC_LIST: ${{ secrets.INVEST_EMAIL_CC_LIST }}
+          INVEST_EMAIL_BCC_LIST: ${{ secrets.INVEST_EMAIL_BCC_LIST }}
         run: |-
           gcloud run deploy arcane-platform \
             --region europe-west1 \
@@ -60,7 +62,9 @@ jobs:
             --set-env-vars=GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
             --set-env-vars=^:^INVEST_DENIED_COUNTRY_CODE_LIST="${INVEST_DENIED_COUNTRY_CODE_LIST}" \
             --set-env-vars=INVEST_EMAIL_FROM="${INVEST_EMAIL_FROM}" \
-            --set-env-vars=INVEST_EMAIL_TO="${INVEST_EMAIL_TO}" \
+            --set-env-vars=^:^INVEST_EMAIL_TO_LIST="${INVEST_EMAIL_TO_LIST}" \
+            --set-env-vars=^:^INVEST_EMAIL_CC_LIST="${INVEST_EMAIL_CC_LIST}" \
+            --set-env-vars=^:^INVEST_EMAIL_BCC_LIST="${INVEST_EMAIL_BCC_LIST}" \
             --service-account arcane-platform@"${GCP_PROJECT_ID}".iam.gserviceaccount.com \
             --no-allow-unauthenticated \
             --port=8080 \

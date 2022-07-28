@@ -2,8 +2,10 @@ package no.arcane.platform.email
 
 interface EmailService {
     suspend fun sendEmail(
-        from: String,
-        to: String,
+        from: Email,
+        toList: List<Email>,
+        ccList: List<Email> = emptyList(),
+        bccList: List<Email> = emptyList(),
         subject: String,
         contentType: ContentType,
         body: String,
@@ -15,3 +17,8 @@ enum class ContentType {
     PLAIN_TEXT,
     MONOSPACE_TEXT,
 }
+
+data class Email(
+    val address: String,
+    val label: String? = null,
+)

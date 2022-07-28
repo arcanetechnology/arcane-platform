@@ -8,6 +8,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.arcane.platform.email.ContentType
+import no.arcane.platform.email.Email
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.config.loadConfig
@@ -24,6 +25,22 @@ object InvestService {
             .uppercase()
             .split(',')
             .map(ISO3CountyCode::valueOf)
+    }
+
+    private val emailFrom by lazy {
+        config.email.from.toEmail()
+    }
+
+    private val emailToList by lazy {
+        config.email.toList.toMandatoryEmailList()
+    }
+
+    private val emailCcList by lazy {
+        config.email.ccList.toEmailList()
+    }
+
+    private val emailBccList by lazy {
+        config.email.bccList.toEmailList()
     }
 
     private val emailService by getEmailService()
@@ -90,26 +107,28 @@ object InvestService {
     }
 
     suspend fun FundInfoRequest.sendEmail(
-        to: String,
+        investorEmail: String,
     ) {
         emailService.sendEmail(
-            from = config.email.from,
-            to = config.email.to,
+            from = emailFrom,
+            toList = emailToList,
+            ccList = emailCcList,
+            bccList = emailBccList,
             subject = "Arcane Fund Inquiry Request",
             contentType = ContentType.MONOSPACE_TEXT,
             body = """
-            Details of Investor submitting inquiry for the Arcane Fund.
-
-            Investor category ..... ${investorType.label}
-            Full Name ............. $name
-            Company ............... ${company ?: "-"}
-            E-mail ................ $to
-            Phone ................. $phoneNumber
-            Country of residence .. ${countryCode?.let { "${it.displayName} (${it.name})" }}
-            Name of fund .......... $fundName
-
-            Action taken .......... Approved
-            """.trimIndent()
+                Details of Investor submitting inquiry for the Arcane Fund.
+    
+                Investor category ..... ${investorType.label}
+                Full Name ............. $name
+                Company ............... ${company ?: "-"}
+                E-mail ................ $investorEmail
+                Phone ................. $phoneNumber
+                Country of residence .. ${countryCode?.let { "${it.displayName} (${it.name})" }}
+                Name of fund .......... $fundName
+    
+                Action taken .......... Approved
+                """.trimIndent()
         )
     }
 }

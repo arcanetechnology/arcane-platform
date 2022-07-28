@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import no.arcane.platform.cms.LegalEntryMetadata
 import no.arcane.platform.cms.getCmsService
 import no.arcane.platform.email.ContentType
+import no.arcane.platform.email.Email
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.user.users
@@ -77,8 +78,8 @@ object TncService {
         }
 
         return emailService.sendEmail(
-            from = "do-not-reply@arcane.no",
-            to = email,
+            from = Email(address = "do-not-reply@arcane.no", label = "Arcane"),
+            toList = listOf(Email(email)),
             subject = "Privacy Policy",
             contentType = ContentType.HTML,
             body = html,

@@ -3,7 +3,7 @@ version: "3.8"
 services:
   firestore-emulator:
     container_name: firestore-emulator
-    image: google/cloud-sdk:394.0.0-emulators
+    image: google/cloud-sdk:395.0.0-emulators
     expose:
       - 5173
     ports:
@@ -38,7 +38,9 @@ services:
       - SLACK_TOKEN=${SLACK_TOKEN}
       - INVEST_DENIED_COUNTRY_CODE_LIST=${INVEST_DENIED_COUNTRY_CODE_LIST}
       - INVEST_EMAIL_FROM=${INVEST_EMAIL_FROM}
-      - INVEST_EMAIL_TO=${INVEST_EMAIL_TO}
+      - INVEST_EMAIL_TO_LIST=${INVEST_EMAIL_TO_LIST}
+      - INVEST_EMAIL_CC_LIST=${INVEST_EMAIL_CC_LIST}
+      - INVEST_EMAIL_BCC_LIST=${INVEST_EMAIL_BCC_LIST}
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     expose:

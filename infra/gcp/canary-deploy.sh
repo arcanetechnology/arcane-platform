@@ -40,7 +40,9 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --set-env-vars=GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
   --set-env-vars=^:^INVEST_DENIED_COUNTRY_CODE_LIST="${INVEST_DENIED_COUNTRY_CODE_LIST}" \
   --set-env-vars=INVEST_EMAIL_FROM="${INVEST_EMAIL_FROM}" \
-  --set-env-vars=INVEST_EMAIL_TO="${INVEST_EMAIL_TO}" \
+  --set-env-vars=^:^INVEST_EMAIL_TO_LIST="${INVEST_EMAIL_TO_LIST}" \
+  --set-env-vars=^:^INVEST_EMAIL_CC_LIST="${INVEST_EMAIL_CC_LIST}" \
+  --set-env-vars=^:^INVEST_EMAIL_BCC_LIST="${INVEST_EMAIL_BCC_LIST}" \
   --service-account "${backendCloudRun["service_account"]}" \
   --no-allow-unauthenticated \
   --port=8080 \
