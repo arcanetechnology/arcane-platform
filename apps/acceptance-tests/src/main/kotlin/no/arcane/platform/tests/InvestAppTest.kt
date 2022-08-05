@@ -68,9 +68,10 @@ class InvestAppTest : BehaviorSpec({
         `when`("GET apps/invest/funds/$fundId") {
             then("Status should be 404 NOT FOUND") {
                 getStatus(userId) shouldBe HttpStatusCode.NotFound
-                and("GET apps/invest/funds should be NOT_REGISTERED") {
-                    getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
-                }
+
+            }
+            then("GET apps/invest/funds should be NOT_REGISTERED") {
+                getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
             }
         }
         `when`("POST /apps/invest/funds/$invalidFundId with Invalid Fund ID") {
@@ -104,12 +105,12 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 400 BadRequest") {
                     status shouldBe HttpStatusCode.BadRequest
-                    and("GET apps/invest/funds/$fundId should be 404 NOT FOUND") {
-                        getStatus(userId) shouldBe HttpStatusCode.NotFound
-                        and("GET apps/invest/funds should be NOT_REGISTERED") {
-                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
-                        }
-                    }
+                }
+                then("GET apps/invest/funds/$fundId should be 404 NOT FOUND") {
+                    getStatus(userId) shouldBe HttpStatusCode.NotFound
+                }
+                then("GET apps/invest/funds should be NOT_REGISTERED") {
+                    getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
                 }
             }
             and("Invalid phone number") {
@@ -125,12 +126,12 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 400 BadRequest") {
                     status shouldBe HttpStatusCode.BadRequest
-                    and("GET apps/invest/funds/$fundId should be 404 NOT FOUND") {
-                        getStatus(userId) shouldBe HttpStatusCode.NotFound
-                        and("GET apps/invest/funds should be NOT_REGISTERED") {
-                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
-                        }
-                    }
+                }
+                then("GET apps/invest/funds/$fundId should be 404 NOT FOUND") {
+                    getStatus(userId) shouldBe HttpStatusCode.NotFound
+                }
+                then("GET apps/invest/funds should be NOT_REGISTERED") {
+                    getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
                 }
             }
             and("Incorrect fund name") {
@@ -146,12 +147,12 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 403 Forbidden") {
                     status shouldBe HttpStatusCode.Forbidden
-                    and("GET apps/invest/funds/$fundId should be 403 FORBIDDEN") {
-                        getStatus(userId) shouldBe HttpStatusCode.Forbidden
-                        and("GET apps/invest/funds should be NOT_AUTHORIZED") {
-                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_AUTHORIZED")
-                        }
-                    }
+                }
+                then("GET apps/invest/funds/$fundId should be 403 FORBIDDEN") {
+                    getStatus(userId) shouldBe HttpStatusCode.Forbidden
+                }
+                then("GET apps/invest/funds should be NOT_AUTHORIZED") {
+                    getStatusMap(userId) shouldBe mapOf(fundId to "NOT_AUTHORIZED")
                 }
             }
             and("Investor Type: Non professional") {
@@ -163,12 +164,12 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 403 Forbidden") {
                     status shouldBe HttpStatusCode.Forbidden
-                    and("GET apps/invest/funds/$fundId should be 403 FORBIDDEN") {
-                        getStatus(userId) shouldBe HttpStatusCode.Forbidden
-                        and("GET apps/invest/funds should be NOT_AUTHORIZED") {
-                            getStatusMap(userId) shouldBe mapOf(fundId to "NOT_AUTHORIZED")
-                        }
-                    }
+                }
+                then("GET apps/invest/funds/$fundId should be 403 FORBIDDEN") {
+                    getStatus(userId) shouldBe HttpStatusCode.Forbidden
+                }
+                then("GET apps/invest/funds should be NOT_AUTHORIZED") {
+                    getStatusMap(userId) shouldBe mapOf(fundId to "NOT_AUTHORIZED")
                 }
             }
             and("with Valid FundInfoRequest") {
@@ -184,12 +185,12 @@ class InvestAppTest : BehaviorSpec({
                 )
                 then("Status should be 200 OK") {
                     status shouldBe HttpStatusCode.OK
-                    and("GET apps/invest/funds/$fundId should be 200 OK") {
-                        getStatus(userId) shouldBe HttpStatusCode.OK
-                        and("GET apps/invest/funds should be REGISTERED") {
-                            getStatusMap(userId) shouldBe mapOf(fundId to "REGISTERED")
-                        }
-                    }
+                }
+                then("GET apps/invest/funds/$fundId should be 200 OK") {
+                    getStatus(userId) shouldBe HttpStatusCode.OK
+                }
+                then("GET apps/invest/funds should be REGISTERED") {
+                    getStatusMap(userId) shouldBe mapOf(fundId to "REGISTERED")
                 }
             }
         }

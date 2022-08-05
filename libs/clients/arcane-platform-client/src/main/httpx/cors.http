@@ -1,16 +1,21 @@
-### arcane.no
+### arcane.no to OPTIONS api.arcane.no
 
 OPTIONS https://api.arcane.no
 Origin: https://arcane.no
 Access-Control-Request-Method: GET
 
-### dev.arcane.no
+### arcane.no to GET api.arcane.no
 
-OPTIONS https://api.arcane.no
+GET https://api.arcane.no/ping
+Origin: https://arcane.no
+
+### dev.arcane.no to OPTIONS api.arcane.no
+
+OPTIONS https://api.arcane.no/
 Origin: https://dev.arcane.no
 Access-Control-Request-Method: GET
 
-### developer.arcane.no
+### developer.arcane.no to OPTIONS api.arcane.no
 
 OPTIONS https://api.arcane.no
 Origin: https://developer.arcane.no

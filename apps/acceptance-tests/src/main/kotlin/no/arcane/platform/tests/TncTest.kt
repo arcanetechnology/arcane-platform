@@ -66,14 +66,14 @@ class TncTest : BehaviorSpec({
             }
         }
         `when`("POST /tnc/platform.termsAndConditions to Submit Terms and Conditions") {
+            val savedTnc = saveTnc(userId = userId)
             then("response should be 404") {
-                val savedTnc = saveTnc(userId = userId)
                 savedTnc shouldBe tnc.copy(timestamp = savedTnc.timestamp)
-                and("GET /tnc/platform.termsAndConditions to Check if Terms and Conditions are saved should be 200 OK") {
-                    val response = getTnc(userId = userId)
-                    response.status shouldBe HttpStatusCode.OK
-                    response.body<TncResponse>() shouldBe savedTnc
-                }
+            }
+            then("GET /tnc/platform.termsAndConditions to Check if Terms and Conditions are saved should be 200 OK") {
+                val response = getTnc(userId = userId)
+                response.status shouldBe HttpStatusCode.OK
+                response.body<TncResponse>() shouldBe savedTnc
             }
         }
 

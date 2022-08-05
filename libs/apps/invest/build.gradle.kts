@@ -17,6 +17,8 @@ dependencies {
     implementation(project(":libs:services:email"))
 
     implementation("com.googlecode.libphonenumber:libphonenumber:_")
+    implementation(KotlinX.serialization.core)
+    implementation(KotlinX.serialization.json)
 
     // test
     testImplementation("io.kotest:kotest-runner-junit5-jvm:_")

@@ -31,16 +31,17 @@ class UserTest : BehaviorSpec({
             }
         }
         `when`("POST /user to register a user") {
-            then("response should be user object") {
-                apiClient.post {
-                    url(path = "user")
-                    headers {
-                        appendEndpointsApiUserInfoHeader(userId)
-                    }
-                }.body<User>().userId shouldBe userId
-                and("GET /user to check if registered user exists, should be user object") {
-                    getUser(userId = userId).body<User>().userId shouldBe userId
+            val user = apiClient.post {
+                url(path = "user")
+                headers {
+                    appendEndpointsApiUserInfoHeader(userId)
                 }
+            }.body<User>()
+            then("response should be user object") {
+                user.userId shouldBe userId
+            }
+            then("GET /user to check if registered user exists, should be user object") {
+                getUser(userId = userId).body<User>().userId shouldBe userId
             }
         }
     }

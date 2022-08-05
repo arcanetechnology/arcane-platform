@@ -1,6 +1,11 @@
 package no.arcane.platform.app.invest
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.lang.Exception
+import java.util.*
 
 fun FundInfoRequest.validate(): List<String> {
     val errors = mutableListOf<String>()
@@ -28,4 +33,28 @@ fun PhoneNumber.validate(): Boolean {
     return phoneNumberUtil.isValidNumber(
         phoneNumberUtil.parse("$this", "")
     )
+}
+
+@Serializable
+data class Country(
+    val isO2CountyCode: String,
+    val isO3CountyCode: String,
+    val displayName: String,
+    val callingCountryCode: Int
+)
+fun main() {
+    val phoneNumberUtil = PhoneNumberUtil.getInstance()
+    val countryList = phoneNumberUtil
+        .supportedRegions
+        .map { iso2CountryCode ->
+            val locale = Locale("", iso2CountryCode)
+            Country(
+                isO2CountyCode = iso2CountryCode,
+                isO3CountyCode = try { locale.isO3Country } catch (e: Exception) {""},
+                displayName = locale.displayName,
+                callingCountryCode = phoneNumberUtil.getCountryCodeForRegion(iso2CountryCode)
+            )
+        }
+        .sortedBy(Country::displayName)
+    println(Json.encodeToString(countryList))
 }
