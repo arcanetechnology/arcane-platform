@@ -9,9 +9,9 @@ if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINF
   exit 1
 fi
 
-if [ -f .env ]; then
+if [ -f .env.gcp ]; then
   set -o allexport
-  source .env
+  source .env.gcp
   set +o allexport
 fi
 
@@ -38,6 +38,13 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --concurrency=1000 \
   --set-env-vars=GCP_PROJECT_ID="${GCP_PROJECT_ID}" \
   --set-env-vars=GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
+  --set-env-vars=SLACK_ALERTS_CHANNEL_ID="${SLACK_ALERTS_CHANNEL_ID}" \
+  --set-env-vars=SLACK_ASSETS_CHANNEL_ID="${SLACK_ASSETS_CHANNEL_ID}" \
+  --set-env-vars=SLACK_GENERAL_CHANNEL_ID="${SLACK_GENERAL_CHANNEL_ID}" \
+  --set-env-vars=SLACK_PRODUCT_CHANNEL_ID="${SLACK_PRODUCT_CHANNEL_ID}" \
+  --set-env-vars=SLACK_PROFESSIONAL_INVESTORS_CHANNEL_ID="${SLACK_PROFESSIONAL_INVESTORS_CHANNEL_ID}" \
+  --set-env-vars=SLACK_RESEARCH_CHANNEL_ID="${SLACK_RESEARCH_CHANNEL_ID}" \
+  --set-env-vars=SLACK_RESEARCH_EVENTS_CHANNEL_ID="${SLACK_RESEARCH_EVENTS_CHANNEL_ID}" \
   --set-env-vars=^:^INVEST_DENIED_COUNTRY_CODE_LIST="${INVEST_DENIED_COUNTRY_CODE_LIST}" \
   --set-env-vars=INVEST_EMAIL_FROM="${INVEST_EMAIL_FROM}" \
   --set-env-vars=^:^INVEST_EMAIL_TO_LIST="${INVEST_EMAIL_TO_LIST}" \

@@ -12,7 +12,6 @@ import no.arcane.platform.app.invest.InvestService.getFund
 import no.arcane.platform.app.invest.InvestService.isApproved
 import no.arcane.platform.app.invest.InvestService.saveFundInfoRequest
 import no.arcane.platform.app.invest.InvestService.saveStatus
-import no.arcane.platform.app.invest.InvestService.sendEmail
 import no.arcane.platform.identity.auth.gcp.UserInfo
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.logging.logWithMDC
@@ -77,9 +76,17 @@ fun Application.module() {
                                     fundId = fundId,
                                     status = Status.REGISTERED,
                                 )
-                                // email
                                 val userEmail = call.principal<UserInfo>()!!.email
-                                fundInfoRequest.sendEmail(investorEmail = userEmail)
+                                // slack
+                                InvestService.sendSlackNotification(
+                                    investorEmail = userEmail,
+                                    fundInfoRequest = fundInfoRequest,
+                                )
+                                // email
+                                InvestService.sendEmail(
+                                    investorEmail = userEmail,
+                                    fundInfoRequest = fundInfoRequest,
+                                )
                                 // respond
                                 call.respond(HttpStatusCode.OK)
                             } else {

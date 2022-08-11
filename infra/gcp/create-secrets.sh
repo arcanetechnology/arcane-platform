@@ -9,9 +9,9 @@ if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINF
   exit 1
 fi
 
-if [ -f .env ]; then
+if [ -f .env.gcp ]; then
   set -o allexport
-  source .env
+  source .env.gcp
   set +o allexport
 fi
 

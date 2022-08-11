@@ -71,19 +71,34 @@ object SlackClient {
         }
     }
 
-    suspend fun getChannelId(channelName: String): String? {
+    suspend fun getChannelId(channelName: String): String? = getChannelNameToIdMap()[channelName]
+
+    internal tailrec suspend fun getChannelNameToIdMap(
+        acc: Map<String, String> = emptyMap(),
+        cursor: String? = null
+    ): Map<String, String> {
+        if (cursor == "") {
+            return acc
+        }
         val response = asyncMethodsClient.conversationsList { req ->
-            req
-                .types(mutableListOf(ConversationType.PUBLIC_CHANNEL))
+            req.types(
+                mutableListOf(
+                    ConversationType.PUBLIC_CHANNEL,
+                    ConversationType.PRIVATE_CHANNEL,
+                )
+            )
+            req.cursor(cursor)
         }.await()
-        return if (response.isOk) {
-            val map = response.channels.associate { it.name to it.id }
-            logger.info(map.toString())
-            map[channelName]
-        } else {
+        if (!response.isOk) {
             response.warning?.let { logger.warn(it) }
             response.error?.let { logger.error(it) }
-            null
+            return acc
         }
+        val map = response.channels.associate { it.name to it.id }
+        map.forEach { (key, value) ->
+            logger.info("$key = $value")
+        }
+        val nextCursor = response.responseMetadata.nextCursor
+        return getChannelNameToIdMap(acc + map, nextCursor)
     }
 }

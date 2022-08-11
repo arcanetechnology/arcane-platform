@@ -66,16 +66,14 @@ object InvestService {
         return true
     }
 
-    suspend fun UserId.getAllFunds(): Map<FundId, Fund?> {
-        return coroutineScope {
-            config
-                .funds
-                .keys
-                .map(::FundId)
-                .associateWithAsync { fundId ->
-                    get(inInvestAppContext() / funds / fundId)
-                }
-        }
+    suspend fun UserId.getAllFunds(): Map<FundId, Fund?> = coroutineScope {
+        config
+            .funds
+            .keys
+            .map(::FundId)
+            .associateWithAsync { fundId ->
+                get(inInvestAppContext() / funds / fundId)
+            }
     }
 
     suspend fun UserId.getFund(fundId: FundId): Fund? = get(inInvestAppContext() / funds / fundId)
@@ -95,40 +93,50 @@ object InvestService {
     suspend fun UserId.saveStatus(
         fundId: FundId,
         status: Status,
-    ) {
-        put(inInvestAppContext() / funds / fundId, Fund(status))
-    }
+    ) = put(inInvestAppContext() / funds / fundId, Fund(status))
 
     suspend fun UserId.saveFundInfoRequest(
         fundId: FundId,
         fundInfoRequest: FundInfoRequest,
-    ) {
-        add(inInvestAppContext() / funds / fundId / fundInfoRequests, fundInfoRequest)
-    }
+    ) = add(inInvestAppContext() / funds / fundId / fundInfoRequests, fundInfoRequest)
 
-    suspend fun FundInfoRequest.sendEmail(
+    suspend fun sendEmail(
         investorEmail: String,
-    ) {
-        emailService.sendEmail(
-            from = emailFrom,
-            toList = emailToList,
-            ccList = emailCcList,
-            bccList = emailBccList,
-            subject = "Arcane Fund Inquiry Request",
-            contentType = ContentType.MONOSPACE_TEXT,
-            body = """
-                Details of Investor submitting inquiry for the Arcane Fund.
+        fundInfoRequest: FundInfoRequest,
+    ) = emailService.sendEmail(
+        from = emailFrom,
+        toList = emailToList,
+        ccList = emailCcList,
+        bccList = emailBccList,
+        subject = "Arcane Fund Inquiry Request",
+        contentType = ContentType.MONOSPACE_TEXT,
+        body = fundInfoRequest.asString(
+            investorEmail = investorEmail,
+        ),
+    )
+
+    suspend fun sendSlackNotification(
+        investorEmail: String,
+        fundInfoRequest: FundInfoRequest,
+    ) = SlackNotification.notifySlack(
+        strFundInfoRequest = fundInfoRequest.asString(
+            investorEmail = investorEmail,
+        ),
+    )
+
+    internal fun FundInfoRequest.asString(
+        investorEmail: String,
+    ): String = """
+        Details of Investor submitting inquiry for the Arcane Fund.
     
-                Investor category ..... ${investorType.label}
-                Full Name ............. $name
-                Company ............... ${company ?: "-"}
-                E-mail ................ $investorEmail
-                Phone ................. $phoneNumber
-                Country of residence .. ${countryCode?.let { "${it.displayName} (${it.name})" }}
-                Name of fund .......... $fundName
-    
-                Action taken .......... Approved
-                """.trimIndent()
-        )
-    }
+        Investor category ..... ${investorType.label}
+        Full Name ............. $name
+        Company ............... ${company ?: "-"}
+        E-mail ................ $investorEmail
+        Phone ................. $phoneNumber
+        Country of residence .. ${countryCode?.let { "${it.displayName} (${it.name})" }}
+        Name of fund .......... $fundName
+
+        Action taken .......... Approved
+        """.trimIndent()
 }

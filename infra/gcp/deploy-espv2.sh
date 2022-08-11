@@ -11,9 +11,9 @@ if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINF
 fi
 
 #### init env vars from .env
-if [ -f .env ]; then
+if [ -f .env.gcp ]; then
   set -o allexport
-  source .env
+  source .env.gcp
   set +o allexport
 fi
 

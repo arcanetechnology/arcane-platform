@@ -1,14 +1,13 @@
 package no.arcane.platform.app.invest
 
 import io.kotest.core.spec.style.StringSpec
-import no.arcane.platform.app.invest.InvestService.sendEmail
+import no.arcane.platform.app.invest.InvestService.asString
 
-class EmailTest: StringSpec({
+class SlackNotificationTest : StringSpec({
 
-    "send email".config(enabled = false) {
-        InvestService.sendEmail(
-            investorEmail = "test@arcane.no",
-            fundInfoRequest = FundInfoRequest(
+    "send slack notification on publish".config(enabled = false) {
+        SlackNotification.notifySlack(
+            FundInfoRequest(
                 investorType = InvestorType.PROFESSIONAL,
                 name = "Test",
                 phoneNumber = PhoneNumber(
@@ -17,7 +16,7 @@ class EmailTest: StringSpec({
                 ),
                 countryCode = ISO3CountyCode.NOR,
                 fundName = "Arcane Assets Fund Limited"
-            )
+            ).asString(investorEmail = "test@arcane.no")
         )
     }
 })
