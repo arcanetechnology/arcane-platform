@@ -52,7 +52,7 @@ class InvestAppTest : BehaviorSpec({
         fundInfoRequest: FundInfoRequest,
         fundIdValue: String = fundId,
     ): HttpStatusCode {
-        return apiClient.post {
+        return apiClient.put {
             url(path = "apps/invest/funds/$fundIdValue")
             headers {
                 appendEndpointsApiUserInfoHeader(userId)
@@ -74,7 +74,7 @@ class InvestAppTest : BehaviorSpec({
                 getStatusMap(userId) shouldBe mapOf(fundId to "NOT_REGISTERED")
             }
         }
-        `when`("POST /apps/invest/funds/$invalidFundId with Invalid Fund ID") {
+        `when`("PUT /apps/invest/funds/$invalidFundId with Invalid Fund ID") {
             val status = sendFundInfoRequest(
                 userId = userId,
                 fundInfoRequest = FundInfoRequest(

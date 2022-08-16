@@ -246,7 +246,7 @@ paths:
             type: object
       security:
         - firebase: [ ]
-    post:
+    put:
       description: Submit FundInfoRequest
       consumes:
         - application/json

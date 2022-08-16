@@ -57,7 +57,7 @@ fun Application.module() {
                     }
                 }
                 // submit a fund info request for a given fund
-                post("/{fund-id}") {
+                put("/{fund-id}") {
                     val userId = UserId(call.principal<UserInfo>()!!.userId)
                     logWithMDC("userId" to userId.value) {
                         val fundId = FundId(
