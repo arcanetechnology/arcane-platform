@@ -7,8 +7,8 @@ enum class NotifySlack {
 
     // sorted alphabetically.
     NOTIFY_SLACK_ALERTS,
-    NOTIFY_SLACK_ASSETS,
     NOTIFY_SLACK_GENERAL,
+    NOTIFY_SLACK_INVEST,
     NOTIFY_SLACK_PRODUCT,
     NOTIFY_SLACK_RESEARCH,
 }

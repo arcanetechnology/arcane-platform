@@ -10,8 +10,8 @@ import java.time.format.DateTimeFormatter
 object SlackNotification {
 
     private val slackInvestEventsChannel by lazy {
-        System.getenv("SLACK_INVEST_FUND_INFO_REQ_CHANNEL_ID")?.let { ChannelId(it) }
-            ?: System.getenv("SLACK_INVEST_FUND_INFO_REQ_CHANNEL_NAME")?.let { ChannelName(it) }
+        System.getenv("SLACK_PROFESSIONAL_INVESTORS_CHANNEL_ID")?.let { ChannelId(it) }
+            ?: System.getenv("SLACK_PROFESSIONAL_INVESTORS_CHANNEL_NAME")?.let { ChannelName(it) }
             ?: ChannelName("professional-investors")
     }
 
