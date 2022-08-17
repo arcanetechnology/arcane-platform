@@ -4,7 +4,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.lang.Exception
+import no.arcane.platform.utils.logging.getLogger
 import java.util.*
 
 fun FundInfoRequest.validate(): List<String> {
@@ -30,9 +30,15 @@ fun FundInfoRequest.validate(): List<String> {
 
 fun PhoneNumber.validate(): Boolean {
     val phoneNumberUtil = PhoneNumberUtil.getInstance()
-    return phoneNumberUtil.isValidNumber(
-        phoneNumberUtil.parse("$this", "")
-    )
+    return try {
+        phoneNumberUtil.isValidNumber(
+            phoneNumberUtil.parse("$this", "")
+        )
+    } catch (e: Exception) {
+        val logger by getLogger()
+        logger.warn("Exception: ${e.message} in parsing phone number: $this")
+        false
+    }
 }
 
 @Serializable
