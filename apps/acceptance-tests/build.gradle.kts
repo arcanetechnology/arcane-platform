@@ -15,6 +15,7 @@ dependencies {
     implementation(Ktor.client.serialization)
     implementation("io.ktor:ktor-client-content-negotiation:_")
     implementation("io.ktor:ktor-serialization-kotlinx-json:_")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:_")
     implementation("io.kotest:kotest-runner-junit5-jvm:_")
     implementation("org.junit.platform:junit-platform-console:_")
 }

@@ -19,7 +19,7 @@ val apiClient = HttpClient(CIO) {
         json()
     }
     defaultRequest {
-        host = System.getenv("BACKEND_HOST") ?: "localhost"
-        port = 8080
+        host = backend.host
+        port = backend.port
     }
 }

@@ -1,5 +1,6 @@
 package no.arcane.platform.tests
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.nimbusds.jose.crypto.RSASSAVerifier
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.util.X509CertUtils
@@ -21,6 +22,8 @@ import java.security.cert.X509Certificate
 val jsonParser = Json {
     ignoreUnknownKeys = true
 }
+
+private val jacksonObjectMapper = jacksonObjectMapper()
 
 @Serializable
 private data class ServiceAccount(
@@ -60,9 +63,8 @@ suspend fun verifyFirebaseCustomToken(
     email: String,
     firebaseCustomToken: String
 ) {
-    val claimsJson = JWTParser.parse(firebaseCustomToken).jwtClaimsSet.claims["claims"].toString()
+    val claimsJson = jacksonObjectMapper.writeValueAsString(JWTParser.parse(firebaseCustomToken).jwtClaimsSet.claims["claims"])
     val firebaseCustomTokenClaims: FirebaseCustomTokenClaims = jsonParser.decodeFromString(claimsJson)
-
     firebaseCustomTokenClaims.userId shouldBe uid
     firebaseCustomTokenClaims.email shouldBe email
     firebaseCustomTokenClaims.emailVerified shouldBe true

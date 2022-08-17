@@ -26,15 +26,15 @@ private val oauthProviderEmulatorClient = HttpClient(CIO) {
         json()
     }
     defaultRequest {
-        host = "oauth2-provider-emulator"
-        port = 8080
+        host = oauth2ProviderEmulator.host
+        port = oauth2ProviderEmulator.port
     }
 }
 
 @OptIn(InternalAPI::class)
 fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
     val firebaseIdTokenPayload = FirebaseIdTokenPayload(subject = subject)
-    if (System.getenv("BACKEND_HOST") == "test.api.arcane.no") {
+    if (usingEsp) {
         val idToken: String = runBlocking {
             oauthProviderEmulatorClient.get {
                 url(path = "firebase-id-token")
@@ -55,7 +55,7 @@ fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
 @OptIn(InternalAPI::class)
 fun HeadersBuilder.appendAppleIdToken(subject: String) {
     val appleIdTokenPayload = AppleIdTokenPayload(subject = subject)
-    if (System.getenv("BACKEND_HOST") == "test.api.arcane.no") {
+    if (usingEsp) {
         val idToken: String = runBlocking {
             oauthProviderEmulatorClient.get {
                 url(path = "apple-id-token")
