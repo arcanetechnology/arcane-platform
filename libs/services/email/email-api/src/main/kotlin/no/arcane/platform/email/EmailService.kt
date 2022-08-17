@@ -21,4 +21,6 @@ enum class ContentType {
 data class Email(
     val address: String,
     val label: String? = null,
-)
+) {
+    override fun toString() = "$label <$address>"
+}

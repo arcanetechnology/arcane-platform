@@ -27,6 +27,7 @@ fun String.toEmail(): Email {
 
 fun String?.toEmailList(): List<Email> = this
     ?.split(',')
+    ?.filterNot { it.isBlank() }
     ?.map(String::toEmail)
     ?: emptyList()
 

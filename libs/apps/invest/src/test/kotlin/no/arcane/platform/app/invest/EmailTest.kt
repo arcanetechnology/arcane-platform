@@ -1,7 +1,6 @@
 package no.arcane.platform.app.invest
 
 import io.kotest.core.spec.style.StringSpec
-import no.arcane.platform.app.invest.InvestService.sendEmail
 
 class EmailTest: StringSpec({
 

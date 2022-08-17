@@ -9,6 +9,7 @@
         <filter class="no.arcane.platform.utils.logging.NotifySlackFilter" />
     </appender>
     -->
+    <logger name="no.arcane" level="DEBUG" />
     <logger name="net.andreinc.mapneat" level="WARN" />
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

@@ -20,6 +20,7 @@ import no.arcane.platform.utils.logging.getLogger
 
 
 typealias ArcaneEmail = no.arcane.platform.email.Email
+
 object SendGridService : EmailService {
 
     private val logger by getLogger()
@@ -37,6 +38,17 @@ object SendGridService : EmailService {
         body: String
     ): Boolean {
 
+        logger.debug(
+            """
+
+            from: $from
+            to: ${toList.joinToString()}
+            cc: ${ccList.joinToString()}
+            bcc: ${bccList.joinToString()}
+            subject: $subject
+
+            """.trimIndent() + body
+        )
 
         fun ArcaneEmail.toSendgridEmail(): Email {
             return if (label.isNullOrBlank()) {

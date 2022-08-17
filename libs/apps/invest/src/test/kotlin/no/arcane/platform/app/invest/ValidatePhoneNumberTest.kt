@@ -15,4 +15,8 @@ class ValidatePhoneNumberTest: StringSpec({
     "Test not a number" {
         PhoneNumber("47", "+4712345678").validate() shouldBe false
     }
+
+    "Test empty number" {
+        PhoneNumber("47", "").validate() shouldBe false
+    }
 })
