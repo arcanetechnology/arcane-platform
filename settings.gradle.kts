@@ -16,6 +16,8 @@ include(
     "apps:acceptance-tests",
     "apps:arcane-platform-app",
 
+    "apps:firestore-admin",
+
     "apps:oauth2-provider-emulator",
     "apps:oauth2-provider-emulator:oauth2-provider-api",
 

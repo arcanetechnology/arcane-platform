@@ -21,35 +21,24 @@ object FirebaseAuthService {
         email: String,
         displayName: String,
     ): String {
-        val userRecord = try {
-            firebaseAuth.getUserByEmailAsync(email).await().also {
-                logger.info("Found user.")
+        return findUserIdOrNull(
+            email = email
+        ) ?: try {
+            createUser(
+                email = email,
+                displayName = displayName,
+            ).also {
+                logger.info("User created.")
             }
         } catch (e: FirebaseAuthException) {
-            if (e.errorCode == ErrorCode.NOT_FOUND) {
-                logger.info("User not found.")
-                try {
-                    createUser(
-                        email = email,
-                        displayName = displayName,
-                    ).also {
-                        logger.info("User created.")
-                    }
-                } catch (e: FirebaseAuthException) {
-                    if (e.errorCode == ErrorCode.ALREADY_EXISTS) {
-                        firebaseAuth.getUserByEmailAsync(email).await().also {
-                            logger.info("Found user on 2nd attempt.")
-                        }
-                    } else {
-                        throw e
-                    }
+            if (e.errorCode == ErrorCode.ALREADY_EXISTS) {
+                findUserId(email = email).also {
+                    logger.info("Found user on 2nd attempt.")
                 }
             } else {
                 throw e
             }
         }
-
-        return userRecord.uid
     }
 
     suspend fun createCustomToken(
@@ -66,10 +55,36 @@ object FirebaseAuthService {
         ).await()
     }
 
+    suspend fun findUserId(
+        email: String
+    ): String {
+        return firebaseAuth.getUserByEmailAsync(email)
+            .await()
+            .uid
+            .also {
+                logger.info("Found user.")
+            }
+    }
+
+    suspend fun findUserIdOrNull(
+        email: String
+    ): String? {
+        return try {
+            findUserId(email = email)
+        } catch (e: FirebaseAuthException) {
+            if (e.errorCode == ErrorCode.NOT_FOUND) {
+                logger.info("User not found.")
+                return null
+            } else {
+                throw e
+            }
+        }
+    }
+
     private suspend fun createUser(
         email: String,
         displayName: String,
-    ): UserRecord {
+    ): String {
         logger.info("Creating new user.")
         val createRequest = UserRecord.CreateRequest()
             .setEmail(email)
@@ -79,5 +94,6 @@ object FirebaseAuthService {
         return firebaseAuth
             .createUserAsync(createRequest)
             .await()
+            .uid
     }
 }

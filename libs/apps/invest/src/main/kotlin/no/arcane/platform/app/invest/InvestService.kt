@@ -1,14 +1,15 @@
 package no.arcane.platform.app.invest
 
 import io.firestore4k.typed.add
+import io.firestore4k.typed.delete
 import io.firestore4k.typed.div
 import io.firestore4k.typed.get
 import io.firestore4k.typed.put
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.arcane.platform.email.ContentType
-import no.arcane.platform.email.Email
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.config.loadConfig
@@ -139,4 +140,8 @@ object InvestService {
 
         Action taken .......... Approved
         """.trimIndent()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun UserId.delete() = delete(inInvestAppContext())
 }
+
