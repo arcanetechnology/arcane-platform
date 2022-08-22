@@ -9,16 +9,25 @@ import java.time.format.DateTimeFormatter
 
 object SlackNotification {
 
-    private val slackInvestEventsChannel by lazy {
+    private val slackProInvestorChannel by lazy {
         System.getenv("SLACK_PROFESSIONAL_INVESTORS_CHANNEL_ID")?.let { ChannelId(it) }
             ?: System.getenv("SLACK_PROFESSIONAL_INVESTORS_CHANNEL_NAME")?.let { ChannelName(it) }
             ?: ChannelName("professional-investors")
     }
 
-    suspend fun notifySlack(strFundInfoRequest: String) {
+    private val slackInvestChannel by lazy {
+        System.getenv("SLACK_INVEST_CHANNEL_ID")?.let { ChannelId(it) }
+            ?: System.getenv("SLACK_INVEST_CHANNEL_NAME")?.let { ChannelName(it) }
+            ?: ChannelName("invest")
+    }
 
+    suspend fun notifySlack(
+        strFundInfoRequest: String,
+        testMode: Boolean,
+    ) {
+        val channel = if (testMode) slackInvestChannel else slackProInvestorChannel
         SlackClient.sendRichMessage(
-            slackInvestEventsChannel,
+            channel,
             strFundInfoRequest,
         ) {
             header {

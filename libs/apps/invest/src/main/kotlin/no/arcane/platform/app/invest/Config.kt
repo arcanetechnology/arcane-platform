@@ -6,6 +6,7 @@ import java.lang.Exception
 data class Config(
     val deniedCountryCodeList: String,
     val funds: Map<String, String>,
+    val testDomain: String,
     val email: EmailSetting,
 )
 

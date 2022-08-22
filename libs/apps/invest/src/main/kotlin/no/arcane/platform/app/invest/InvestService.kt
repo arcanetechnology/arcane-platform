@@ -10,10 +10,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import no.arcane.platform.email.ContentType
+import no.arcane.platform.email.Email
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.config.loadConfig
+import no.arcane.platform.utils.logging.NotifySlack
 import no.arcane.platform.utils.logging.getLogger
+import no.arcane.platform.utils.logging.getMarker
 
 object InvestService {
 
@@ -104,17 +107,33 @@ object InvestService {
     suspend fun sendEmail(
         investorEmail: String,
         fundInfoRequest: FundInfoRequest,
-    ) = emailService.sendEmail(
-        from = emailFrom,
-        toList = emailToList,
-        ccList = emailCcList,
-        bccList = emailBccList,
-        subject = "Arcane Fund Inquiry Request",
-        contentType = ContentType.MONOSPACE_TEXT,
-        body = fundInfoRequest.asString(
-            investorEmail = investorEmail,
-        ),
-    )
+    ) {
+        if (investorEmail.isTestUser()) {
+            emailService.sendEmail(
+                from = emailFrom,
+                toList = listOf(Email(address = investorEmail, label = fundInfoRequest.name)),
+                ccList = emailCcList,
+                bccList = emailBccList,
+                subject = "IGNORE(testing): Arcane Fund Inquiry Request",
+                contentType = ContentType.MONOSPACE_TEXT,
+                body = fundInfoRequest.asString(
+                    investorEmail = investorEmail,
+                ),
+            )
+        } else {
+            emailService.sendEmail(
+                from = emailFrom,
+                toList = emailToList,
+                ccList = emailCcList,
+                bccList = emailBccList,
+                subject = "Arcane Fund Inquiry Request",
+                contentType = ContentType.MONOSPACE_TEXT,
+                body = fundInfoRequest.asString(
+                    investorEmail = investorEmail,
+                ),
+            )
+        }
+    }
 
     suspend fun sendSlackNotification(
         investorEmail: String,
@@ -123,7 +142,10 @@ object InvestService {
         strFundInfoRequest = fundInfoRequest.asString(
             investorEmail = investorEmail,
         ),
+        testMode = investorEmail.isTestUser(),
     )
+
+    private fun String.isTestUser() = endsWith("@${config.testDomain}", ignoreCase = true)
 
     internal fun FundInfoRequest.asString(
         investorEmail: String,
