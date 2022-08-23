@@ -4,6 +4,8 @@
 #  Script to update secrets for arcane-platform-app to GCP cloud run.
 #
 
+set -e
+
 if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINFO[0]} -lt 4 ]; then
   echo "This script requires Bash version >= 4"
   exit 1

@@ -5,7 +5,7 @@ info:
   description: "Arcane Platform API"
   version: "1.0.0"
 
-host: api.arcane.no
+host: ${GCP_API_HOST}
 
 schemes:
   - "https"

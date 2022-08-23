@@ -16,7 +16,8 @@ class SlackNotificationTest : StringSpec({
                 ),
                 countryCode = ISO3CountyCode.NOR,
                 fundName = "Arcane Assets Fund Limited"
-            ).asString(investorEmail = "test@arcane.no")
+            ).asString(investorEmail = "test@arcane.no"),
+            testMode = true,
         )
     }
 })

@@ -46,7 +46,7 @@ data class Country(
     val isO2CountyCode: String,
     val isO3CountyCode: String,
     val displayName: String,
-    val callingCountryCode: Int
+    val callingCountryCode: Int,
 )
 fun main() {
     val phoneNumberUtil = PhoneNumberUtil.getInstance()

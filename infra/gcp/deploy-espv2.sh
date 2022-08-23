@@ -4,6 +4,8 @@
 #  Script to deploy esp v2 to GCP cloud run.
 #
 
+set -e
+
 #### checking bash version
 if [ -z "${BASH_VERSINFO}" ] || [ -z "${BASH_VERSINFO[0]}" ] || [ ${BASH_VERSINFO[0]} -lt 4 ]; then
   echo "This script requires Bash version >= 4"
@@ -25,7 +27,7 @@ echo "$TMP_DIR"
 TMP_FILE="$TMP_DIR/arcane-platform-api.yaml"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_BACKEND_HOST}~'"${GCP_BACKEND_HOST}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-api.yaml >"$TMP_FILE"
+sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_API_HOST}~'"${GCP_API_HOST}"'~g; s~${GCP_BACKEND_HOST}~'"${GCP_BACKEND_HOST}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-api.yaml >"$TMP_FILE"
 
 gcloud endpoints services deploy "$TMP_FILE"
 
@@ -35,7 +37,7 @@ gcloud endpoints services deploy "$TMP_FILE"
 
 declare -A espCloudRun
 espCloudRun["service"]="arcane-platform-gateway"
-espCloudRun["endpoint_service"]="api.arcane.no"
+espCloudRun["endpoint_service"]="${GCP_API_HOST}"
 espCloudRun["service_account"]="arcane-platform-gateway"
 
 echo "espCloudRun[service]: ${espCloudRun["service"]}"
