@@ -7,12 +7,6 @@ query {
             description {
                 json
             }
-            pdf {
-                fileName
-                title
-                description
-                url
-            }
             image {
                 fileName
                 title

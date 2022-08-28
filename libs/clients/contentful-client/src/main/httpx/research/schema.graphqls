@@ -3,9 +3,17 @@ type Query {
 
   assetCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AssetFilter, order: [AssetOrder]): AssetCollection
 
+  report(id: String!, preview: Boolean, locale: String): Report
+
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: ReportFilter, order: [ReportOrder]): ReportCollection
+
   author(id: String!, preview: Boolean, locale: String): Author
 
   authorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AuthorFilter, order: [AuthorOrder]): AuthorCollection
+
+  pageWeeklyUpdate(id: String!, preview: Boolean, locale: String): PageWeeklyUpdate
+
+  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: PageWeeklyUpdateFilter, order: [PageWeeklyUpdateOrder]): PageWeeklyUpdateCollection
 
   mainPageCallToAction(id: String!, preview: Boolean, locale: String): MainPageCallToAction
 
@@ -14,14 +22,6 @@ type Query {
   event(id: String!, preview: Boolean, locale: String): Event
 
   eventCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: EventFilter, order: [EventOrder]): EventCollection
-
-  pageWeeklyUpdate(id: String!, preview: Boolean, locale: String): PageWeeklyUpdate
-
-  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: PageWeeklyUpdateFilter, order: [PageWeeklyUpdateOrder]): PageWeeklyUpdateCollection
-
-  report(id: String!, preview: Boolean, locale: String): Report
-
-  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: ReportFilter, order: [ReportOrder]): ReportCollection
 
   reportSponsor(id: String!, preview: Boolean, locale: String): ReportSponsor
 
@@ -301,13 +301,13 @@ enum ImageFormat {
 type AssetLinkingCollections {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
 
-  authorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): AuthorCollection
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
 
-  eventCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EventCollection
+  authorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): AuthorCollection
 
   pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
 
-  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
+  eventCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EventCollection
 
   reportSponsorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportSponsorCollection
 }
@@ -328,45 +328,53 @@ interface Entry {
   contentfulMetadata: ContentfulMetadata!
 }
 
-type AuthorCollection {
+type ReportCollection {
   total: Int!
 
   skip: Int!
 
   limit: Int!
 
-  items: [Author]!
+  items: [Report]!
 }
 
 """
-The author(s) of the content [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/author)
+[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/report)
 """
-type Author implements Entry {
+type Report implements Entry {
   sys: Sys!
 
   contentfulMetadata: ContentfulMetadata!
 
-  linkedFrom(allowedLocales: [String]): AuthorLinkingCollections
-
-  name(locale: String): String
-
-  slug(locale: String): String
-
-  image(preview: Boolean, locale: String): Asset
-
-  description(locale: String): String
+  linkedFrom(allowedLocales: [String]): ReportLinkingCollections
 
   title(locale: String): String
 
-  weight(locale: String): Int
+  slug(locale: String): String
 
-  twitterLink(locale: String): String
+  subtitle(locale: String): String
+
+  description(locale: String): ReportDescription
+
+  image(preview: Boolean, locale: String): Asset
+
+  socialImage(preview: Boolean, locale: String): Asset
+
+  publishDate(locale: String): DateTime
+
+  tagsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportTagsCollection
+
+  sponsorsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportSponsorsCollection
 }
 
-type AuthorLinkingCollections {
+type ReportLinkingCollections {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
 
   pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
+
+  mainPageCallToActionCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): MainPageCallToActionCollection
+
+  mainReportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): MainReportCollection
 }
 
 type PageWeeklyUpdateCollection {
@@ -411,11 +419,60 @@ type PageWeeklyUpdate implements Entry {
 type PageWeeklyUpdateLinkingCollections {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
 
+  authorCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): AuthorCollection
+
   mainPageCallToActionCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): MainPageCallToActionCollection
 
   pageMainArticleCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageMainArticleCollection
 
   pageCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageCollection
+}
+
+type AuthorCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Author]!
+}
+
+"""
+The author(s) of the content [See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/author)
+"""
+type Author implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): AuthorLinkingCollections
+
+  name(locale: String): String
+
+  slug(locale: String): String
+
+  showOnHomePage(locale: String): Boolean
+
+  highlightedArticle(preview: Boolean, locale: String): PageWeeklyUpdate
+
+  showOnAboutPage(locale: String): Boolean
+
+  weight(locale: String): Int
+
+  image(preview: Boolean, locale: String): Asset
+
+  description(locale: String): String
+
+  title(locale: String): String
+
+  twitterLink(locale: String): String
+}
+
+type AuthorLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
 }
 
 type MainPageCallToActionCollection {
@@ -500,11 +557,11 @@ type Tag implements Entry {
 type TagLinkingCollections {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
 
-  eventCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EventCollection
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
 
   pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
 
-  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
+  eventCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EventCollection
 }
 
 type EventCollection {
@@ -515,156 +572,6 @@ type EventCollection {
   limit: Int!
 
   items: [Event]!
-}
-
-type ReportCollection {
-  total: Int!
-
-  skip: Int!
-
-  limit: Int!
-
-  items: [Report]!
-}
-
-"""
-[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/report)
-"""
-type Report implements Entry {
-  sys: Sys!
-
-  contentfulMetadata: ContentfulMetadata!
-
-  linkedFrom(allowedLocales: [String]): ReportLinkingCollections
-
-  title(locale: String): String
-
-  slug(locale: String): String
-
-  subtitle(locale: String): String
-
-  description(locale: String): ReportDescription
-
-  pdf(preview: Boolean, locale: String): Asset
-
-  image(preview: Boolean, locale: String): Asset
-
-  socialImage(preview: Boolean, locale: String): Asset
-
-  publishDate(locale: String): DateTime
-
-  tagsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportTagsCollection
-
-  sponsorsCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportSponsorsCollection
-}
-
-type ReportLinkingCollections {
-  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
-
-  mainPageCallToActionCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): MainPageCallToActionCollection
-
-  pageWeeklyUpdateCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): PageWeeklyUpdateCollection
-
-  mainReportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): MainReportCollection
-}
-
-type MainReportCollection {
-  total: Int!
-
-  skip: Int!
-
-  limit: Int!
-
-  items: [MainReport]!
-}
-
-"""
-[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/mainReport)
-"""
-type MainReport implements Entry {
-  sys: Sys!
-
-  contentfulMetadata: ContentfulMetadata!
-
-  linkedFrom(allowedLocales: [String]): MainReportLinkingCollections
-
-  report(preview: Boolean, locale: String): Report
-}
-
-type MainReportLinkingCollections {
-  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
-}
-
-type ReportDescription {
-  json: JSON!
-
-  links: ReportDescriptionLinks!
-}
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
-
-type ReportDescriptionLinks {
-  entries: ReportDescriptionEntries!
-
-  assets: ReportDescriptionAssets!
-}
-
-type ReportDescriptionEntries {
-  inline: [Entry]!
-
-  hyperlink: [Entry]!
-
-  block: [Entry]!
-}
-
-type ReportDescriptionAssets {
-  hyperlink: [Asset]!
-
-  block: [Asset]!
-}
-
-type ReportTagsCollection {
-  total: Int!
-
-  skip: Int!
-
-  limit: Int!
-
-  items: [Tag]!
-}
-
-type ReportSponsorsCollection {
-  total: Int!
-
-  skip: Int!
-
-  limit: Int!
-
-  items: [ReportSponsor]!
-}
-
-"""
-[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/reportSponsor)
-"""
-type ReportSponsor implements Entry {
-  sys: Sys!
-
-  contentfulMetadata: ContentfulMetadata!
-
-  linkedFrom(allowedLocales: [String]): ReportSponsorLinkingCollections
-
-  name(locale: String): String
-
-  logo(preview: Boolean, locale: String): Asset
-}
-
-type ReportSponsorLinkingCollections {
-  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
-
-  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
 }
 
 type PageMainArticleCollection {
@@ -772,6 +679,11 @@ type PageWeeklyUpdatePublicSnippet {
   links: PageWeeklyUpdatePublicSnippetLinks!
 }
 
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
 type PageWeeklyUpdatePublicSnippetLinks {
   entries: PageWeeklyUpdatePublicSnippetEntries!
 
@@ -836,6 +748,100 @@ type PageWeeklyUpdateAuthorsCollection {
   limit: Int!
 
   items: [Author]!
+}
+
+type MainReportCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [MainReport]!
+}
+
+"""
+[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/mainReport)
+"""
+type MainReport implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): MainReportLinkingCollections
+
+  report(preview: Boolean, locale: String): Report
+}
+
+type MainReportLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+}
+
+type ReportDescription {
+  json: JSON!
+
+  links: ReportDescriptionLinks!
+}
+
+type ReportDescriptionLinks {
+  entries: ReportDescriptionEntries!
+
+  assets: ReportDescriptionAssets!
+}
+
+type ReportDescriptionEntries {
+  inline: [Entry]!
+
+  hyperlink: [Entry]!
+
+  block: [Entry]!
+}
+
+type ReportDescriptionAssets {
+  hyperlink: [Asset]!
+
+  block: [Asset]!
+}
+
+type ReportTagsCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [Tag]!
+}
+
+type ReportSponsorsCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [ReportSponsor]!
+}
+
+"""
+[See type definition](https://app.contentful.com/spaces/4rilomtvvae4/content_types/reportSponsor)
+"""
+type ReportSponsor implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): ReportSponsorLinkingCollections
+
+  name(locale: String): String
+
+  logo(preview: Boolean, locale: String): Asset
+}
+
+type ReportSponsorLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  reportCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): ReportCollection
 }
 
 type ReportSponsorCollection {
@@ -1118,7 +1124,123 @@ enum AssetOrder {
   sys_publishedVersion_DESC
 }
 
+input ReportFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  slug_exists: Boolean
+
+  slug: String
+
+  slug_not: String
+
+  slug_in: [String]
+
+  slug_not_in: [String]
+
+  slug_contains: String
+
+  slug_not_contains: String
+
+  subtitle_exists: Boolean
+
+  subtitle: String
+
+  subtitle_not: String
+
+  subtitle_in: [String]
+
+  subtitle_not_in: [String]
+
+  subtitle_contains: String
+
+  subtitle_not_contains: String
+
+  description_exists: Boolean
+
+  description_contains: String
+
+  description_not_contains: String
+
+  image_exists: Boolean
+
+  socialImage_exists: Boolean
+
+  publishDate_exists: Boolean
+
+  publishDate: DateTime
+
+  publishDate_not: DateTime
+
+  publishDate_in: [DateTime]
+
+  publishDate_not_in: [DateTime]
+
+  publishDate_gt: DateTime
+
+  publishDate_gte: DateTime
+
+  publishDate_lt: DateTime
+
+  publishDate_lte: DateTime
+
+  tagsCollection_exists: Boolean
+
+  sponsorsCollection_exists: Boolean
+
+  OR: [ReportFilter]
+
+  AND: [ReportFilter]
+}
+
+enum ReportOrder {
+  title_ASC
+
+  title_DESC
+
+  slug_ASC
+
+  slug_DESC
+
+  publishDate_ASC
+
+  publishDate_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
 input AuthorFilter {
+  highlightedArticle: cfPageWeeklyUpdateNestedFilter
+
   sys: SysFilter
 
   contentfulMetadata: ContentfulMetadataFilter
@@ -1151,6 +1273,38 @@ input AuthorFilter {
 
   slug_not_contains: String
 
+  showOnHomePage_exists: Boolean
+
+  showOnHomePage: Boolean
+
+  showOnHomePage_not: Boolean
+
+  highlightedArticle_exists: Boolean
+
+  showOnAboutPage_exists: Boolean
+
+  showOnAboutPage: Boolean
+
+  showOnAboutPage_not: Boolean
+
+  weight_exists: Boolean
+
+  weight: Int
+
+  weight_not: Int
+
+  weight_in: [Int]
+
+  weight_not_in: [Int]
+
+  weight_gt: Int
+
+  weight_gte: Int
+
+  weight_lt: Int
+
+  weight_lte: Int
+
   image_exists: Boolean
 
   description_exists: Boolean
@@ -1181,24 +1335,6 @@ input AuthorFilter {
 
   title_not_contains: String
 
-  weight_exists: Boolean
-
-  weight: Int
-
-  weight_not: Int
-
-  weight_in: [Int]
-
-  weight_not_in: [Int]
-
-  weight_gt: Int
-
-  weight_gte: Int
-
-  weight_lt: Int
-
-  weight_lte: Int
-
   twitterLink_exists: Boolean
 
   twitterLink: String
@@ -1218,6 +1354,82 @@ input AuthorFilter {
   AND: [AuthorFilter]
 }
 
+input cfPageWeeklyUpdateNestedFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  subtitle_exists: Boolean
+
+  subtitle: String
+
+  subtitle_not: String
+
+  subtitle_in: [String]
+
+  subtitle_not_in: [String]
+
+  subtitle_contains: String
+
+  subtitle_not_contains: String
+
+  publicSnippet_exists: Boolean
+
+  publicSnippet_contains: String
+
+  publicSnippet_not_contains: String
+
+  content_exists: Boolean
+
+  content_contains: String
+
+  content_not_contains: String
+
+  image_exists: Boolean
+
+  tagsCollection_exists: Boolean
+
+  publishDate_exists: Boolean
+
+  publishDate: DateTime
+
+  publishDate_not: DateTime
+
+  publishDate_in: [DateTime]
+
+  publishDate_not_in: [DateTime]
+
+  publishDate_gt: DateTime
+
+  publishDate_gte: DateTime
+
+  publishDate_lt: DateTime
+
+  publishDate_lte: DateTime
+
+  authorsCollection_exists: Boolean
+
+  linkToReport_exists: Boolean
+
+  OR: [cfPageWeeklyUpdateNestedFilter]
+
+  AND: [cfPageWeeklyUpdateNestedFilter]
+}
+
 enum AuthorOrder {
   name_ASC
 
@@ -1227,137 +1439,25 @@ enum AuthorOrder {
 
   slug_DESC
 
-  title_ASC
+  showOnHomePage_ASC
 
-  title_DESC
+  showOnHomePage_DESC
+
+  showOnAboutPage_ASC
+
+  showOnAboutPage_DESC
 
   weight_ASC
 
   weight_DESC
 
-  twitterLink_ASC
-
-  twitterLink_DESC
-
-  sys_id_ASC
-
-  sys_id_DESC
-
-  sys_publishedAt_ASC
-
-  sys_publishedAt_DESC
-
-  sys_firstPublishedAt_ASC
-
-  sys_firstPublishedAt_DESC
-
-  sys_publishedVersion_ASC
-
-  sys_publishedVersion_DESC
-}
-
-input MainPageCallToActionFilter {
-  sys: SysFilter
-
-  contentfulMetadata: ContentfulMetadataFilter
-
-  item_exists: Boolean
-
-  OR: [MainPageCallToActionFilter]
-
-  AND: [MainPageCallToActionFilter]
-}
-
-enum MainPageCallToActionOrder {
-  sys_id_ASC
-
-  sys_id_DESC
-
-  sys_publishedAt_ASC
-
-  sys_publishedAt_DESC
-
-  sys_firstPublishedAt_ASC
-
-  sys_firstPublishedAt_DESC
-
-  sys_publishedVersion_ASC
-
-  sys_publishedVersion_DESC
-}
-
-input EventFilter {
-  sys: SysFilter
-
-  contentfulMetadata: ContentfulMetadataFilter
-
-  title_exists: Boolean
-
-  title: String
-
-  title_not: String
-
-  title_in: [String]
-
-  title_not_in: [String]
-
-  title_contains: String
-
-  title_not_contains: String
-
-  tagsCollection_exists: Boolean
-
-  date_exists: Boolean
-
-  date: DateTime
-
-  date_not: DateTime
-
-  date_in: [DateTime]
-
-  date_not_in: [DateTime]
-
-  date_gt: DateTime
-
-  date_gte: DateTime
-
-  date_lt: DateTime
-
-  date_lte: DateTime
-
-  link_exists: Boolean
-
-  link: String
-
-  link_not: String
-
-  link_in: [String]
-
-  link_not_in: [String]
-
-  link_contains: String
-
-  link_not_contains: String
-
-  image_exists: Boolean
-
-  OR: [EventFilter]
-
-  AND: [EventFilter]
-}
-
-enum EventOrder {
   title_ASC
 
   title_DESC
 
-  date_ASC
+  twitterLink_ASC
 
-  date_DESC
-
-  link_ASC
-
-  link_DESC
+  twitterLink_DESC
 
   sys_id_ASC
 
@@ -1507,8 +1607,6 @@ input cfReportNestedFilter {
 
   description_not_contains: String
 
-  pdf_exists: Boolean
-
   image_exists: Boolean
 
   socialImage_exists: Boolean
@@ -1570,7 +1668,37 @@ enum PageWeeklyUpdateOrder {
   sys_publishedVersion_DESC
 }
 
-input ReportFilter {
+input MainPageCallToActionFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  item_exists: Boolean
+
+  OR: [MainPageCallToActionFilter]
+
+  AND: [MainPageCallToActionFilter]
+}
+
+enum MainPageCallToActionOrder {
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input EventFilter {
   sys: SysFilter
 
   contentfulMetadata: ContentfulMetadataFilter
@@ -1589,85 +1717,59 @@ input ReportFilter {
 
   title_not_contains: String
 
-  slug_exists: Boolean
+  tagsCollection_exists: Boolean
 
-  slug: String
+  date_exists: Boolean
 
-  slug_not: String
+  date: DateTime
 
-  slug_in: [String]
+  date_not: DateTime
 
-  slug_not_in: [String]
+  date_in: [DateTime]
 
-  slug_contains: String
+  date_not_in: [DateTime]
 
-  slug_not_contains: String
+  date_gt: DateTime
 
-  subtitle_exists: Boolean
+  date_gte: DateTime
 
-  subtitle: String
+  date_lt: DateTime
 
-  subtitle_not: String
+  date_lte: DateTime
 
-  subtitle_in: [String]
+  link_exists: Boolean
 
-  subtitle_not_in: [String]
+  link: String
 
-  subtitle_contains: String
+  link_not: String
 
-  subtitle_not_contains: String
+  link_in: [String]
 
-  description_exists: Boolean
+  link_not_in: [String]
 
-  description_contains: String
+  link_contains: String
 
-  description_not_contains: String
-
-  pdf_exists: Boolean
+  link_not_contains: String
 
   image_exists: Boolean
 
-  socialImage_exists: Boolean
+  OR: [EventFilter]
 
-  publishDate_exists: Boolean
-
-  publishDate: DateTime
-
-  publishDate_not: DateTime
-
-  publishDate_in: [DateTime]
-
-  publishDate_not_in: [DateTime]
-
-  publishDate_gt: DateTime
-
-  publishDate_gte: DateTime
-
-  publishDate_lt: DateTime
-
-  publishDate_lte: DateTime
-
-  tagsCollection_exists: Boolean
-
-  sponsorsCollection_exists: Boolean
-
-  OR: [ReportFilter]
-
-  AND: [ReportFilter]
+  AND: [EventFilter]
 }
 
-enum ReportOrder {
+enum EventOrder {
   title_ASC
 
   title_DESC
 
-  slug_ASC
+  date_ASC
 
-  slug_DESC
+  date_DESC
 
-  publishDate_ASC
+  link_ASC
 
-  publishDate_DESC
+  link_DESC
 
   sys_id_ASC
 
@@ -1806,82 +1908,6 @@ input PageMainArticleFilter {
   OR: [PageMainArticleFilter]
 
   AND: [PageMainArticleFilter]
-}
-
-input cfPageWeeklyUpdateNestedFilter {
-  sys: SysFilter
-
-  contentfulMetadata: ContentfulMetadataFilter
-
-  name_exists: Boolean
-
-  name: String
-
-  name_not: String
-
-  name_in: [String]
-
-  name_not_in: [String]
-
-  name_contains: String
-
-  name_not_contains: String
-
-  subtitle_exists: Boolean
-
-  subtitle: String
-
-  subtitle_not: String
-
-  subtitle_in: [String]
-
-  subtitle_not_in: [String]
-
-  subtitle_contains: String
-
-  subtitle_not_contains: String
-
-  publicSnippet_exists: Boolean
-
-  publicSnippet_contains: String
-
-  publicSnippet_not_contains: String
-
-  content_exists: Boolean
-
-  content_contains: String
-
-  content_not_contains: String
-
-  image_exists: Boolean
-
-  tagsCollection_exists: Boolean
-
-  publishDate_exists: Boolean
-
-  publishDate: DateTime
-
-  publishDate_not: DateTime
-
-  publishDate_in: [DateTime]
-
-  publishDate_not_in: [DateTime]
-
-  publishDate_gt: DateTime
-
-  publishDate_gte: DateTime
-
-  publishDate_lt: DateTime
-
-  publishDate_lte: DateTime
-
-  authorsCollection_exists: Boolean
-
-  linkToReport_exists: Boolean
-
-  OR: [cfPageWeeklyUpdateNestedFilter]
-
-  AND: [cfPageWeeklyUpdateNestedFilter]
 }
 
 enum PageMainArticleOrder {

@@ -3,17 +3,25 @@ type Query {
 
   assetCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: AssetFilter, order: [AssetOrder]): AssetCollection
 
+  fundHero(id: String!, preview: Boolean, locale: String): FundHero
+
+  fundHeroCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: FundHeroFilter, order: [FundHeroOrder]): FundHeroCollection
+
+  fundContact(id: String!, preview: Boolean, locale: String): FundContact
+
+  fundContactCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: FundContactFilter, order: [FundContactOrder]): FundContactCollection
+
   fundInfo(id: String!, preview: Boolean, locale: String): FundInfo
 
   fundInfoCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: FundInfoFilter, order: [FundInfoOrder]): FundInfoCollection
 
-  portfolioAsset(id: String!, preview: Boolean, locale: String): PortfolioAsset
-
-  portfolioAssetCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: PortfolioAssetFilter, order: [PortfolioAssetOrder]): PortfolioAssetCollection
-
   infoCard(id: String!, preview: Boolean, locale: String): InfoCard
 
   infoCardCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: InfoCardFilter, order: [InfoCardOrder]): InfoCardCollection
+
+  portfolioAsset(id: String!, preview: Boolean, locale: String): PortfolioAsset
+
+  portfolioAssetCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String, where: PortfolioAssetFilter, order: [PortfolioAssetOrder]): PortfolioAssetCollection
 
   onboardingStep(id: String!, preview: Boolean, locale: String): OnboardingStep
 
@@ -273,6 +281,10 @@ enum ImageFormat {
 type AssetLinkingCollections {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
 
+  fundHeroCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): FundHeroCollection
+
+  fundContactCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): FundContactCollection
+
   fundInfoCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): FundInfoCollection
 }
 
@@ -292,6 +304,39 @@ interface Entry {
   contentfulMetadata: ContentfulMetadata!
 }
 
+type FundHeroCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [FundHero]!
+}
+
+"""
+Fund Hero shown at the top of Fund Info / Home page [See type definition](https://app.contentful.com/spaces/me2b2zihicu2/content_types/fundHero)
+"""
+type FundHero implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): FundHeroLinkingCollections
+
+  name(locale: String): String
+
+  image(preview: Boolean, locale: String): Asset
+
+  description(locale: String): FundHeroDescription
+}
+
+type FundHeroLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  fundInfoCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): FundInfoCollection
+}
+
 type FundInfoCollection {
   total: Int!
 
@@ -303,7 +348,7 @@ type FundInfoCollection {
 }
 
 """
-[See type definition](https://app.contentful.com/spaces/me2b2zihicu2/content_types/fundInfo)
+Fund Info shown in Home page [See type definition](https://app.contentful.com/spaces/me2b2zihicu2/content_types/fundInfo)
 """
 type FundInfo implements Entry {
   sys: Sys!
@@ -311,6 +356,8 @@ type FundInfo implements Entry {
   contentfulMetadata: ContentfulMetadata!
 
   linkedFrom(allowedLocales: [String]): FundInfoLinkingCollections
+
+  hero(preview: Boolean, locale: String): FundHero
 
   date(locale: String): DateTime
 
@@ -321,6 +368,8 @@ type FundInfo implements Entry {
   portfolioCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): FundInfoPortfolioCollection
 
   chart(preview: Boolean, locale: String): Asset
+
+  contact(preview: Boolean, locale: String): FundContact
 }
 
 type FundInfoLinkingCollections {
@@ -387,6 +436,96 @@ type PortfolioAssetLinkingCollections {
   entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
 
   fundInfoCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): FundInfoCollection
+}
+
+"""
+Contact Us image and description shown at bottom of Fund Info / Home page [See type definition](https://app.contentful.com/spaces/me2b2zihicu2/content_types/fundContact)
+"""
+type FundContact implements Entry {
+  sys: Sys!
+
+  contentfulMetadata: ContentfulMetadata!
+
+  linkedFrom(allowedLocales: [String]): FundContactLinkingCollections
+
+  name(locale: String): String
+
+  image(preview: Boolean, locale: String): Asset
+
+  description(locale: String): FundContactDescription
+}
+
+type FundContactLinkingCollections {
+  entryCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): EntryCollection
+
+  fundInfoCollection(skip: Int = 0, limit: Int = 100, preview: Boolean, locale: String): FundInfoCollection
+}
+
+type FundContactDescription {
+  json: JSON!
+
+  links: FundContactDescriptionLinks!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type FundContactDescriptionLinks {
+  entries: FundContactDescriptionEntries!
+
+  assets: FundContactDescriptionAssets!
+}
+
+type FundContactDescriptionEntries {
+  inline: [Entry]!
+
+  hyperlink: [Entry]!
+
+  block: [Entry]!
+}
+
+type FundContactDescriptionAssets {
+  hyperlink: [Asset]!
+
+  block: [Asset]!
+}
+
+type FundHeroDescription {
+  json: JSON!
+
+  links: FundHeroDescriptionLinks!
+}
+
+type FundHeroDescriptionLinks {
+  entries: FundHeroDescriptionEntries!
+
+  assets: FundHeroDescriptionAssets!
+}
+
+type FundHeroDescriptionEntries {
+  inline: [Entry]!
+
+  hyperlink: [Entry]!
+
+  block: [Entry]!
+}
+
+type FundHeroDescriptionAssets {
+  hyperlink: [Asset]!
+
+  block: [Asset]!
+}
+
+type FundContactCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [FundContact]!
 }
 
 type AssetCollection {
@@ -659,10 +798,124 @@ enum AssetOrder {
   sys_publishedVersion_DESC
 }
 
-input FundInfoFilter {
+input FundHeroFilter {
   sys: SysFilter
 
   contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  image_exists: Boolean
+
+  description_exists: Boolean
+
+  description_contains: String
+
+  description_not_contains: String
+
+  OR: [FundHeroFilter]
+
+  AND: [FundHeroFilter]
+}
+
+enum FundHeroOrder {
+  name_ASC
+
+  name_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input FundContactFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  image_exists: Boolean
+
+  description_exists: Boolean
+
+  description_contains: String
+
+  description_not_contains: String
+
+  OR: [FundContactFilter]
+
+  AND: [FundContactFilter]
+}
+
+enum FundContactOrder {
+  name_ASC
+
+  name_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+input FundInfoFilter {
+  hero: cfFundHeroNestedFilter
+
+  contact: cfFundContactNestedFilter
+
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  hero_exists: Boolean
 
   date_exists: Boolean
 
@@ -702,9 +955,75 @@ input FundInfoFilter {
 
   chart_exists: Boolean
 
+  contact_exists: Boolean
+
   OR: [FundInfoFilter]
 
   AND: [FundInfoFilter]
+}
+
+input cfFundHeroNestedFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  image_exists: Boolean
+
+  description_exists: Boolean
+
+  description_contains: String
+
+  description_not_contains: String
+
+  OR: [cfFundHeroNestedFilter]
+
+  AND: [cfFundHeroNestedFilter]
+}
+
+input cfFundContactNestedFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  name_exists: Boolean
+
+  name: String
+
+  name_not: String
+
+  name_in: [String]
+
+  name_not_in: [String]
+
+  name_contains: String
+
+  name_not_contains: String
+
+  image_exists: Boolean
+
+  description_exists: Boolean
+
+  description_contains: String
+
+  description_not_contains: String
+
+  OR: [cfFundContactNestedFilter]
+
+  AND: [cfFundContactNestedFilter]
 }
 
 enum FundInfoOrder {
@@ -715,6 +1034,80 @@ enum FundInfoOrder {
   title_ASC
 
   title_DESC
+
+  sys_id_ASC
+
+  sys_id_DESC
+
+  sys_publishedAt_ASC
+
+  sys_publishedAt_DESC
+
+  sys_firstPublishedAt_ASC
+
+  sys_firstPublishedAt_DESC
+
+  sys_publishedVersion_ASC
+
+  sys_publishedVersion_DESC
+}
+
+type InfoCardCollection {
+  total: Int!
+
+  skip: Int!
+
+  limit: Int!
+
+  items: [InfoCard]!
+}
+
+input InfoCardFilter {
+  sys: SysFilter
+
+  contentfulMetadata: ContentfulMetadataFilter
+
+  title_exists: Boolean
+
+  title: String
+
+  title_not: String
+
+  title_in: [String]
+
+  title_not_in: [String]
+
+  title_contains: String
+
+  title_not_contains: String
+
+  caption_exists: Boolean
+
+  caption: String
+
+  caption_not: String
+
+  caption_in: [String]
+
+  caption_not_in: [String]
+
+  caption_contains: String
+
+  caption_not_contains: String
+
+  OR: [InfoCardFilter]
+
+  AND: [InfoCardFilter]
+}
+
+enum InfoCardOrder {
+  title_ASC
+
+  title_DESC
+
+  caption_ASC
+
+  caption_DESC
 
   sys_id_ASC
 
@@ -811,80 +1204,6 @@ enum PortfolioAssetOrder {
   sys_publishedVersion_DESC
 }
 
-type InfoCardCollection {
-  total: Int!
-
-  skip: Int!
-
-  limit: Int!
-
-  items: [InfoCard]!
-}
-
-input InfoCardFilter {
-  sys: SysFilter
-
-  contentfulMetadata: ContentfulMetadataFilter
-
-  title_exists: Boolean
-
-  title: String
-
-  title_not: String
-
-  title_in: [String]
-
-  title_not_in: [String]
-
-  title_contains: String
-
-  title_not_contains: String
-
-  caption_exists: Boolean
-
-  caption: String
-
-  caption_not: String
-
-  caption_in: [String]
-
-  caption_not_in: [String]
-
-  caption_contains: String
-
-  caption_not_contains: String
-
-  OR: [InfoCardFilter]
-
-  AND: [InfoCardFilter]
-}
-
-enum InfoCardOrder {
-  title_ASC
-
-  title_DESC
-
-  caption_ASC
-
-  caption_DESC
-
-  sys_id_ASC
-
-  sys_id_DESC
-
-  sys_publishedAt_ASC
-
-  sys_publishedAt_DESC
-
-  sys_firstPublishedAt_ASC
-
-  sys_firstPublishedAt_DESC
-
-  sys_publishedVersion_ASC
-
-  sys_publishedVersion_DESC
-}
-
 """
 Onboarding step for Invest app [See type definition](https://app.contentful.com/spaces/me2b2zihicu2/content_types/onboardingStep)
 """
@@ -909,11 +1228,6 @@ type OnboardingStepContent {
 
   links: OnboardingStepContentLinks!
 }
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
 
 type OnboardingStepContentLinks {
   entries: OnboardingStepContentEntries!

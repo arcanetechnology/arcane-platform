@@ -25,7 +25,6 @@ class ResearchReport(
             "slug" *= "slug"
             "subtitle" *= "subtitle"
             "description" *= { richToPlainText("description.json") }
-            "pdf" *= "pdf"
             "image" *= "image"
             "publishDate" *= "publishDate"
             "tags" *= "tagsCollection.items[*].name"
