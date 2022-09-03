@@ -8,16 +8,48 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import no.arcane.platform.google.coroutine.ktx.await
+import java.io.FileReader
+import java.io.FileWriter
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.temporal.Temporal
+
+@Serializable
+data class User(
+    val email: String,
+    val idProviders: List<String>,
+    val createdOn: String,
+    val lastSignIn: String,
+    val lastActive: String,
+)
 
 class UserAnalytics {
 
-    private val userMetadataList: List<UserMetadata>
+    private fun usersTimeline(map: (User) -> String) = FirebaseUsersFetcher()
+        .users
+        .map(map)
+        .groupBy { it }
+        .mapValues { (_, values) -> values.count() }
+        .toSortedMap()
+
+    fun usersCreatedTimeline() = usersTimeline(User::createdOn)
+
+    fun usersActiveTimeline() = usersTimeline(User::lastActive)
+
+    fun usersByProviders() = FirebaseUsersFetcher()
+        .users
+        .groupBy { it.idProviders }
+        .mapValues { (_, values) -> values.count() }
+}
+
+private class FirebaseUsersFetcher {
+
+    val users: List<User>
 
     init {
-        userMetadataList = runBlocking {
+        users = runBlocking {
             val page: ListUsersPage? = firebaseAuth
                 .listUsersAsync(null)
                 .await()
@@ -36,7 +68,8 @@ class UserAnalytics {
                 while (localPage != null) {
                     for (user in localPage.values) {
                         emit(
-                            UserMetadata(
+                            User(
+                                email = user.email,
                                 idProviders = user.providerData.map { it.providerId },
                                 createdOn = user.userMetadata.creationTimestamp.toDateString(),
                                 lastSignIn = user.userMetadata.lastSignInTimestamp.toDateString(),
@@ -51,20 +84,6 @@ class UserAnalytics {
         }
     }
 
-    private fun usersTimeline(map: (UserMetadata) -> String) = userMetadataList
-        .map(map)
-        .groupBy { it }
-        .mapValues { (_, values) -> values.count() }
-        .toSortedMap()
-
-    fun usersCreatedTimeline() = usersTimeline(UserMetadata::createdOn)
-
-    fun usersActiveTimeline() = usersTimeline(UserMetadata::lastActive)
-
-    fun usersByProviders() = userMetadataList
-        .groupBy { it.idProviders }
-        .mapValues { (_, values) -> values.count() }
-
     companion object {
         private val firebaseAuth: FirebaseAuth by lazy {
             val firebaseApp = FirebaseApp.initializeApp("user-analytics")
@@ -73,10 +92,41 @@ class UserAnalytics {
     }
 }
 
-@Serializable
-data class UserMetadata(
-    val idProviders: List<String>,
-    val createdOn: String,
-    val lastSignIn: String,
-    val lastActive: String,
-)
+private fun exportPlatformUserEmails() {
+    // firebase users email export
+    val platformUsersEmailList = FirebaseUsersFetcher()
+        .users
+    println("Platform users count: ${platformUsersEmailList.size}")
+
+    val output = platformUsersEmailList
+        .joinToString(separator = "\n", transform = User::email)
+
+    val fileWriter = FileWriter("platform_users_email_exported_${Instant.now().truncatedTo(ChronoUnit.SECONDS)}.csv")
+    fileWriter.write(output)
+    fileWriter.close()
+}
+
+private fun generateSendersList() {
+    val platformUsersEmailSet = FileReader("platform_users_email_exported.csv")
+        .readLines()
+        .toSet()
+    println("Platform users count: ${platformUsersEmailSet.size}")
+
+    val legacyUsersEmailSet = FileReader("")
+        .readLines()
+        .toSet()
+    println("Legacy users count: ${legacyUsersEmailSet.size}")
+
+    val sendList = (platformUsersEmailSet -  legacyUsersEmailSet)
+    println("Send list count: ${sendList.size}")
+
+    val output = sendList
+        .joinToString(separator = "\n")
+    val fileWriter = FileWriter("send_list_${Instant.now().truncatedTo(ChronoUnit.SECONDS)}.csv")
+    fileWriter.write(output)
+    fileWriter.close()
+}
+
+fun main() {
+    exportPlatformUserEmails()
+}
