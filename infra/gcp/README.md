@@ -224,3 +224,67 @@ gcloud iam service-accounts add-iam-policy-binding "github@${GCP_PROJECT_ID}.iam
   --role="roles/iam.workloadIdentityUser" \
   --member="principalSet://iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/github-actions-workload-id-pool/attribute.repository_owner/arcanetechnology"
 ```
+
+## Setup Cloud Armor
+
+### Setup Global External https load balancer with Cloud Run
+Ref: https://cloud.google.com/load-balancing/docs/https/setup-global-ext-https-serverless
+
+Reserve an external IP address
+
+```shell
+gcloud compute addresses create arcane-web-ip \
+  --network-tier=PREMIUM \
+  --ip-version=IPV4 \
+  --global
+
+gcloud compute addresses describe arcane-web-ip \
+  --format="get(address)" \
+  --global
+```
+
+Create load balancer
+
+```shell
+gcloud compute network-endpoint-groups create cloud-run-neg \
+  --region=europe-west1 \
+  --network-endpoint-type=serverless  \
+  --cloud-run-service=arcane-web-proxy
+
+gcloud compute backend-services create web-backend-service \
+  --load-balancing-scheme=EXTERNAL_MANAGED \
+  --global
+
+gcloud compute backend-services add-backend web-backend-service \
+  --global \
+  --network-endpoint-group=cloud-run-neg \
+  --network-endpoint-group-region=europe-west1
+
+gcloud compute url-maps create web-url-map \
+  --default-service web-backend-service
+
+gcloud compute ssl-certificates create arcane-ssl-certs \
+  --domains arcane.no
+
+gcloud compute target-https-proxies create web-https-proxy \
+  --ssl-certificates=arcane-ssl-certs \
+  --url-map=web-url-map
+
+gcloud compute forwarding-rules create web-https-fwd-rule \
+  --load-balancing-scheme=EXTERNAL_MANAGED \
+  --network-tier=PREMIUM \
+  --address=arcane-web-ip \
+  --target-https-proxy=web-https-proxy \
+  --global \
+  --ports=443
+```
+
+### Redirect http to https
+
+Ref: https://cloud.google.com/load-balancing/docs/https/setting-up-global-http-https-redirect
+
+```shell
+gcloud compute backend-services update web-backend-service \
+  --global \
+  --custom-response-header='Strict-Transport-Security:max-age=31536000; includeSubDomains; preload'
+```
