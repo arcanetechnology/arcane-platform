@@ -31,4 +31,4 @@ jobs:
           echo "${ENV_FILE}" >> .env
           echo "${GCP_SA_KEY}" >> infra/gcp/secrets/gcp-service-account.json
       - name: Run docker compose based system integration tests
-        run: docker compose -f docker-compose.no-esp.yaml up --build --abort-on-container-exit
+        run: docker compose up --build --abort-on-container-exit

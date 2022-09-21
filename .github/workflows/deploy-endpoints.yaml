@@ -23,7 +23,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          version: 402.0.0
+          version: 403.0.0
       - name: Deploy GCP Cloud Endpoints
         env:
           GCP_API_HOST: ${{ secrets.GCP_API_HOST }}

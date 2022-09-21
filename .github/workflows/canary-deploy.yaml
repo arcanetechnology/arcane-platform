@@ -32,7 +32,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          version: 402.0.0
+          version: 403.0.0
       - name: Authorize Docker push
         run: gcloud auth configure-docker europe-docker.pkg.dev
       - name: Build with Gradle

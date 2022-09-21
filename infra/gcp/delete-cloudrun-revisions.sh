@@ -6,7 +6,7 @@
 
 set -e
 
-services=(arcane-platform arcane-platform-canary-gateway arcane-platform-gateway arcane-web-proxy platform-ui research-ui site-migration-gateway)
+services=(arcane-platform arcane-platform-canary-gateway arcane-platform-gateway arcane-web-proxy platform-ui research-ui sendgrid-reverse-proxy site-migration-gateway)
 
 for service in "${services[@]}"; do
 
