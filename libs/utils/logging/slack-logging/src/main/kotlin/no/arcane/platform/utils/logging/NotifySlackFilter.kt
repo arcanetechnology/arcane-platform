@@ -4,6 +4,8 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.filter.Filter
 import ch.qos.logback.core.spi.FilterReply
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import no.arcane.platform.utils.slack.Channel
 import no.arcane.platform.utils.slack.ChannelId
@@ -60,7 +62,10 @@ class NotifySlackFilter : Filter<ILoggingEvent>() {
 
     override fun decide(event: ILoggingEvent?): FilterReply {
         if (event != null) {
-            val channel = getChannel(event.marker) ?: return FilterReply.NEUTRAL
+            val channels = event.markerList.mapNotNull(::getChannel)
+            if (channels.isEmpty()) {
+                return FilterReply.NEUTRAL
+            }
             val header = when (event.level) {
                 Level.ERROR -> "🔥 Error"
                 Level.WARN -> "⚠️ Warning"
@@ -71,24 +76,28 @@ class NotifySlackFilter : Filter<ILoggingEvent>() {
             }
             val mdcMap = event.mdcPropertyMap ?: emptyMap()
             runBlocking {
-                SlackClient.sendRichMessage(
-                    channel = channel,
-                    altPlainTextMessage = header + " " + event.message,
-                ) {
-                    header {
-                        text(header, emoji = true)
-                    }
-                    section {
-                        markdownText("```${event.message}```")
-                        if (mdcMap.isNotEmpty()) {
-                            fields {
-                                mdcMap.forEach { (key, value) ->
-                                    markdownText("*$key*: `$value`")
+                channels.map { channel ->
+                    async {
+                        SlackClient.sendRichMessage(
+                            channel = channel,
+                            altPlainTextMessage = header + " " + event.message,
+                        ) {
+                            header {
+                                text(header, emoji = true)
+                            }
+                            section {
+                                markdownText("```${event.message}```")
+                                if (mdcMap.isNotEmpty()) {
+                                    fields {
+                                        mdcMap.forEach { (key, value) ->
+                                            markdownText("*$key*: `$value`")
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                }.awaitAll()
             }
         }
         return FilterReply.NEUTRAL
