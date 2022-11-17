@@ -14,7 +14,6 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.time.temporal.Temporal
 
 @Serializable
 data class User(
@@ -120,7 +119,7 @@ private fun generateSendersList() {
     val sendList = (platformUsersEmailSet -  legacyUsersEmailSet)
     println("Send list count: ${sendList.size}")
 
-    val output = sendList
+    val output = "email\n" + sendList
         .joinToString(separator = "\n")
     val fileWriter = FileWriter("send_list_${Instant.now().truncatedTo(ChronoUnit.SECONDS)}.csv")
     fileWriter.write(output)

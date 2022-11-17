@@ -38,7 +38,7 @@ allprojects {
 }
 
 subprojects {
-    // Address https://github.com/gradle/gradle/issues/4823: Force parent project evaluation before sub-project evaluation for Kotlin build scripts
+    // Address https://github.com/gradle/gradle/issues/4823: Force parent project evaluation before subproject evaluation for Kotlin build scripts
     if (gradle.startParameter.isConfigureOnDemand
         && buildscript.sourceFile?.extension?.toLowerCase() == "kts"
         && parent != rootProject) {

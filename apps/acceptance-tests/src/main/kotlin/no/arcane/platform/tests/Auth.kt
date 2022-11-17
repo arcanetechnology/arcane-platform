@@ -9,7 +9,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.arcane.platform.identity.auth.AppleIdTokenPayload
@@ -31,7 +30,6 @@ private val oauthProviderEmulatorClient = HttpClient(CIO) {
     }
 }
 
-@OptIn(InternalAPI::class)
 fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
     val firebaseIdTokenPayload = FirebaseIdTokenPayload(subject = subject)
     if (usingEsp) {
@@ -52,7 +50,6 @@ fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
     }
 }
 
-@OptIn(InternalAPI::class)
 fun HeadersBuilder.appendAppleIdToken(subject: String) {
     val appleIdTokenPayload = AppleIdTokenPayload(subject = subject)
     if (usingEsp) {

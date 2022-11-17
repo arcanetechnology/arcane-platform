@@ -14,9 +14,7 @@ import no.arcane.platform.email.Email
 import no.arcane.platform.email.getEmailService
 import no.arcane.platform.user.UserId
 import no.arcane.platform.utils.config.loadConfig
-import no.arcane.platform.utils.logging.NotifySlack
 import no.arcane.platform.utils.logging.getLogger
-import no.arcane.platform.utils.logging.getMarker
 
 object InvestService {
 

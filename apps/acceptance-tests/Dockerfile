@@ -1,4 +1,4 @@
-FROM eclipse-temurin:18.0.1_10-jre
+FROM eclipse-temurin:18.0.2.1_1-jre
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     netcat \

@@ -1,7 +1,6 @@
 package no.arcane.platform.app.invest
 
 import no.arcane.platform.email.Email
-import java.lang.Exception
 
 data class Config(
     val deniedCountryCodeList: String,

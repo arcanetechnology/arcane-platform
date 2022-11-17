@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: "temurin"
-          java-version: "18.0.1"
+          java-version: "18.0.2"
 #          cache: "gradle"
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -32,7 +32,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          version: 403.0.0
+          version: 410.0.0
       - name: Authorize Docker push
         run: gcloud auth configure-docker europe-docker.pkg.dev
       - name: Build with Gradle
