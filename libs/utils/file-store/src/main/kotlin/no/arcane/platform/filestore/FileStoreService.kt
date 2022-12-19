@@ -18,4 +18,13 @@ object FileStoreService {
         val blobInfo: BlobInfo = BlobInfo.newBuilder(blobId).build()
         storage.create(blobInfo, content)
     }
+
+    fun download(
+        fileId: String,
+    ): ByteArray {
+        val config = loadConfigEager<Config>(name = "gcs", path = "gcs.$fileId")
+        val storage: Storage = StorageOptions.getDefaultInstance().service
+        val blobId: BlobId = BlobId.of(config.bucketName, config.objectName)
+        return storage.readAllBytes(blobId)
+    }
 }

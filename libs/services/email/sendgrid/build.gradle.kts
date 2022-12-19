@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 dependencies {
@@ -13,4 +14,7 @@ dependencies {
 
     implementation(KotlinX.coroutines.core)
     implementation(KotlinX.coroutines.jdk8)
+
+    implementation(KotlinX.serialization.core)
+    implementation(KotlinX.serialization.json)
 }

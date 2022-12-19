@@ -182,6 +182,19 @@ gcloud scheduler jobs create http update-firebase-users-stats-job \
   --oidc-token-audience=https://"$GCP_BACKEND_HOST"
 ```
 
+```shell
+gcloud scheduler jobs delete sync-sendgrid-contacts-job \
+  --location europe-west1
+
+gcloud scheduler jobs create http sync-sendgrid-contacts-job \
+  --location europe-west1 \
+  --schedule "* 12 * * TUE" \
+  --uri=https://"$GCP_BACKEND_HOST"/admin/jobs/sync-sendgrid-contacts \
+  --http-method=put \
+  --oidc-service-account-email=arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com   \
+  --oidc-token-audience=https://"$GCP_BACKEND_HOST"
+```
+
 ## GCP Workload Identity Federation for GitHub Actions
 
 Create workload id pool for GitHub Actions.

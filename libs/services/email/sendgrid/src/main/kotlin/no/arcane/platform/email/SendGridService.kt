@@ -10,11 +10,17 @@ import com.sendgrid.helpers.mail.objects.MailSettings
 import com.sendgrid.helpers.mail.objects.Personalization
 import com.sendgrid.helpers.mail.objects.Setting
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.html.br
 import kotlinx.html.div
 import kotlinx.html.stream.appendHTML
 import kotlinx.html.style
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import no.arcane.platform.utils.config.loadConfig
 import no.arcane.platform.utils.logging.getLogger
 
@@ -114,6 +120,53 @@ object SendGridService : EmailService {
         } catch (e: Exception) {
             logger.error("Failed to send email", e)
             return false
+        }
+    }
+
+    suspend fun upsertMarketingContacts(
+        contactEmails: List<String>
+    ): Boolean {
+
+        @Serializable
+        data class Contact(
+            val email: String,
+        )
+
+        @Serializable
+        data class UpsertContactsRequest(
+            val contacts: List<Contact>
+        )
+
+        return coroutineScope {
+            val sendGrid = SendGrid(sendGridConfig.apiKey)
+            contactEmails
+                // https://docs.sendgrid.com/api-reference/contacts/add-or-update-a-contact
+                // max limit of 30k contacts in email request
+                .chunked(30_000)
+                .map { emailStringList ->
+                    async {
+                        try {
+                            val upsertContactsRequest = UpsertContactsRequest(
+                                contacts = emailStringList.map(::Contact),
+                            )
+                            val jsonBody = Json.encodeToString(upsertContactsRequest)
+                            val request = Request().apply {
+                                method = Method.PUT
+                                endpoint = "/marketing/contacts"
+                                this.body = jsonBody
+                            }
+                            val response = withContext(Dispatchers.IO) {
+                                sendGrid.api(request)
+                            }
+                            (response.statusCode in 200..299)
+                        } catch (e: Exception) {
+                            logger.error("Failed to upsert contacts", e)
+                            false
+                        }
+                    }
+                }
+                .awaitAll()
+                .all { it }
         }
     }
 }
