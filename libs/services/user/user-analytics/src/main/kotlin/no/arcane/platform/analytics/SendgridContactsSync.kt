@@ -1,6 +1,5 @@
 package no.arcane.platform.analytics
 
-import kotlinx.coroutines.runBlocking
 import no.arcane.platform.email.SendGridService
 import no.arcane.platform.filestore.FileStoreService
 import no.arcane.platform.utils.logging.NotifySlack
@@ -58,10 +57,4 @@ fun encodeToMessageDigest() {
     val fileWriter = FileWriter("exclude-contact-emails.csv")
     fileWriter.write(output)
     fileWriter.close()
-}
-
-fun main() {
-    runBlocking {
-        SendgridContactsSync.syncSendgridContacts()
-    }
 }

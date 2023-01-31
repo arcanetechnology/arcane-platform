@@ -188,7 +188,7 @@ gcloud scheduler jobs delete sync-sendgrid-contacts-job \
 
 gcloud scheduler jobs create http sync-sendgrid-contacts-job \
   --location europe-west1 \
-  --schedule "* 12 * * TUE" \
+  --schedule "0 12 * * TUE" \
   --uri=https://"$GCP_BACKEND_HOST"/admin/jobs/sync-sendgrid-contacts \
   --http-method=put \
   --oidc-service-account-email=arcane-platform-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com   \

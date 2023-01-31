@@ -20,3 +20,9 @@ Access-Control-Request-Method: GET
 OPTIONS https://api.arcane.no
 Origin: https://developer.arcane.no
 Access-Control-Request-Method: GET
+
+### localhost:3000 to OPTIONS dev.api.arcane.no
+
+OPTIONS https://dev.api.arcane.no
+Origin: http://localhost:3000
+Access-Control-Request-Method: GET
