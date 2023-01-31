@@ -1,6 +1,6 @@
 # Arcane Platform
 
-[![Kotlin](https://img.shields.io/badge/kotlin-1.7.22-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.8.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/arcanetechnology/arcane-platform/Test/main?logo=github)
 ![GitHub](https://img.shields.io/github/license/arcanetechnology/arcane-platform)
 

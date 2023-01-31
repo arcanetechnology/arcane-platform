@@ -3,7 +3,8 @@ version: "3.8"
 services:
   firestore-emulator:
     container_name: firestore-emulator
-    image: google/cloud-sdk:412.0.0-emulators
+    image: google/cloud-sdk:415.0.0-emulators
+    platform: linux/amd64
     expose:
       - 5173
     ports:

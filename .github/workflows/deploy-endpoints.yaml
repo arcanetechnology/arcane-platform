@@ -4,7 +4,7 @@ on:
 env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   SERVICE_ID: api.arcane.no
-  ESP_FULL_VERSION: 2.38.0
+  ESP_FULL_VERSION: 2.41.0
 jobs:
   deploy-endpoints:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          version: 412.0.0
+          version: 415.0.0
       - name: Deploy GCP Cloud Endpoints
         env:
           GCP_API_HOST: ${{ secrets.GCP_API_HOST }}
