@@ -9,12 +9,12 @@ refreshVersions {
     extraArtifactVersionKeyRules(file("refreshVersions-extra-rules.txt"))
 }
 
-rootProject.name = "arcane-platform"
+rootProject.name = "k33-platform"
 
 include(
     // apps
     "apps:acceptance-tests",
-    "apps:arcane-platform-app",
+    "apps:k33-backend",
 
     "apps:firestore-admin",
 
@@ -27,7 +27,7 @@ include(
     "libs:apps:invest",
 
     // libs / clients
-    "libs:clients:arcane-platform-client",
+    "libs:clients:k33-backend-client",
     "libs:clients:contentful-client",
 
     // libs / services

@@ -6,10 +6,10 @@
     </appender>
     <!--
     <appender name="NOP" class="ch.qos.logback.core.helpers.NOPAppender">
-        <filter class="no.arcane.platform.utils.logging.NotifySlackFilter" />
+        <filter class="com.k33.platform.utils.logging.NotifySlackFilter" />
     </appender>
     -->
-    <logger name="no.arcane" level="DEBUG" />
+    <logger name="com.k33" level="DEBUG" />
     <logger name="net.andreinc.mapneat" level="WARN" />
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

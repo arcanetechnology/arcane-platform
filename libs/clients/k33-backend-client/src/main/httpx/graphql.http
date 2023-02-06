@@ -1,0 +1,21 @@
+### get user and array of T&C
+
+GRAPHQL https://api.k33.com/graphql
+Authorization: Bearer <firebase-id-token>
+Content-Type: application/graphql
+
+{
+    user {
+        userId
+        analyticsId
+    }
+    termsAndConditions(tncIds: ["platform.termsAndConditions", "platform.privacyPolicy"]) {
+        tncId
+        version
+        accepted
+        spaceId
+        entryId
+        fieldId
+        timestamp
+    }
+}

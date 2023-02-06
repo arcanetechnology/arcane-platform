@@ -9,7 +9,7 @@
 ## Checking for dependency resolution
 
 ```shell
-./gradlew :apps:arcane-platform-app:dependencyInsight --configuration runtimeClasspath --dependency dependency-name
+./gradlew :apps:k33-backend:dependencyInsight --configuration runtimeClasspath --dependency dependency-name
 ```
 
 ## Update grraphql schema files

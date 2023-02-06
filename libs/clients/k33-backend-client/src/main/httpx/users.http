@@ -1,0 +1,9 @@
+### Get user
+
+GET https://api.k33.com/user
+Authorization: Bearer <firebase-id-token>
+
+### Create user
+
+POST https://api.k33.com/user
+Authorization: Bearer <firebase-id-token>

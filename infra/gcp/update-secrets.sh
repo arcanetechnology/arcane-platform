@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-#  Script to update secrets for arcane-platform-app to GCP cloud run.
+#  Script to update secrets for k33-backend to GCP cloud run.
 #
 
 set -e

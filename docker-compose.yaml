@@ -19,9 +19,9 @@ services:
     ports:
       - "8081:8080"
 
-  arcane-platform-app:
-    container_name: arcane-platform-app
-    build: apps/arcane-platform-app
+  k33-backend:
+    container_name: k33-backend
+    build: apps/k33-backend
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
@@ -56,13 +56,13 @@ services:
     depends_on:
       - firestore-emulator
 
-  test.api.arcane.no:
+  test.api.k33.com:
     container_name: esp
     image: gcr.io/endpoints-release/endpoints-runtime:2
     command: >
       --listener_port=8080
-      --backend=http://arcane-platform-app:8080
-      --service=test.api.arcane.no
+      --backend=http://k33-backend:8080
+      --service=test.api.k33.com
       --rollout_strategy=managed
       --non_gcp
       --service_account_key=/config/gcp-service-account.json
@@ -74,13 +74,13 @@ services:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     depends_on:
       - oauth2-provider-emulator
-      - arcane-platform-app
+      - k33-backend
 
   acceptance-tests:
     container_name: acceptance-tests
     build: apps/acceptance-tests
     environment:
-      - BACKEND_HOST=test.api.arcane.no
+      - BACKEND_HOST=test.api.k33.com
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - LEGAL_SPACE_ID=${LEGAL_SPACE_ID}
       - PLATFORM_TNC_VERSION=${PLATFORM_TNC_VERSION}
@@ -91,5 +91,5 @@ services:
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     depends_on:
-      - test.api.arcane.no
+      - test.api.k33.com
       - oauth2-provider-emulator

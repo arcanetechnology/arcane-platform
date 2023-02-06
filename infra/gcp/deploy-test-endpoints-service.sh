@@ -24,9 +24,9 @@ fi
 ## temp dir to store modified OpenAPI file
 TMP_DIR=$(mktemp -d)
 echo "$TMP_DIR"
-TMP_FILE="$TMP_DIR/arcane-platform-test-api.yaml"
+TMP_FILE="$TMP_DIR/k33-backend-test-api.yaml"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-test-api.yaml >"$TMP_FILE"
+sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g' libs/clients/k33-backend-client/src/main/openapi/k33-backend-test-api.yaml >"$TMP_FILE"
 
 gcloud endpoints services deploy "$TMP_FILE"

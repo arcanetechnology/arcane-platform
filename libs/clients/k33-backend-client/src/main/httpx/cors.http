@@ -1,0 +1,28 @@
+### k33.com to OPTIONS api.k33.com
+
+OPTIONS https://api.k33.com
+Origin: https://k33.com
+Access-Control-Request-Method: GET
+
+### k33.com to GET api.k33.com
+
+GET https://api.k33.com/ping
+Origin: https://k33.com
+
+### dev.k33.com to OPTIONS api.k33.com
+
+OPTIONS https://api.k33.com/
+Origin: https://dev.k33.com
+Access-Control-Request-Method: GET
+
+### developer.k33.com to OPTIONS api.k33.com
+
+OPTIONS https://api.k33.com
+Origin: https://developer.k33.com
+Access-Control-Request-Method: GET
+
+### localhost:3000 to OPTIONS dev.api.k33.com
+
+OPTIONS https://dev.api.k33.com
+Origin: http://localhost:3000
+Access-Control-Request-Method: GET

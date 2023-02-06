@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-#  Script to canary deploy arcane-platform-app to GCP cloud run.
+#  Script to canary deploy k33-backend to GCP cloud run.
 #
 
 set -e
@@ -18,15 +18,15 @@ if [ -f .env.gcp ]; then
 fi
 
 declare -A backendCloudRun
-backendCloudRun["service"]="arcane-platform"
-backendCloudRun["image"]="europe-docker.pkg.dev/${GCP_PROJECT_ID}/platform/arcane-platform-app:$(git rev-parse HEAD | cut -c 1-12)"
-backendCloudRun["service_account"]="arcane-platform"
+backendCloudRun["service"]="k33-backend"
+backendCloudRun["image"]="europe-docker.pkg.dev/${GCP_PROJECT_ID}/backend/k33-backend:$(git rev-parse HEAD | cut -c 1-12)"
+backendCloudRun["service_account"]="k33-backend"
 
 echo "Build with Gradle"
-./gradlew :apps:arcane-platform-app:installDist --parallel
+./gradlew :apps:k33-backend:installDist --parallel
 
 echo "Building and pushing docker image: ${backendCloudRun["image"]}"
-docker image build --platform linux/amd64 -t "${backendCloudRun["image"]}" apps/arcane-platform-app
+docker image build --platform linux/amd64 -t "${backendCloudRun["image"]}" apps/k33-backend
 docker image push "${backendCloudRun["image"]}"
 
 echo "Canary deploying to cloud run: ${backendCloudRun["image"]}"

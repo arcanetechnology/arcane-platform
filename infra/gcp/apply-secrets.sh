@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-#  Script to apply secrets for arcane-platform-app to GCP cloud run.
+#  Script to apply secrets for k33-backend to GCP cloud run.
 #
 
 set -e
@@ -28,7 +28,7 @@ gcp_secrets[5]="ALGOLIA_APP_ID"
 gcp_secrets[6]="ALGOLIA_API_KEY"
 gcp_secrets[7]="SLACK_TOKEN"
 
-CLOUD_RUN_SERVICE="arcane-platform"
+CLOUD_RUN_SERVICE="k33-backend"
 
 echo Update cloud run service: "${CLOUD_RUN_SERVICE}" with secrets
 

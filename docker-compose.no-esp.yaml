@@ -11,9 +11,9 @@ services:
       - "5173:5173"
     command: [ "gcloud", "beta", "emulators", "firestore", "start", "--host-port=0.0.0.0:5173" ]
 
-  arcane-platform-app:
-    container_name: arcane-platform-app
-    build: apps/arcane-platform-app
+  k33-backend:
+    container_name: k33-backend
+    build: apps/k33-backend
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
@@ -54,7 +54,7 @@ services:
     container_name: acceptance-tests
     build: apps/acceptance-tests
     environment:
-      - BACKEND_HOST=arcane-platform-app
+      - BACKEND_HOST=k33-backend
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - LEGAL_SPACE_ID=${LEGAL_SPACE_ID}
       - PLATFORM_TNC_VERSION=${PLATFORM_TNC_VERSION}
@@ -65,4 +65,4 @@ services:
     volumes:
       - "./infra/gcp/secrets/gcp-service-account.json:/config/gcp-service-account.json:ro"
     depends_on:
-      - arcane-platform-app
+      - k33-backend

@@ -5,8 +5,8 @@ while ! nc -z firestore-emulator 5173; do
   sleep 0.1 # wait for 1/10 of the second before check again
 done
 
-echo "Waiting for arcane-platform-app to launch on 8080..."
-while ! nc -z arcane-platform-app 8080; do
+echo "Waiting for k33-backend to launch on 8080..."
+while ! nc -z k33-backend 8080; do
   sleep 0.1 # wait for 1/10 of the second before check again
 done
 
@@ -15,4 +15,4 @@ while ! nc -z "$BACKEND_HOST" 8080; do
   sleep 0.1 # wait for 1/10 of the second before check again
 done
 
-./acceptance-tests --select-package=no.arcane.platform.tests
+./acceptance-tests --select-package=com.k33.platform.tests

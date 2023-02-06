@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_ID: api.arcane.no
+  SERVICE_ID: api.k33.com
   ESP_FULL_VERSION: 2.41.0
 jobs:
   deploy-endpoints:
@@ -31,12 +31,12 @@ jobs:
         run: |
           TMP_DIR=$(mktemp -d)
           echo "$TMP_DIR"
-          TMP_FILE="$TMP_DIR/arcane-platform-api.yaml"
+          TMP_FILE="$TMP_DIR/k33-backend-api.yaml"
           trap 'rm -rf "$TMP_DIR"' EXIT
-          sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_API_HOST}~'"${GCP_API_HOST}"'~g; s~${GCP_BACKEND_HOST}~'"${GCP_BACKEND_HOST}"'~g' libs/clients/arcane-platform-client/src/main/openapi/arcane-platform-api.yaml > "$TMP_FILE"
+          sed 's~${GCP_PROJECT_ID}~'"${GCP_PROJECT_ID}"'~g; s~${GCP_API_HOST}~'"${GCP_API_HOST}"'~g; s~${GCP_BACKEND_HOST}~'"${GCP_BACKEND_HOST}"'~g' libs/clients/k33-backend-client/src/main/openapi/k33-backend-api.yaml > "$TMP_FILE"
           gcloud endpoints services deploy "$TMP_FILE"
       - name: Fetch Endpoints Service Config ID
-        run: echo "SERVICE_CONFIG_ID=$(gcloud endpoints configs list --service api.arcane.no --format=object --flatten=id --sort-by=~id --limit=1)" >> $GITHUB_ENV
+        run: echo "SERVICE_CONFIG_ID=$(gcloud endpoints configs list --service api.k33.com --format=object --flatten=id --sort-by=~id --limit=1)" >> $GITHUB_ENV
       - name: Build & push custom ESP v2 docker image for GCP Cloud Run
         working-directory: apps/esp-v2
         run: |-
@@ -45,19 +45,19 @@ jobs:
             -c $SERVICE_CONFIG_ID \
             -p $GCP_PROJECT_ID \
             -v $ESP_FULL_VERSION \
-            -g europe-docker.pkg.dev/$GCP_PROJECT_ID/platform
+            -g europe-docker.pkg.dev/$GCP_PROJECT_ID/backend
       - name: Deploy ESP v2
         run: |-
-          gcloud run deploy arcane-platform-gateway \
+          gcloud run deploy k33-backend-gateway \
             --region europe-west1 \
-            --image europe-docker.pkg.dev/$GCP_PROJECT_ID/platform/endpoints-runtime-serverless:$ESP_FULL_VERSION-$SERVICE_ID-$SERVICE_CONFIG_ID \
-            --set-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex='^https:\/\/(dev\.)?arcane\.no$'++--cors_max_age=5m \
+            --image europe-docker.pkg.dev/$GCP_PROJECT_ID/backend/endpoints-runtime-serverless:$ESP_FULL_VERSION-$SERVICE_ID-$SERVICE_CONFIG_ID \
+            --set-env-vars=ESPv2_ARGS=^++^--cors_preset=cors_with_regex++--cors_allow_origin_regex='^https:\/\/(dev\.)?k33\.com$'++--cors_max_age=5m \
             --cpu=1 \
             --memory=512Mi \
             --min-instances=1 \
             --max-instances=1 \
             --concurrency=1000 \
-            --service-account arcane-platform-gateway \
+            --service-account k33-backend-gateway \
             --allow-unauthenticated \
             --port=8080 \
             --platform=managed

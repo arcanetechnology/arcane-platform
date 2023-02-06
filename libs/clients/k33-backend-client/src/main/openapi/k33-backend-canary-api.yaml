@@ -1,0 +1,666 @@
+swagger: "2.0"
+
+info:
+  title: K33 Backend API - Canary
+  description: "K33 Backend API for Canary Deployment"
+  version: "1.0.0"
+
+host: canary.api.k33.com
+
+schemes:
+  - "https"
+
+x-google-backend:
+  address: "https://canary---${GCP_BACKEND_HOST}"
+  protocol: h2
+  jwt_audience: "https://${GCP_BACKEND_HOST}"
+
+paths:
+
+  "/ping":
+    get:
+      description: "Ping endpoint for checking uptime and connectivity"
+      operationId: "ping"
+      responses:
+        200:
+          description: "pong"
+          schema:
+            type: string
+    post:
+      description: "Ping endpoint for checking uptime and connectivity"
+      operationId: "postPing"
+      responses:
+        200:
+          description: "pong"
+          schema:
+            type: string
+  "/utc":
+    get:
+      description: "utc endpoint for checking server time"
+      operationId: "utc"
+      responses:
+        200:
+          description: "UTC timestamp"
+          schema:
+            type: string
+      security:
+        - firebase: [ ]
+
+
+  "/whoami":
+    get:
+      description: "Get OAuth2 JWT payload"
+      operationId: "whoami"
+      responses:
+        200:
+          description: "Get OAuth2 JWT payload json"
+          schema:
+            type: string
+      security:
+        - firebase: [ ]
+  "/firebase-custom-token":
+    get:
+      description: |
+        Pass Apple id_token as Bearer value to Auth header.
+        If the token is valid, it will try to find an existing user using email from id_token.
+        If the user does not exist, it will create a new user.
+        For valid Apple id_token, it returns Firebase custom token for new/existing user.
+      operationId: "getFirebaseCustomToken"
+      responses:
+        200:
+          description: "Firebase custom token"
+          schema:
+            type: string
+      security:
+        - apple: [ ]
+
+
+  "/user":
+    get:
+      description: "Get user"
+      operationId: getUser
+      responses:
+        200:
+          description: User
+          schema:
+            $ref: "#/definitions/User"
+      security:
+        - firebase: [ ]
+    post:
+      description: |
+        Create user using userId from JWT OAuth Identity token in Authentication Bearer header.
+        New Analytics ID will be assigned to this user.
+      operationId: createUser
+      responses:
+        200:
+          description: "Created User"
+          schema:
+            $ref: "#/definitions/User"
+      security:
+        - firebase: [ ]
+
+
+  "/tnc/{tnc-id}":
+    get:
+      description: "Get Terms & Conditions response"
+      operationId: "getTnc"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Terms & Conditions"
+          schema:
+            $ref: "#/definitions/TncResponse"
+        404:
+          description: "Terms & Conditions were not submitted"
+      security:
+        - firebase: [ ]
+    post:
+      description: "Save Terms & Conditions response"
+      operationId: "setTnc"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+        - name: tnc
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/TncRequest"
+      responses:
+        200:
+          description: "Saved Terms & Conditions"
+          schema:
+            $ref: "#/definitions/TncResponse"
+      security:
+        - firebase: [ ]
+  "/tnc/{tnc-id}/email":
+    post:
+      description: "Send Terms & Conditions in email"
+      operationId: "sendTncEmail"
+      parameters:
+        - name: tnc-id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Terms & Conditions sent in email"
+      security:
+        - firebase: [ ]
+
+
+  "/graphql":
+    get:
+      description: "GraphQL GET endpoint"
+      produces:
+        - application/json
+      operationId: "graphqlGet"
+      parameters:
+        - name: "query"
+          in: query
+          description: "GraphQL Query."
+          type: string
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+    post:
+      description: "GraphQL POST endpoint"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      operationId: "graphqlPost"
+      parameters:
+        - name: "request"
+          in: body
+          description: "GraphQL Request."
+          required: true
+          schema:
+            $ref: '#/definitions/GraphQLRequest'
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/GraphQLResponse'
+      security:
+        - firebase: [ ]
+
+
+  "/contentfulEvents":
+    post:
+      description: Webhook callbacks on Contentful events
+      consumes:
+        - application/vnd.contentful.management.v1+json
+      produces:
+        - application/json
+      operationId: "reportContentfulEvent"
+      parameters:
+        - name: "request"
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: object
+      security:
+        - api_key: [ ]
+
+
+  "/apps/invest/funds":
+    get:
+      description: Get all fund info access status
+      operationId: "getAllFundInfoAccessStatus"
+      responses:
+        200:
+          description: "List of funds and their status"
+          schema:
+            type: object
+      security:
+        - firebase: [ ]
+
+  "/apps/invest/funds/{fund-id}":
+    get:
+      description: Get fund info access status
+      operationId: "getFundInfoAccessStatus"
+      parameters:
+        - name: "fund-id"
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: "User is registered for given fund"
+        400:
+          description: "Bad request"
+        403:
+          description: "User not qualified to see fund info"
+        404:
+          description: "User is not registered"
+          schema:
+            type: object
+      security:
+        - firebase: [ ]
+    put:
+      description: Submit FundInfoRequest
+      consumes:
+        - application/json
+      operationId: "submitFundInfoRequest"
+      parameters:
+        - name: "fund-id"
+          in: path
+          required: true
+          type: string
+        - name: "fundInfoRequest"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/FundInfoRequest"
+      responses:
+        200:
+          description: "Success"
+        403:
+          description: "Registration not allowed"
+        400:
+          description: "Bad request"
+      security:
+        - firebase: [ ]
+
+
+definitions:
+
+  User:
+    type: object
+    properties:
+      userId:
+        type: string
+      analyticsId:
+        type: string
+    required:
+      - userId
+      - analyticsId
+
+
+  TncRequest:
+    type: object
+    properties:
+      version:
+        type: string
+      accepted:
+        type: boolean
+      spaceId:
+        type: string
+      environmentId:
+        type: string
+      entryId:
+        type: string
+      fieldId:
+        type: string
+    required:
+      - version
+      - accepted
+      - spaceId
+      - environmentId
+      - entryId
+      - fieldId
+  TncResponse:
+    type: object
+    properties:
+      tncId:
+        type: string
+      version:
+        type: string
+      accepted:
+        type: boolean
+      spaceId:
+        type: string
+      environmentId:
+        type: string
+      entryId:
+        type: string
+      fieldId:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+    required:
+      - tncId
+      - version
+      - accepted
+      - spaceId
+      - environmentId
+      - entryId
+      - fieldId
+      - timestamp
+
+
+  GraphQLRequest:
+    type: object
+    properties:
+      query:
+        description: "GraphQL query."
+        type: string
+    required:
+      - query
+  GraphQLResponse:
+    type: object
+    properties:
+      data:
+        type: object
+      errors:
+        type: array
+        items:
+          type: string
+
+  FundInfoRequest:
+    type: object
+    properties:
+      investorType:
+        type: string
+        enum:
+          - PROFESSIONAL
+          - ELECTIVE_PROFESSIONAL
+          - UNQUALIFIED
+      name:
+        type: string
+      company:
+        type: string
+      phoneNumber:
+        type: object
+        properties:
+          countryCode:
+            type: string
+          nationalNumber:
+            type: string
+        required:
+          - countryCode
+          - nationalNumber
+      countryCode:
+        type: string
+        enum:
+          - AND # Andorra
+          - ARE # United Arab Emirates
+          - AFG # Afghanistan
+          - ATG # Antigua & Barbuda
+          - AIA # Anguilla
+          - ALB # Albania
+          - ARM # Armenia
+          - AGO # Angola
+          - ATA # Antarctica
+          - ARG # Argentina
+          - ASM # American Samoa
+          - AUT # Austria
+          - AUS # Australia
+          - ABW # Aruba
+          - ALA # Åland Islands
+          - AZE # Azerbaijan
+          - BIH # Bosnia & Herzegovina
+          - BRB # Barbados
+          - BGD # Bangladesh
+          - BEL # Belgium
+          - BFA # Burkina Faso
+          - BGR # Bulgaria
+          - BHR # Bahrain
+          - BDI # Burundi
+          - BEN # Benin
+          - BLM # St. Barthélemy
+          - BMU # Bermuda
+          - BRN # Brunei
+          - BOL # Bolivia
+          - BES # Caribbean Netherlands
+          - BRA # Brazil
+          - BHS # Bahamas
+          - BTN # Bhutan
+          - BVT # Bouvet Island
+          - BWA # Botswana
+          - BLR # Belarus
+          - BLZ # Belize
+          - CAN # Canada
+          - CCK # Cocos (Keeling) Islands
+          - COD # Congo - Kinshasa
+          - CAF # Central African Republic
+          - COG # Congo - Brazzaville
+          - CHE # Switzerland
+          - CIV # Côte d’Ivoire
+          - COK # Cook Islands
+          - CHL # Chile
+          - CMR # Cameroon
+          - CHN # China
+          - COL # Colombia
+          - CRI # Costa Rica
+          - CUB # Cuba
+          - CPV # Cape Verde
+          - CUW # Curaçao
+          - CXR # Christmas Island
+          - CYP # Cyprus
+          - CZE # Czechia
+          - DEU # Germany
+          - DJI # Djibouti
+          - DNK # Denmark
+          - DMA # Dominica
+          - DOM # Dominican Republic
+          - DZA # Algeria
+          - ECU # Ecuador
+          - EST # Estonia
+          - EGY # Egypt
+          - ESH # Western Sahara
+          - ERI # Eritrea
+          - ESP # Spain
+          - ETH # Ethiopia
+          - FIN # Finland
+          - FJI # Fiji
+          - FLK # Falkland Islands
+          - FSM # Micronesia
+          - FRO # Faroe Islands
+          - FRA # France
+          - GAB # Gabon
+          - GBR # United Kingdom
+          - GRD # Grenada
+          - GEO # Georgia
+          - GUF # French Guiana
+          - GGY # Guernsey
+          - GHA # Ghana
+          - GIB # Gibraltar
+          - GRL # Greenland
+          - GMB # Gambia
+          - GIN # Guinea
+          - GLP # Guadeloupe
+          - GNQ # Equatorial Guinea
+          - GRC # Greece
+          - SGS # South Georgia & South Sandwich Islands
+          - GTM # Guatemala
+          - GUM # Guam
+          - GNB # Guinea-Bissau
+          - GUY # Guyana
+          - HKG # Hong Kong SAR China
+          - HMD # Heard & McDonald Islands
+          - HND # Honduras
+          - HRV # Croatia
+          - HTI # Haiti
+          - HUN # Hungary
+          - IDN # Indonesia
+          - IRL # Ireland
+          - ISR # Israel
+          - IMN # Isle of Man
+          - IND # India
+          - IOT # British Indian Ocean Territory
+          - IRQ # Iraq
+          - IRN # Iran
+          - ISL # Iceland
+          - ITA # Italy
+          - JEY # Jersey
+          - JAM # Jamaica
+          - JOR # Jordan
+          - JPN # Japan
+          - KEN # Kenya
+          - KGZ # Kyrgyzstan
+          - KHM # Cambodia
+          - KIR # Kiribati
+          - COM # Comoros
+          - KNA # St. Kitts & Nevis
+          - PRK # North Korea
+          - KOR # South Korea
+          - KWT # Kuwait
+          - CYM # Cayman Islands
+          - KAZ # Kazakhstan
+          - LAO # Laos
+          - LBN # Lebanon
+          - LCA # St. Lucia
+          - LIE # Liechtenstein
+          - LKA # Sri Lanka
+          - LBR # Liberia
+          - LSO # Lesotho
+          - LTU # Lithuania
+          - LUX # Luxembourg
+          - LVA # Latvia
+          - LBY # Libya
+          - MAR # Morocco
+          - MCO # Monaco
+          - MDA # Moldova
+          - MNE # Montenegro
+          - MAF # St. Martin
+          - MDG # Madagascar
+          - MHL # Marshall Islands
+          - MKD # North Macedonia
+          - MLI # Mali
+          - MMR # Myanmar (Burma)
+          - MNG # Mongolia
+          - MAC # Macao SAR China
+          - MNP # Northern Mariana Islands
+          - MTQ # Martinique
+          - MRT # Mauritania
+          - MSR # Montserrat
+          - MLT # Malta
+          - MUS # Mauritius
+          - MDV # Maldives
+          - MWI # Malawi
+          - MEX # Mexico
+          - MYS # Malaysia
+          - MOZ # Mozambique
+          - NAM # Namibia
+          - NCL # New Caledonia
+          - NER # Niger
+          - NFK # Norfolk Island
+          - NGA # Nigeria
+          - NIC # Nicaragua
+          - NLD # Netherlands
+          - NOR # Norway
+          - NPL # Nepal
+          - NRU # Nauru
+          - NIU # Niue
+          - NZL # New Zealand
+          - OMN # Oman
+          - PAN # Panama
+          - PER # Peru
+          - PYF # French Polynesia
+          - PNG # Papua New Guinea
+          - PHL # Philippines
+          - PAK # Pakistan
+          - POL # Poland
+          - SPM # St. Pierre & Miquelon
+          - PCN # Pitcairn Islands
+          - PRI # Puerto Rico
+          - PSE # Palestinian Territories
+          - PRT # Portugal
+          - PLW # Palau
+          - PRY # Paraguay
+          - QAT # Qatar
+          - REU # Réunion
+          - ROU # Romania
+          - SRB # Serbia
+          - RUS # Russia
+          - RWA # Rwanda
+          - SAU # Saudi Arabia
+          - SLB # Solomon Islands
+          - SYC # Seychelles
+          - SDN # Sudan
+          - SWE # Sweden
+          - SGP # Singapore
+          - SHN # St. Helena
+          - SVN # Slovenia
+          - SJM # Svalbard & Jan Mayen
+          - SVK # Slovakia
+          - SLE # Sierra Leone
+          - SMR # San Marino
+          - SEN # Senegal
+          - SOM # Somalia
+          - SUR # Suriname
+          - SSD # South Sudan
+          - STP # São Tomé & Príncipe
+          - SLV # El Salvador
+          - SXM # Sint Maarten
+          - SYR # Syria
+          - SWZ # Eswatini
+          - TCA # Turks & Caicos Islands
+          - TCD # Chad
+          - ATF # French Southern Territories
+          - TGO # Togo
+          - THA # Thailand
+          - TJK # Tajikistan
+          - TKL # Tokelau
+          - TLS # Timor-Leste
+          - TKM # Turkmenistan
+          - TUN # Tunisia
+          - TON # Tonga
+          - TUR # Turkey
+          - TTO # Trinidad & Tobago
+          - TUV # Tuvalu
+          - TWN # Taiwan
+          - TZA # Tanzania
+          - UKR # Ukraine
+          - UGA # Uganda
+          - UMI # US Outlying Islands
+          - USA # United States
+          - URY # Uruguay
+          - UZB # Uzbekistan
+          - VAT # Vatican City
+          - VCT # St. Vincent & Grenadines
+          - VEN # Venezuela
+          - VGB # British Virgin Islands
+          - VIR # US Virgin Islands
+          - VNM # Vietnam
+          - VUT # Vanuatu
+          - WLF # Wallis & Futuna
+          - WSM # Samoa
+          - YEM # Yemen
+          - MYT # Mayotte
+          - ZAF # South Africa
+          - ZMB # Zambia
+          - ZWE # Zimbabwe
+      fundName:
+        type: string
+    required:
+      - investorType
+
+
+securityDefinitions:
+  firebase:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://securetoken.google.com/${GCP_PROJECT_ID}"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "${GCP_PROJECT_ID}"
+  apple:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://appleid.apple.com"
+    x-google-jwks_uri: "https://appleid.apple.com/auth/keys"
+    x-google-audiences: "com.k33.platform.client.web"
+  api_key:
+    type: apiKey
+    name: "x-api-key"
+    in: header

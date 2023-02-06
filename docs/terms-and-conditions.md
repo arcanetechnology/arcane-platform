@@ -2,7 +2,7 @@
 
 ## Assumptions
 * The text for the T&C will be updated rarely.
-* A user may use multiple clients to access arcane-platform services.
+* A user may use multiple clients to access k33-platform services.
 
 ## Objectives
 

@@ -1,0 +1,54 @@
+### Open to internet
+
+GET https://api.k33.com/ping
+
+### Open on app. Secured on gateway.
+
+GET https://api.k33.com/utc
+Authorization: Bearer <firebase-id-token>
+
+### Secured on app and gateway.
+
+GET https://api.k33.com/whoami
+Authorization: Bearer <firebase-id-token>
+
+### apple
+
+GET https://api.k33.com/firebase-custom-token
+Authorization: Bearer <apple-id-token>
+
+### oauth2-provider-emulator keys
+
+GET http://localhost:8080/auth/keys
+
+### oauth2-provider-emulator firebase-id-token
+
+GET http://localhost:8080/firebase-id-token
+Content-Type: application/json
+
+{
+  "aud": "acceptance-tests",
+  "sub": "test",
+  "email_verified": true,
+  "user_id": "test",
+  "name": "Test User",
+  "iss": "oauth2-provider-emulator",
+  "picture:": "https://picsum.photos/200",
+  "email": "test@k33.com"
+}
+
+### oauth2-provider-emulator apple-id-token
+
+GET http://localhost:8080/apple-id-token
+Content-Type: application/json
+
+{
+  "iss": "oauth2-provider-emulator",
+  "subject": "test",
+  "aud": "acceptance-tests",
+  "name": "Test User",
+  "email": "test@k33.com",
+  "email_verified": true,
+  "is_private_email": false,
+  "real_user_status": 0
+}

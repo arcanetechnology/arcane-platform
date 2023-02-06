@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:
-  IMAGE: europe-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/platform/arcane-platform-app
+  IMAGE: europe-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/k33-backend
 jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
@@ -36,9 +36,9 @@ jobs:
       - name: Authorize Docker push
         run: gcloud auth configure-docker europe-docker.pkg.dev
       - name: Build with Gradle
-        run: ./gradlew --no-daemon :apps:arcane-platform-app:installDist --parallel
+        run: ./gradlew --no-daemon :apps:k33-backend:installDist --parallel
       - name: Build docker image
-        run: docker image build -t "$IMAGE":${GITHUB_SHA::12} apps/arcane-platform-app
+        run: docker image build -t "$IMAGE":${GITHUB_SHA::12} apps/k33-backend
       - name: Push docker image
         run: docker image push "$IMAGE":${GITHUB_SHA::12}
       - name: Canary deploy to GCP Cloud Run
@@ -57,7 +57,7 @@ jobs:
           INVEST_EMAIL_CC_LIST: ${{ secrets.INVEST_EMAIL_CC_LIST }}
           INVEST_EMAIL_BCC_LIST: ${{ secrets.INVEST_EMAIL_BCC_LIST }}
         run: |-
-          gcloud run deploy arcane-platform \
+          gcloud run deploy k33-backend \
             --region europe-west1 \
             --image "${IMAGE}":${GITHUB_SHA::12} \
             --cpu=1 \
@@ -79,7 +79,7 @@ jobs:
             --set-env-vars=^:^INVEST_EMAIL_TO_LIST="${INVEST_EMAIL_TO_LIST}" \
             --set-env-vars=^:^INVEST_EMAIL_CC_LIST="${INVEST_EMAIL_CC_LIST}" \
             --set-env-vars=^:^INVEST_EMAIL_BCC_LIST="${INVEST_EMAIL_BCC_LIST}" \
-            --service-account arcane-platform@"${GCP_PROJECT_ID}".iam.gserviceaccount.com \
+            --service-account k33-backend@"${GCP_PROJECT_ID}".iam.gserviceaccount.com \
             --no-allow-unauthenticated \
             --port=8080 \
             --tag canary \

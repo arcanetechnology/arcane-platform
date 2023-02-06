@@ -9,7 +9,7 @@ plugins {
 }
 
 allprojects {
-    group = "no.arcane.platform"
+    group = "com.k33.platform"
     version = "1.0.0-SNAPSHOT"
 
     repositories {
