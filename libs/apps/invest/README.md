@@ -53,8 +53,8 @@ users:
       - invest:
         # collection
         funds:
-          # document-id: (fundId = arcane-assets-fund-limited)
-          - arcane-assets-fund-limited:
+          # document-id: (fundId = k33-assets-i-fund-limited)
+          - k33-assets-i-fund-limited:
             status: NOT_REGISTERED | NOT_AUTHORIZED | REGISTERED
             # collection
             fund-info-requests:

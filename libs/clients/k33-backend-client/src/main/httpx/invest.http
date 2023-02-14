@@ -1,4 +1,4 @@
-PUT https://canary.api.k33.com/apps/invest/funds/arcane-assets-fund-limited
+PUT https://canary.api.k33.com/apps/invest/funds/k33-assets-i-fund-limited
 Authorization: Bearer <firebase-id-token>
 Content-Type: application/json
 
@@ -10,12 +10,12 @@ Content-Type: application/json
     "nationalNumber": "41234567"
   },
   "countryCode": "NOR",
-  "fundName": "Arcane Assets Fund Limited"
+  "fundName": "K33 Assets I Fund Limited"
 }
 
 ### Get status as HTTP response status code for a given fund
 
-GET https://canary.api.k33.com/apps/invest/funds/arcane-assets-fund-limited
+GET https://canary.api.k33.com/apps/invest/funds/k33-assets-i-fund-limited
 Authorization: Bearer <firebase-id-token>
 
 ### Get status for all funds as map in response body

@@ -112,7 +112,7 @@ object InvestService {
                 toList = listOf(Email(address = investorEmail, label = fundInfoRequest.name)),
                 ccList = emailCcList,
                 bccList = emailBccList,
-                subject = "IGNORE(testing): Arcane Fund Inquiry Request",
+                subject = "IGNORE(testing): K33 Fund Inquiry Request",
                 contentType = ContentType.MONOSPACE_TEXT,
                 body = fundInfoRequest.asString(
                     investorEmail = investorEmail,
@@ -124,7 +124,7 @@ object InvestService {
                 toList = emailToList,
                 ccList = emailCcList,
                 bccList = emailBccList,
-                subject = "Arcane Fund Inquiry Request",
+                subject = "K33 Fund Inquiry Request",
                 contentType = ContentType.MONOSPACE_TEXT,
                 body = fundInfoRequest.asString(
                     investorEmail = investorEmail,
@@ -148,7 +148,7 @@ object InvestService {
     internal fun FundInfoRequest.asString(
         investorEmail: String,
     ): String = """
-        Details of Investor submitting inquiry for the Arcane Fund.
+        Details of Investor submitting inquiry for the K33 Fund.
     
         Investor category ..... ${investorType.label}
         Full Name ............. $name

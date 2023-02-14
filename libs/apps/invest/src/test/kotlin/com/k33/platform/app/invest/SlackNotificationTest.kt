@@ -15,7 +15,7 @@ class SlackNotificationTest : StringSpec({
                     nationalNumber = "12345678",
                 ),
                 countryCode = ISO3CountyCode.NOR,
-                fundName = "Arcane Assets Fund Limited"
+                fundName = "K33 Assets I Fund Limited"
             ).asString(investorEmail = "test@k33.com"),
             testMode = true,
         )

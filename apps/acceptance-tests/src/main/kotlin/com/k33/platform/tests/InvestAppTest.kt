@@ -9,8 +9,8 @@ import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import java.util.*
 
-const val fundId = "arcane-assets-fund-limited"
-const val invalidFundId = "arcane-fund"
+const val fundId = "k33-assets-i-fund-limited"
+const val invalidFundId = "k33-fund"
 
 class InvestAppTest : BehaviorSpec({
 
@@ -121,7 +121,7 @@ class InvestAppTest : BehaviorSpec({
                         name = "Test",
                         phoneNumber = invalidPhoneNumber,
                         countryCode = "NOR",
-                        fundName = "Arcane Assets Fund Limited"
+                        fundName = "K33 Assets I Fund Limited"
                     )
                 )
                 then("Status should be 400 BadRequest") {
@@ -142,7 +142,7 @@ class InvestAppTest : BehaviorSpec({
                         name = "Test",
                         phoneNumber = validPhoneNumber,
                         countryCode = "NOR",
-                        fundName = "Arcane Fund"
+                        fundName = "K33 Fund"
                     )
                 )
                 then("Status should be 403 Forbidden") {
@@ -180,7 +180,7 @@ class InvestAppTest : BehaviorSpec({
                         name = "Test",
                         phoneNumber = validPhoneNumber,
                         countryCode = "NOR",
-                        fundName = "Arcane Assets Fund Limited"
+                        fundName = "K33 Assets I Fund Limited"
                     )
                 )
                 then("Status should be 200 OK") {
