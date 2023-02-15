@@ -212,6 +212,23 @@ paths:
             type: object
 
 
+  "/email-subscriptions":
+    put:
+      description: Upsert email subscriptions
+      operationId: "addEmailSubscriptions"
+      consumes:
+        - application/json
+      parameters:
+        - name: "request"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/EmailSubscriptionsRequest"
+      responses:
+        200:
+          description: "Success"
+
+
   "/apps/invest/funds":
     get:
       description: Get all fund info access status
@@ -356,6 +373,21 @@ definitions:
         type: array
         items:
           type: string
+
+
+  EmailSubscriptionsRequest:
+    type: object
+    properties:
+      emails:
+        type: array
+        items:
+          type: string
+          format: email
+      listIds:
+        type: array
+        items:
+          type: string
+
 
   FundInfoRequest:
     type: object

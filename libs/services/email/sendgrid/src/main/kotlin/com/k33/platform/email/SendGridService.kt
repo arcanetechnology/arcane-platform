@@ -23,6 +23,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import com.k33.platform.utils.config.loadConfig
 import com.k33.platform.utils.logging.getLogger
+import kotlinx.serialization.SerialName
 
 
 typealias K33Email = com.k33.platform.email.Email
@@ -124,7 +125,8 @@ object SendGridService : EmailService {
     }
 
     suspend fun upsertMarketingContacts(
-        contactEmails: List<String>
+        contactEmails: List<String>,
+        contactListIds: List<String> = emptyList(),
     ): Boolean {
 
         @Serializable
@@ -134,6 +136,7 @@ object SendGridService : EmailService {
 
         @Serializable
         data class UpsertContactsRequest(
+            @SerialName("list_ids") val listIds: List<String>,
             val contacts: List<Contact>
         )
 
@@ -147,6 +150,7 @@ object SendGridService : EmailService {
                     async {
                         try {
                             val upsertContactsRequest = UpsertContactsRequest(
+                                listIds = contactListIds,
                                 contacts = emailStringList.map(::Contact),
                             )
                             val jsonBody = Json.encodeToString(upsertContactsRequest)

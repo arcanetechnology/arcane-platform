@@ -36,6 +36,8 @@ include(
     "libs:services:email:email-api",
     "libs:services:email:sendgrid",
 
+    "libs:services:email-subscription",
+
     "libs:services:identity",
     "libs:services:identity:apple",
     "libs:services:identity:identity-api",

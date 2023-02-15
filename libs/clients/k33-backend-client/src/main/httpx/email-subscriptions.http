@@ -1,0 +1,18 @@
+### Add to specific list(s) and implicitly to global list.
+PUT https://api.k33.com/email-subscriptions
+Content-Type: application/json
+
+{
+  "emails": ["test@k33.com"],
+  "listIds": ["list-id"]
+}
+
+### Add to global list only
+
+PUT https://api.k33.com/email-subscriptions
+Content-Type: application/json
+
+{
+  "emails": ["test@k33.com"],
+  "listIds": []
+}
