@@ -1,0 +1,4 @@
+### Get all payment subscription products
+
+GET https://api.k33.com/payment/subscribed-products
+Authorization: Bearer <firebase-id-token>

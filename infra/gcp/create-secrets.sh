@@ -27,6 +27,7 @@ gcp_secrets[4]="RESEARCH_SPACE_TOKEN"
 gcp_secrets[5]="ALGOLIA_APP_ID"
 gcp_secrets[6]="ALGOLIA_API_KEY"
 gcp_secrets[7]="SLACK_TOKEN"
+gcp_secrets[8]="STRIPE_API_KEY"
 
 index=8
 

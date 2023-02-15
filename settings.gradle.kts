@@ -43,6 +43,10 @@ include(
     "libs:services:identity:identity-api",
     "libs:services:identity:gcp",
 
+    "libs:services:payment",
+    "libs:services:payment:payment-endpoint",
+    "libs:services:payment:stripe",
+
     "libs:services:terms-and-conditions",
     "libs:services:terms-and-conditions:terms-and-conditions-endpoint",
     "libs:services:terms-and-conditions:terms-and-conditions-graphql",

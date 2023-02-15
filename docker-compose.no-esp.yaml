@@ -19,6 +19,7 @@ services:
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:5173
       - JAVA_OPTS=-Dlogback.configurationFile=logback.xml
       - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - STRIPE_API_KEY=${STRIPE_API_KEY}
       - METRICS_ENABLED=false
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
       - SENDGRID_ENABLED=false

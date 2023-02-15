@@ -236,6 +236,25 @@ paths:
           description: "Success"
 
 
+  "/payment/subscribed-products":
+    get:
+      description: Get list of subscribed products in Stripe.
+      operationId: getSubscribedPaymentProducts
+      produces:
+        - application/json
+      responses:
+        200:
+          description: List of subscribed products
+          schema:
+            $ref: "#/definitions/SubscribedPaymentProducts"
+        404:
+          description: "Not found"
+        500:
+          description: "Internal Error"
+      security:
+        - firebase: [ ]
+
+
   "/apps/invest/funds":
     get:
       description: Get all fund info access status
@@ -391,6 +410,15 @@ definitions:
           type: string
           format: email
       listIds:
+        type: array
+        items:
+          type: string
+
+
+  SubscribedPaymentProducts:
+    type: object
+    properties:
+      subscribedProducts:
         type: array
         items:
           type: string
