@@ -1,7 +1,8 @@
 # K## Platform
 
 [![Kotlin](https://img.shields.io/badge/kotlin-1.8.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/33k33/k33-platform/Test/main?logo=github)
+[![Test](https://github.com/33k33/k33-platform/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/33k33/k33-platform/actions/workflows/test.yaml)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/33k33/k33-platform/test.yaml?branch=main&logo=github)
 ![GitHub](https://img.shields.io/github/license/33k33/k33-platform)
 
 [Developer Notes](./docs/dev.md)

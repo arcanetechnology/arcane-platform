@@ -49,6 +49,7 @@ gcloud services enable servicemanagement.googleapis.com
 gcloud services enable servicecontrol.googleapis.com
 gcloud services enable endpoints.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
+gcloud services enable certificatemanager.googleapis.com
 ```
 
 Needed for prod only.
@@ -446,11 +447,38 @@ gcloud compute forwarding-rules create web-https-fwd-rule \
   --ports=443
 ```
 
+### Redirect www to non-www
+
+Add redirect in Firebase Hosting.
+
 ### Redirect http to https
 
-Ref: https://cloud.google.com/load-balancing/docs/https/setting-up-global-http-https-redirect
+Ref: https://cloud.google.com/load-balancing/docs/https/setting-up-global-http-https-redirect#for_existing_load_balancers
 
 ```shell
+gcloud compute url-maps validate \
+  --source infra/gcp/http-redirect-url-map.yaml
+
+gcloud compute url-maps import http-redirect-url-map \
+  --source infra/gcp/http-redirect-url-map.yaml \
+  --global
+
+gcloud compute url-maps describe http-redirect-url-map
+
+gcloud compute target-http-proxies create http-redirect-proxy \
+  --url-map=http-redirect-url-map \
+  --global
+
+gcloud compute forwarding-rules create http-redirect-forwarding-rule \
+  --load-balancing-scheme=EXTERNAL_MANAGED \
+  --network-tier=PREMIUM \
+  --address=k33-web-ip \
+  --target-http-proxy=http-redirect-proxy \
+  --global \
+  --ports=80
+
+curl -v http://k33.com
+
 gcloud compute backend-services update web-backend-service \
   --global \
   --custom-response-header='Strict-Transport-Security:max-age=31536000; includeSubDomains; preload'
