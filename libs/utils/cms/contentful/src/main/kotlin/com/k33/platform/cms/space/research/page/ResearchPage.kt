@@ -58,6 +58,19 @@ class ResearchPage(
             .filter { ids.contains(it.objectIDString()) }
     }
 
+    private val queryManyForSitemap by lazyResourceWithoutWhitespace("/research/page/queryManyForSitemap.graphql")
+
+    suspend fun fetchSitemap(): Map<String, String> {
+        val ids = fetchIdToModifiedMap().keys
+        return client.fetch(queryManyForSitemap)
+            .filter { ids.contains(it.objectIDString()) }
+            .mapNotNull {
+                (it["slug"]?.jsonPrimitive?.content ?: return@mapNotNull null) to
+                        (it["publishedAt"]?.jsonPrimitive?.content ?: return@mapNotNull null)
+            }
+            .toMap()
+    }
+
     private val clientForIds by lazy {
 
         ContentfulGraphql(

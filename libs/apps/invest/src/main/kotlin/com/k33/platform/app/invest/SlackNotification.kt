@@ -31,7 +31,7 @@ object SlackNotification {
             strFundInfoRequest,
         ) {
             header {
-                text("K33 Fund Inquiry Request")
+                text("K33 Assets Fund Inquiry")
             }
             section {
                 markdownText("```$strFundInfoRequest```")

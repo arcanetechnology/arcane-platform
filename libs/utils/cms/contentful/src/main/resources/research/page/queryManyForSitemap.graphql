@@ -1,0 +1,12 @@
+query {
+    pageCollection(limit: 1000) {
+        items {
+            title
+            slug
+            sys {
+                id
+                publishedAt
+            }
+        }
+    }
+}

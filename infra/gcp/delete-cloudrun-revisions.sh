@@ -6,7 +6,7 @@
 
 set -e
 
-services=(k33-backend k33-backend-canary-gateway k33-backend-gateway k33-web-gateway sendgrid-reverse-proxy site-migration-gateway)
+services=(k33-backend k33-backend-canary-gateway k33-backend-gateway k33-web-gateway sendgrid-reverse-proxy)
 
 for service in "${services[@]}"; do
 

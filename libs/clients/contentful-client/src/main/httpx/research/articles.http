@@ -71,3 +71,23 @@ query {
         }
     }
 }
+
+### Get all article slugs
+
+GRAPHQL https://graphql.contentful.com/content/v1/spaces/{{space_id}}
+Content-Type: application/graphql
+Authorization: Bearer {{token}}
+
+query {
+    pageWeeklyUpdateCollection(limit: 1000) {
+        items {
+            linkedFrom {
+                pageCollection (limit: 1) {
+                    items {
+                        slug
+                    }
+                }
+            }
+        }
+    }
+}

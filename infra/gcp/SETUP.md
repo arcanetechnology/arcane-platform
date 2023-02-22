@@ -50,12 +50,15 @@ gcloud services enable servicecontrol.googleapis.com
 gcloud services enable endpoints.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
 gcloud services enable certificatemanager.googleapis.com
+gcloud services enable firestore.googleapis.com
+gcloud alpha firestore databases update --type=firestore-native
 ```
 
 Needed for prod only.
 
 ```shell
 gcloud services enable iamcredentials.googleapis.com
+gcloud services enable cloudscheduler.googleapis.com
 ```
 
 ## Add docker repository to GCP Artifact Registry
@@ -161,6 +164,8 @@ This will deploy `k33-backend` without access to secrets.
 
 ```shell
 gcloud services enable run.googleapis.com
+gcloud services enable firestore.googleapis.com
+gcloud alpha firestore databases update --type=firestore-native
 
 ./infra/gcp/deploy.sh
 ```
@@ -261,6 +266,15 @@ Access via esp `k33-backend-gateway` (https://api.k33.com/ping) should be allowe
 ## Cron jobs using GCP scheduler invoking Cloud Run
 
 ```shell
+gcloud storage buckets create gs://"$GCP_PROJECT_ID"_analytics \
+  --default-storage-class=standard \
+  --location=europe-west1 \
+  --project "$GCP_PROJECT_ID" \
+  --public-access-prevention \
+  --uniform-bucket-level-access
+
+gcloud services enable cloudscheduler.googleapis.com
+
 gcloud scheduler jobs delete update-firebase-users-stats-job \
   --location europe-west1
 
@@ -273,6 +287,15 @@ gcloud scheduler jobs create http update-firebase-users-stats-job \
 ```
 
 ```shell
+gcloud storage buckets create gs://"$GCP_PROJECT_ID"_sendgrid-contacts-sync \
+  --default-storage-class=standard \
+  --location=europe-west1 \
+  --project "$GCP_PROJECT_ID" \
+  --public-access-prevention \
+  --uniform-bucket-level-access
+
+gcloud services enable cloudscheduler.googleapis.com
+
 gcloud scheduler jobs delete sync-sendgrid-contacts-job \
   --location europe-west1
 
