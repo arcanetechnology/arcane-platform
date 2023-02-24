@@ -47,11 +47,6 @@ include(
     "libs:services:payment:payment-endpoint",
     "libs:services:payment:stripe",
 
-    "libs:services:terms-and-conditions",
-    "libs:services:terms-and-conditions:terms-and-conditions-endpoint",
-    "libs:services:terms-and-conditions:terms-and-conditions-graphql",
-    "libs:services:terms-and-conditions:terms-and-conditions-service",
-
     "libs:services:user",
     "libs:services:user:user-analytics",
     "libs:services:user:user-endpoint",
@@ -64,7 +59,6 @@ include(
     "libs:utils:analytics",
 
     "libs:utils:cms",
-    "libs:utils:cms:cms-api",
     "libs:utils:cms:contentful",
 
     "libs:utils:config",

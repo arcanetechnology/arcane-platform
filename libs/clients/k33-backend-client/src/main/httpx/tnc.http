@@ -1,4 +1,0 @@
-### Send T&C in email
-
-POST https://api.k33.com/tnc/platform.privacyPolicy/email
-Authorization: Bearer <firebase-id-token>

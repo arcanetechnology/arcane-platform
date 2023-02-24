@@ -4,6 +4,5 @@ plugins {
 }
 
 dependencies {
-    api(project("cms-api"))
     implementation(project("contentful"))
 }

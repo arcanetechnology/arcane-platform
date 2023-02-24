@@ -9,13 +9,4 @@ Content-Type: application/graphql
         userId
         analyticsId
     }
-    termsAndConditions(tncIds: ["platform.termsAndConditions", "platform.privacyPolicy"]) {
-        tncId
-        version
-        accepted
-        spaceId
-        entryId
-        fieldId
-        timestamp
-    }
 }

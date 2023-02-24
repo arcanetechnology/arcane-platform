@@ -25,13 +25,9 @@ client <-[#red] server: 404 Not Found
 
 note over client
 
-Since there is only one mandatory step for **THIS** registration,
-we are assuming that the **GET /tnc/platform.termsAndConditions** will return 404,
-and hence skipping the call.
-
 end note
 
-user <- client : Show **Platform Terms and Conditions**
+user <- client : Show Privacy Policy
 
 alt User Rejects
 
@@ -43,9 +39,6 @@ else User Accepts
 
 user -[#green]> client : Accept
 
-client -> server: POST /tnc/platform.termsAndConditions
-
-...
 
 note right of client
 

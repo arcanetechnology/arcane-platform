@@ -84,9 +84,6 @@ services:
       - BACKEND_HOST=test.api.k33.com
       - GOOGLE_APPLICATION_CREDENTIALS=/config/gcp-service-account.json
       - LEGAL_SPACE_ID=${LEGAL_SPACE_ID}
-      - PLATFORM_TNC_VERSION=${PLATFORM_TNC_VERSION}
-      - PLATFORM_TNC_ENV_ID=${PLATFORM_TNC_ENV_ID}
-      - PLATFORM_TNC_ENTRY_ID=${PLATFORM_TNC_ENTRY_ID}
       - TEST_PAGE_ID=${TEST_PAGE_ID}
       - TEST_REPORT_ID=${TEST_REPORT_ID}
     volumes:

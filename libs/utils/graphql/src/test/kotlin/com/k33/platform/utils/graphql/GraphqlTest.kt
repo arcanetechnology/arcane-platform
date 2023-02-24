@@ -33,25 +33,7 @@ class GraphqlTest : AnnotationSpec() {
                 }.asCompletableFuture()
             }
 
-            GraphqlModulesRegistry.registerDataFetcher("termsAndConditions") { env ->
-                val tncIds: List<String> = env.arguments["tncIds"] as? List<String> ?: emptyList()
-                async {
-                    tncIds.map { tncId ->
-                        Tnc(
-                            tncId = tncId,
-                            version = "1",
-                            accepted = true,
-                            spaceId = "space-id",
-                            entryId = "entry-id",
-                            fieldId = "field-id",
-                            timestamp = "2022-01-20T14:05:00Z"
-                        )
-                    }
-                }.asCompletableFuture()
-            }
-
             GraphqlModulesRegistry.registerSchema(File("src/test/resources/user.graphqls").readText())
-            GraphqlModulesRegistry.registerSchema(File("src/test/resources/tnc.graphqls").readText())
 
             //
             // sdl
@@ -64,18 +46,7 @@ class GraphqlTest : AnnotationSpec() {
                         
                         type Query {
                           apps(appIds: [String]!): [App]!
-                          termsAndConditions(tncIds: [String]!): [Tnc]!
                           user: User
-                        }
-                        
-                        type Tnc {
-                          accepted: Boolean!
-                          entryId: String!
-                          fieldId: String!
-                          spaceId: String!
-                          timestamp: String!
-                          tncId: String!
-                          version: String!
                         }
                         
                         type User {
@@ -92,10 +63,7 @@ class GraphqlTest : AnnotationSpec() {
             val graphQL: GraphQL = GraphqlModulesRegistry.getGraphQL()
 
             val executionInput: ExecutionInput = ExecutionInput.newExecutionInput()
-                .query("""{ user { userId analyticsId } termsAndConditions(tncIds: ["platform.termsAndConditions", "platform.privacyPolicy"]) { tncId version accepted spaceId entryId fieldId timestamp } }""")
-                // .variables(emptyMap())
-                // .variables(mapOf("tncId" to "platform.termsAndConditions"))
-                // .graphQLContext(emptyMap<Any, Any>())
+                .query("""{ user { userId analyticsId } }""")
                 .graphQLContext(mapOf("userId" to "user-id"))
                 .build()
 
@@ -109,7 +77,7 @@ class GraphqlTest : AnnotationSpec() {
 
             val data = jacksonObjectMapper().writeValueAsString(executionResult.getData<Map<String, Any?>>())
             data shouldBe """
-{"user":{"userId":"user-id","analyticsId":"analytics-id"},"termsAndConditions":[{"tncId":"platform.termsAndConditions","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"},{"tncId":"platform.privacyPolicy","version":"1","accepted":true,"spaceId":"space-id","entryId":"entry-id","fieldId":"field-id","timestamp":"2022-01-20T14:05:00Z"}]}
+{"user":{"userId":"user-id","analyticsId":"analytics-id"}}
         """.trimIndent()
 
         }

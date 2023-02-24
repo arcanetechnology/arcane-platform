@@ -8,9 +8,10 @@ dependencies {
 
     runtimeOnly(project(":libs:services:identity"))
     runtimeOnly(project(":libs:services:user"))
-    runtimeOnly(project(":libs:services:terms-and-conditions"))
     runtimeOnly(project(":libs:services:email-subscription"))
     runtimeOnly(project(":libs:services:payment"))
+
+    runtimeOnly(project(":libs:utils:cms"))
 
     runtimeOnly(project(":libs:utils:ktor"))
     runtimeOnly(Ktor.server.netty)
