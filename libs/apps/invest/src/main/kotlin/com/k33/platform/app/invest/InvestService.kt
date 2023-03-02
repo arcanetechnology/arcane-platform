@@ -11,6 +11,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import com.k33.platform.email.ContentType
 import com.k33.platform.email.Email
+import com.k33.platform.email.MailContent
 import com.k33.platform.email.getEmailService
 import com.k33.platform.user.UserId
 import com.k33.platform.utils.config.loadConfig
@@ -112,11 +113,13 @@ object InvestService {
                 toList = listOf(Email(address = investorEmail, label = fundInfoRequest.name)),
                 ccList = emailCcList,
                 bccList = emailBccList,
-                subject = "IGNORE(testing): K33 Fund Inquiry Request",
-                contentType = ContentType.MONOSPACE_TEXT,
-                body = fundInfoRequest.asString(
-                    investorEmail = investorEmail,
-                ),
+                mail = MailContent(
+                    subject = "IGNORE(testing): K33 Fund Inquiry Request",
+                    contentType = ContentType.MONOSPACE_TEXT,
+                    body = fundInfoRequest.asString(
+                        investorEmail = investorEmail,
+                    ),
+                )
             )
         } else {
             emailService.sendEmail(
@@ -124,11 +127,13 @@ object InvestService {
                 toList = emailToList,
                 ccList = emailCcList,
                 bccList = emailBccList,
-                subject = "K33 Fund Inquiry Request",
-                contentType = ContentType.MONOSPACE_TEXT,
-                body = fundInfoRequest.asString(
-                    investorEmail = investorEmail,
-                ),
+                mail = MailContent(
+                    subject = "K33 Fund Inquiry Request",
+                    contentType = ContentType.MONOSPACE_TEXT,
+                    body = fundInfoRequest.asString(
+                        investorEmail = investorEmail,
+                    ),
+                )
             )
         }
     }

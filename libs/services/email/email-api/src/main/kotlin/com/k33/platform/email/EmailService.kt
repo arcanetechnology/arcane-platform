@@ -6,11 +6,21 @@ interface EmailService {
         toList: List<Email>,
         ccList: List<Email> = emptyList(),
         bccList: List<Email> = emptyList(),
-        subject: String,
-        contentType: ContentType,
-        body: String,
+        mail: Mail,
     ): Boolean
 }
+
+sealed class Mail
+
+class MailContent(
+    val subject: String,
+    val contentType: ContentType,
+    val body: String,
+) : Mail()
+
+class MailTemplate(
+    val templateId: String,
+) : Mail()
 
 enum class ContentType {
     HTML,

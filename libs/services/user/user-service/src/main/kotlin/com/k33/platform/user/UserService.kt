@@ -7,7 +7,7 @@ import java.util.*
 
 object UserService {
 
-    suspend fun UserId.createUser(): User? {
+    suspend fun UserId.createUser(email: String): User? {
         if (doesNotExist()) {
             put(
                 users / this,
@@ -16,6 +16,7 @@ object UserService {
                     analyticsId = UUID.randomUUID().toString()
                 )
             )
+            UserEventHandler.onNewUserCreated(email = email)
         }
         return fetchUser()
     }

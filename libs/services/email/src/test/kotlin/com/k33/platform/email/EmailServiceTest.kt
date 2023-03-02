@@ -9,9 +9,11 @@ class EmailServiceTest : StringSpec({
         emailService.sendEmail(
             from = Email("vihang@k33.com"),
             toList = listOf(Email("vihang@k33.com")),
-            subject = "Test Email",
-            contentType = ContentType.MONOSPACE_TEXT,
-            body = "This is a test email"
+            mail = MailContent(
+                subject = "Test Email",
+                contentType = ContentType.MONOSPACE_TEXT,
+                body = "This is a test email",
+            )
         )
     }
 })

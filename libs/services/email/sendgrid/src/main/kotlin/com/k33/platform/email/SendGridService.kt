@@ -23,10 +23,20 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import com.k33.platform.utils.config.loadConfig
 import com.k33.platform.utils.logging.getLogger
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 
 
 typealias K33Email = com.k33.platform.email.Email
+
+private fun K33Email.toSendgridEmail(): Email {
+    return if (label.isNullOrBlank()) {
+        Email(address)
+    } else {
+        Email(address, label)
+    }
+}
+
 
 object SendGridService : EmailService {
 
@@ -34,70 +44,62 @@ object SendGridService : EmailService {
 
     private val sendGridConfig by loadConfig<SendGridConfig>(name = "sendgrid", path = "sendgrid")
 
-
     override suspend fun sendEmail(
         from: K33Email,
         toList: List<K33Email>,
         ccList: List<K33Email>,
         bccList: List<K33Email>,
-        subject: String,
-        contentType: ContentType,
-        body: String
+        mail: com.k33.platform.email.Mail
     ): Boolean {
 
-        logger.debug(
-            """
-
-            from: $from
-            to: ${toList.joinToString()}
-            cc: ${ccList.joinToString()}
-            bcc: ${bccList.joinToString()}
-            subject: $subject
-
-            """.trimIndent() + body
-        )
-
-        fun K33Email.toSendgridEmail(): Email {
-            return if (label.isNullOrBlank()) {
-                Email(address)
-            } else {
-                Email(address, label)
-            }
-        }
-
-        try {
-            val content = when (contentType) {
-                ContentType.HTML -> Content("text/html", body)
-                ContentType.PLAIN_TEXT -> Content("text/plain", body)
-                ContentType.MONOSPACE_TEXT -> Content(
-                    "text/html",
-                    buildString {
-                        appendHTML().div {
-                            style = "font-family: monospace;"
-                            for (line in body.lines()) {
-                                +line
-                                br()
-                            }
+        val sendgridMail = Mail().apply {
+            this.from = from.toSendgridEmail()
+            addPersonalization(
+                Personalization().apply {
+                    toList.map(K33Email::toSendgridEmail).forEach(::addTo)
+                    ccList.map(K33Email::toSendgridEmail).forEach(::addCc)
+                    bccList.map(K33Email::toSendgridEmail).forEach(::addBcc)
+                }
+            )
+            when (mail) {
+                is MailContent -> {
+                    logger.debug(
+                        """
+    
+                        from: $from
+                        to: ${toList.joinToString()}
+                        cc: ${ccList.joinToString()}
+                        bcc: ${bccList.joinToString()}
+                        subject: $subject
+            
+                        """.trimIndent() + mail.body
+                    )
+                    subject = mail.subject
+                    addContent(
+                        when (mail.contentType) {
+                            ContentType.HTML -> Content("text/html", mail.body)
+                            ContentType.PLAIN_TEXT -> Content("text/plain", mail.body)
+                            ContentType.MONOSPACE_TEXT -> Content(
+                                "text/html",
+                                buildString {
+                                    appendHTML().div {
+                                        style = "font-family: monospace;"
+                                        for (line in mail.body.lines()) {
+                                            +line
+                                            br()
+                                        }
+                                    }
+                                }
+                            )
                         }
-                    }
-                )
+                    )
+                }
+                is MailTemplate -> {
+                    setTemplateId(mail.templateId)
+                }
             }
-
-            val mail = Mail().apply {
-                this.from = from.toSendgridEmail()
-                this.subject = subject
-                addPersonalization(
-                    Personalization().apply {
-                        toList.map(K33Email::toSendgridEmail).forEach(this::addTo)
-                        ccList.map(K33Email::toSendgridEmail).forEach(this::addCc)
-                        bccList.map(K33Email::toSendgridEmail).forEach(this::addBcc)
-                    }
-                )
-                addContent(content)
-            }
-
             if (sendGridConfig.enabled.not()) {
-                mail.mailSettings = MailSettings().apply {
+                mailSettings = MailSettings().apply {
                     setSandboxMode(
                         Setting().apply {
                             enable = true
@@ -105,16 +107,17 @@ object SendGridService : EmailService {
                     )
                 }
             }
+        }
 
-            val request = Request().apply {
-                method = Method.POST
-                endpoint = "mail/send"
-                this.body = mail.build()
-            }
-
-            val sendGrid = SendGrid(sendGridConfig.apiKey)
+        try {
             val response = withContext(Dispatchers.IO) {
-                sendGrid.api(request)
+                SendGrid(sendGridConfig.apiKey).api(
+                    Request().apply {
+                        method = Method.POST
+                        endpoint = "mail/send"
+                        this.body = sendgridMail.build()
+                    }
+                )
             }
             return (response.statusCode in 200..299)
 
