@@ -1,10 +1,11 @@
 package com.k33.platform.analytics
 
+import com.k33.platform.filestore.FileStoreService
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import com.k33.platform.filestore.FileStoreService
 import kotlin.math.roundToInt
 
 fun Application.module() {
@@ -15,8 +16,11 @@ fun Application.module() {
                 updateFirebaseUsersStats()
                 call.respond(HttpStatusCode.OK)
             }
-            put("sync-sendgrid-contacts") {
-                SendgridContactsSync.syncSendgridContacts()
+            put("sync-sendgrid-contacts/{contactListId}") {
+                val contactListId = call.parameters["contactListId"] ?: throw BadRequestException("Missing path parameter: contactListId")
+                SendgridContactsSync.syncSendgridContacts(
+                    contactListId = contactListId,
+                )
                 call.respond(HttpStatusCode.OK)
             }
         }

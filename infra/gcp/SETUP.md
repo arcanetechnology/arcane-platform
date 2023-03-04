@@ -301,8 +301,8 @@ gcloud scheduler jobs delete sync-sendgrid-contacts-job \
 
 gcloud scheduler jobs create http sync-sendgrid-contacts-job \
   --location europe-west1 \
-  --schedule "0 12 * * TUE" \
-  --uri=https://"$GCP_BACKEND_HOST"/admin/jobs/sync-sendgrid-contacts \
+  --schedule "0 12 * * *" \
+  --uri=https://"$GCP_BACKEND_HOST"/admin/jobs/sync-sendgrid-contacts/${SENDGRID_CONTACT_LIST_ID} \
   --http-method=put \
   --oidc-service-account-email=k33-backend-gateway@"$GCP_PROJECT_ID".iam.gserviceaccount.com   \
   --oidc-token-audience=https://"$GCP_BACKEND_HOST"

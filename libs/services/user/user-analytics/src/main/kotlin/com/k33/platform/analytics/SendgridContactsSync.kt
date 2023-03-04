@@ -14,7 +14,9 @@ object SendgridContactsSync {
 
     private val logger by getLogger()
 
-    suspend fun syncSendgridContacts() {
+    suspend fun syncSendgridContacts(
+        contactListId: String,
+    ) {
 
         var message = ""
 
@@ -37,9 +39,12 @@ object SendgridContactsSync {
             .filter { !excludeUsersEmailList.contains(base64Encoder.encodeToString(messageDigest.digest(it.toByteArray()))) }
         message += "\nSend list count: ${sendList.size}"
 
-        val success = SendGridService.upsertMarketingContacts(contactEmails = sendList.toList())
+        val success = SendGridService.upsertMarketingContacts(
+            contactEmails = sendList.toList(),
+            contactListIds = listOf(contactListId),
+        )
         if (success) {
-            logger.info(NotifySlack.NOTIFY_SLACK_RESEARCH.getMarker(), "Synced Sendgrid contact\n$message")
+            logger.info("Synced Sendgrid contact\n$message")
         } else {
             logger.warn(NotifySlack.NOTIFY_SLACK_ALERTS.getMarker(), "Failed to sync Sendgrid Contacts")
         }
