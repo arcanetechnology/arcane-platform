@@ -1,10 +1,10 @@
 package com.k33.platform.app.invest
 
+import com.k33.platform.user.UserId
+import com.k33.platform.user.users
 import io.firestore4k.typed.div
 import io.ktor.server.plugins.*
 import kotlinx.serialization.Serializable
-import com.k33.platform.user.UserId
-import com.k33.platform.user.users
 
 data class AppId(val value: String) {
     override fun toString(): String = value

@@ -1,13 +1,13 @@
 package com.k33.platform.tests
 
+import com.k33.platform.identity.auth.FirebaseIdTokenPayload
+import com.k33.platform.identity.auth.gcp.FirebaseAuthService
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import com.k33.platform.identity.auth.FirebaseIdTokenPayload
-import com.k33.platform.identity.auth.gcp.FirebaseAuthService
 import java.util.*
 
 

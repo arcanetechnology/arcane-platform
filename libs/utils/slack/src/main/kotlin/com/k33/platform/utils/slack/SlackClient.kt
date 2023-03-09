@@ -1,5 +1,6 @@
 package com.k33.platform.utils.slack
 
+import com.k33.platform.utils.logging.getLogger
 import com.slack.api.RequestConfigurator
 import com.slack.api.Slack
 import com.slack.api.SlackConfig
@@ -10,7 +11,6 @@ import com.slack.api.model.kotlin_extension.block.withBlocks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
-import com.k33.platform.utils.logging.getLogger
 
 object SlackClient {
 

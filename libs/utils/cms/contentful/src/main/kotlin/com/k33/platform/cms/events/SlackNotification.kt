@@ -1,6 +1,5 @@
 package com.k33.platform.cms.events
 
-import kotlinx.coroutines.runBlocking
 import com.k33.platform.cms.ContentfulConfig
 import com.k33.platform.cms.space.research.page.Author
 import com.k33.platform.cms.space.research.page.ResearchPageForSlack
@@ -8,6 +7,7 @@ import com.k33.platform.utils.config.loadConfig
 import com.k33.platform.utils.slack.ChannelId
 import com.k33.platform.utils.slack.ChannelName
 import com.k33.platform.utils.slack.SlackClient
+import kotlinx.coroutines.runBlocking
 import java.time.ZonedDateTime
 
 object SlackNotification {

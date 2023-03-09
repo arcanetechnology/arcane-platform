@@ -1,10 +1,5 @@
 package com.k33.platform.cms.space.research.page
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import com.k33.platform.cms.ContentfulConfig
 import com.k33.platform.cms.events.Action
 import com.k33.platform.cms.events.EventHub
@@ -14,6 +9,11 @@ import com.k33.platform.utils.config.loadConfig
 import com.k33.platform.utils.logging.NotifySlack
 import com.k33.platform.utils.logging.getLogger
 import com.k33.platform.utils.logging.getMarker
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 
 object ResearchPageValidation {
 

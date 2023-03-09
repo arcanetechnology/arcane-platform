@@ -3,10 +3,10 @@ package com.k33.platform.cms.sync
 import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
-import kotlinx.coroutines.runBlocking
 import com.k33.platform.cms.content.ContentFactory
 import com.k33.platform.utils.config.loadConfig
 import com.k33.platform.utils.logging.getLogger
+import kotlinx.coroutines.runBlocking
 
 object Diff {
 

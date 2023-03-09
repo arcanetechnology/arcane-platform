@@ -1,10 +1,10 @@
 package com.k33.platform.app.invest
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.k33.platform.utils.logging.getLogger
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import com.k33.platform.utils.logging.getLogger
 import java.util.*
 
 fun FundInfoRequest.validate(): List<String> {

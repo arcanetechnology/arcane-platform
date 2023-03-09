@@ -1,7 +1,7 @@
 package com.k33.platform.admin
 
-import kotlinx.coroutines.runBlocking
 import com.k33.platform.admin.invest.InvestAdmin
+import kotlinx.coroutines.runBlocking
 
 fun main() {
     runBlocking {

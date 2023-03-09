@@ -1,5 +1,7 @@
 package com.k33.platform.tests
 
+import com.k33.platform.identity.auth.AppleIdTokenPayload
+import com.k33.platform.identity.auth.FirebaseIdTokenPayload
 import io.kotest.common.runBlocking
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -11,8 +13,6 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import com.k33.platform.identity.auth.AppleIdTokenPayload
-import com.k33.platform.identity.auth.FirebaseIdTokenPayload
 import java.util.*
 
 private val jsonPrinter = Json {

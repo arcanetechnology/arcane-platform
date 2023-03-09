@@ -1,5 +1,7 @@
 package com.k33.platform.identity.auth.apple
 
+import com.k33.platform.identity.auth.gcp.FirebaseAuthService
+import com.k33.platform.utils.logging.logWithMDC
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -8,8 +10,6 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import com.k33.platform.identity.auth.gcp.FirebaseAuthService
-import com.k33.platform.utils.logging.logWithMDC
 import java.util.*
 
 private const val APPLE_OAUTH2 = "apple-oauth2"

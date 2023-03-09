@@ -3,11 +3,10 @@ package com.k33.platform.analytics
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ListUsersPage
+import com.k33.platform.google.coroutine.ktx.await
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import com.k33.platform.google.coroutine.ktx.await
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

@@ -1,14 +1,14 @@
 package com.k33.platform.cms.events
 
+import com.k33.platform.cms.space.research.page.ResearchPageValidation
+import com.k33.platform.cms.sync.ContentfulToAlgolia
+import com.k33.platform.utils.logging.getLogger
+import com.k33.platform.utils.logging.logWithMDC
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import com.k33.platform.cms.space.research.page.ResearchPageValidation
-import com.k33.platform.cms.sync.ContentfulToAlgolia
-import com.k33.platform.utils.logging.getLogger
-import com.k33.platform.utils.logging.logWithMDC
 
 fun Application.module() {
 

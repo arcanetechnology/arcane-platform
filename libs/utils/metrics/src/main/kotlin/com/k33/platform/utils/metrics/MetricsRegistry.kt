@@ -1,10 +1,10 @@
 package com.k33.platform.utils.metrics
 
+import com.k33.platform.utils.config.getConfig
 import io.github.config4k.extract
 import io.micrometer.core.instrument.Metrics
 import io.micrometer.stackdriver.StackdriverConfig
 import io.micrometer.stackdriver.StackdriverMeterRegistry
-import com.k33.platform.utils.config.getConfig
 
 internal class StackDriverConfigReader {
     private val config by getConfig(name = "metrics", path = "monitoring.metrics")

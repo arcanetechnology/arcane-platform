@@ -1,6 +1,8 @@
 package com.k33.platform.utils.graphql
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.k33.platform.identity.auth.gcp.UserInfo
+import com.k33.platform.utils.logging.logWithMDC
 import graphql.ExecutionInput
 import graphql.ExecutionResult
 import io.ktor.http.*
@@ -11,8 +13,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.future.await
 import kotlinx.serialization.Serializable
-import com.k33.platform.identity.auth.gcp.UserInfo
-import com.k33.platform.utils.logging.logWithMDC
 
 fun Application.module() {
 

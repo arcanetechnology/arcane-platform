@@ -1,5 +1,6 @@
 package com.k33.platform.utils.graphql
 
+import com.k33.platform.utils.config.readResourceWithoutWhitespace
 import graphql.GraphQL
 import graphql.schema.DataFetcher
 import graphql.schema.GraphQLSchema
@@ -7,7 +8,6 @@ import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.SchemaPrinter
-import com.k33.platform.utils.config.readResourceWithoutWhitespace
 
 object GraphqlModulesRegistry {
 

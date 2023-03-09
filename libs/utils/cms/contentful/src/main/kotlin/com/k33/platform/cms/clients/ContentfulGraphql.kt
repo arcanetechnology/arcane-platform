@@ -1,5 +1,7 @@
 package com.k33.platform.cms.clients
 
+import com.k33.platform.cms.utils.forEachInArrayAt
+import com.k33.platform.utils.logging.getLogger
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
@@ -19,8 +21,6 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import net.andreinc.mapneat.dsl.MapNeat
 import net.andreinc.mapneat.dsl.json
-import com.k33.platform.cms.utils.forEachInArrayAt
-import com.k33.platform.utils.logging.getLogger
 
 class ContentfulGraphql(
     spaceId: String,

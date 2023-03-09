@@ -1,12 +1,12 @@
 package com.k33.platform.cms.space.research.report
 
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import com.k33.platform.cms.clients.ContentfulGraphql
 import com.k33.platform.cms.content.Content
 import com.k33.platform.cms.sync.Algolia
 import com.k33.platform.cms.utils.richToPlainText
 import com.k33.platform.utils.config.lazyResourceWithoutWhitespace
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class ResearchReport(
     spaceId: String,

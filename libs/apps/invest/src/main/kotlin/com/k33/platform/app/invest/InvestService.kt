@@ -1,5 +1,12 @@
 package com.k33.platform.app.invest
 
+import com.k33.platform.email.ContentType
+import com.k33.platform.email.Email
+import com.k33.platform.email.MailContent
+import com.k33.platform.email.getEmailService
+import com.k33.platform.user.UserId
+import com.k33.platform.utils.config.loadConfig
+import com.k33.platform.utils.logging.getLogger
 import io.firestore4k.typed.add
 import io.firestore4k.typed.delete
 import io.firestore4k.typed.div
@@ -9,13 +16,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import com.k33.platform.email.ContentType
-import com.k33.platform.email.Email
-import com.k33.platform.email.MailContent
-import com.k33.platform.email.getEmailService
-import com.k33.platform.user.UserId
-import com.k33.platform.utils.config.loadConfig
-import com.k33.platform.utils.logging.getLogger
 
 object InvestService {
 

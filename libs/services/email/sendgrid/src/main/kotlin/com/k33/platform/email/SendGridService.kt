@@ -1,5 +1,7 @@
 package com.k33.platform.email
 
+import com.k33.platform.utils.config.loadConfig
+import com.k33.platform.utils.logging.getLogger
 import com.sendgrid.Method
 import com.sendgrid.Request
 import com.sendgrid.SendGrid
@@ -18,13 +20,10 @@ import kotlinx.html.br
 import kotlinx.html.div
 import kotlinx.html.stream.appendHTML
 import kotlinx.html.style
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import com.k33.platform.utils.config.loadConfig
-import com.k33.platform.utils.logging.getLogger
-import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.SerialName
 
 
 typealias K33Email = com.k33.platform.email.Email

@@ -1,8 +1,8 @@
 package com.k33.platform.cms.events
 
+import com.k33.platform.utils.logging.getLogger
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import com.k33.platform.utils.logging.getLogger
 
 typealias Callback = suspend (EventType, String) -> Unit
 

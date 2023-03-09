@@ -1,7 +1,7 @@
 package com.k33.platform.app.invest
 
-import io.kotest.core.spec.style.StringSpec
 import com.k33.platform.app.invest.InvestService.asString
+import io.kotest.core.spec.style.StringSpec
 
 class SlackNotificationTest : StringSpec({
 

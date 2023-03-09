@@ -1,8 +1,8 @@
 package com.k33.platform.app.invest
 
+import com.k33.platform.utils.config.loadConfig
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import com.k33.platform.utils.config.loadConfig
 
 class InvestConfigTest : StringSpec({
 

@@ -5,9 +5,6 @@ import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
 import com.algolia.search.model.ObjectID
-import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import com.k33.platform.cms.content.ContentFactory
 import com.k33.platform.cms.events.Action
 import com.k33.platform.cms.events.EventHub
@@ -16,6 +13,9 @@ import com.k33.platform.cms.events.EventType
 import com.k33.platform.cms.events.Resource
 import com.k33.platform.utils.config.loadConfig
 import com.k33.platform.utils.logging.getLogger
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class ContentfulToAlgolia(
     private val syncId: String

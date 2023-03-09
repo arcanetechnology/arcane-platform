@@ -4,13 +4,13 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.filter.Filter
 import ch.qos.logback.core.spi.FilterReply
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import com.k33.platform.utils.slack.Channel
 import com.k33.platform.utils.slack.ChannelId
 import com.k33.platform.utils.slack.ChannelName
 import com.k33.platform.utils.slack.SlackClient
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Marker
 
 class NotifySlackFilter : Filter<ILoggingEvent>() {

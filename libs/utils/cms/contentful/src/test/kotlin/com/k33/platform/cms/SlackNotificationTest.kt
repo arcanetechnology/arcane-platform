@@ -1,7 +1,7 @@
 package com.k33.platform.cms
 
-import io.kotest.core.spec.style.StringSpec
 import com.k33.platform.cms.events.SlackNotification
+import io.kotest.core.spec.style.StringSpec
 
 class SlackNotificationTest : StringSpec({
 

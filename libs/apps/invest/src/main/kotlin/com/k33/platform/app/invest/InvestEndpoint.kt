@@ -1,12 +1,5 @@
 package com.k33.platform.app.invest
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import com.k33.platform.app.invest.InvestService.getAllFunds
 import com.k33.platform.app.invest.InvestService.getFund
 import com.k33.platform.app.invest.InvestService.isApproved
@@ -15,6 +8,13 @@ import com.k33.platform.app.invest.InvestService.saveStatus
 import com.k33.platform.identity.auth.gcp.UserInfo
 import com.k33.platform.user.UserId
 import com.k33.platform.utils.logging.logWithMDC
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.plugins.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
 fun Application.module() {
     routing {

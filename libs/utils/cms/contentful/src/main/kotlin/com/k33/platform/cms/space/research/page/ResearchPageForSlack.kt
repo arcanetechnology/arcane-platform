@@ -1,12 +1,12 @@
 package com.k33.platform.cms.space.research.page
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
 import com.k33.platform.cms.clients.ContentfulGraphql
 import com.k33.platform.cms.utils.optional
 import com.k33.platform.utils.config.lazyResourceWithoutWhitespace
 import com.k33.platform.utils.logging.getLogger
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 
 class ResearchPageForSlack(
     spaceId: String,
