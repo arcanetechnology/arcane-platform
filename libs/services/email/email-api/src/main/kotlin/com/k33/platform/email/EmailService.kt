@@ -8,6 +8,16 @@ interface EmailService {
         bccList: List<Email> = emptyList(),
         mail: Mail,
     ): Boolean
+
+    suspend fun upsertMarketingContacts(
+        contactEmails: List<String>,
+        contactListIds: List<String>,
+    ): Boolean
+
+    suspend fun unlistMarketingContacts(
+        contactEmails: List<String>,
+        contactListId: String,
+    ): Boolean
 }
 
 sealed class Mail

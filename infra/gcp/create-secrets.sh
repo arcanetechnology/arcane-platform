@@ -28,8 +28,9 @@ gcp_secrets[5]="ALGOLIA_APP_ID"
 gcp_secrets[6]="ALGOLIA_API_KEY"
 gcp_secrets[7]="SLACK_TOKEN"
 gcp_secrets[8]="STRIPE_API_KEY"
+gcp_secrets[9]="STRIPE_WEBHOOK_ENDPOINT_SECRET"
 
-index=8
+index=10
 
 while [ -n "${gcp_secrets["$index"]}" ]; do
 

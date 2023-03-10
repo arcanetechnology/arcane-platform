@@ -22,6 +22,7 @@ import kotlinx.html.stream.appendHTML
 import kotlinx.html.style
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -93,6 +94,7 @@ object SendGridService : EmailService {
                         }
                     )
                 }
+
                 is MailTemplate -> {
                     setTemplateId(mail.templateId)
                 }
@@ -126,9 +128,9 @@ object SendGridService : EmailService {
         }
     }
 
-    suspend fun upsertMarketingContacts(
+    override suspend fun upsertMarketingContacts(
         contactEmails: List<String>,
-        contactListIds: List<String> = emptyList(),
+        contactListIds: List<String>,
     ): Boolean {
 
         @Serializable
@@ -173,6 +175,82 @@ object SendGridService : EmailService {
                 }
                 .awaitAll()
                 .all { it }
+        }
+    }
+
+    private val json = Json { ignoreUnknownKeys = true }
+
+    override suspend fun unlistMarketingContacts(
+        contactEmails: List<String>,
+        contactListId: String,
+    ): Boolean {
+        val sendGrid = SendGrid(sendGridConfig.apiKey)
+        val contactIds = getContactIds(sendGrid, contactEmails) ?: return false
+        return try {
+            val request = Request().apply {
+                method = Method.DELETE
+                endpoint = "/marketing/lists/$contactListId/contacts"
+                queryParams["contact_ids"] = contactIds.joinToString(separator = ",")
+            }
+            val response = withContext(Dispatchers.IO) {
+                sendGrid.api(request)
+            }
+            (response.statusCode in 200..299)
+        } catch (e: Exception) {
+            logger.error("Failed to un-list contacts", e)
+            false
+        }
+    }
+
+    private suspend fun getContactIds(
+        sendGrid: SendGrid,
+        contactEmails: List<String>,
+    ): List<String>? {
+
+        @Serializable
+        data class GetContactsRequest(
+            val emails: List<String>,
+        )
+
+        @Serializable
+        data class Contact(
+            val id: String,
+        )
+
+        @Serializable
+        data class OptionalContact(
+            val contact: Contact? = null,
+        )
+
+        @Serializable
+        data class GetContactsResponse(
+            val result: Map<String, OptionalContact>,
+        )
+
+        return coroutineScope {
+            try {
+                val getContactsRequest = GetContactsRequest(
+                    emails = contactEmails,
+                )
+                val jsonBody = Json.encodeToString(getContactsRequest)
+                val request = Request().apply {
+                    method = Method.POST
+                    endpoint = "/marketing/contacts/search/emails"
+                    this.body = jsonBody
+                }
+                val response = withContext(Dispatchers.IO) {
+                    sendGrid.api(request)
+                }
+                val getContactsResponse: GetContactsResponse = json.decodeFromString(response.body)
+                getContactsResponse
+                    .result
+                    .values
+                    .mapNotNull(OptionalContact::contact)
+                    .map(Contact::id)
+            } catch (e: Exception) {
+                logger.error("Failed to search contacts by email", e)
+                null
+            }
         }
     }
 }

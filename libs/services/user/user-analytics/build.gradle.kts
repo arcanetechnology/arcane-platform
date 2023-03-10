@@ -15,7 +15,6 @@ dependencies {
     implementation(KotlinX.serialization.json)
 
     implementation(project(":libs:services:email"))
-    implementation(project(":libs:services:email:sendgrid"))
 
     implementation(project(":libs:utils:logging"))
 }

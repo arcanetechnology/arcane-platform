@@ -7,6 +7,8 @@ import com.stripe.exception.StripeException
 import com.stripe.model.Customer
 import com.stripe.net.RequestOptions
 import com.stripe.param.CustomerSearchParams
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 object StripeClient {
@@ -20,16 +22,16 @@ object StripeClient {
             .build()
     }
 
-    fun getSubscribedProducts(userEmail: String): List<String> {
+    suspend fun getSubscribedProducts(userEmail: String): List<String> {
         val customers = try {
             val searchParams = CustomerSearchParams
                 .builder()
                 .setQuery("email:'$userEmail'")
                 .addExpand("data.subscriptions")
                 .build()
-            Customer
-                .search(searchParams, requestOptions)
-                .data
+            withContext(Dispatchers.IO) {
+                Customer.search(searchParams, requestOptions).data
+            }
         } catch (e: StripeException) {
             logger.warn("Failed to fetch Stripe Customer", e)
             // https://stripe.com/docs/api/errors?lang=java
@@ -93,5 +95,14 @@ object StripeClient {
         incomplete_expired,
         trialing,
         paused,
+    }
+
+    suspend fun getCustomerEmail(stripeCustomerId: String): String? = withContext(Dispatchers.IO) {
+        try {
+            Customer.retrieve(stripeCustomerId, requestOptions).email
+        } catch (e: StripeException) {
+            logger.error("Failed to fetch customer", e)
+            null
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.k33.platform.analytics
 
-import com.k33.platform.email.SendGridService
+import com.k33.platform.email.getEmailService
 import com.k33.platform.filestore.FileStoreService
 import com.k33.platform.utils.logging.NotifySlack
 import com.k33.platform.utils.logging.getLogger
@@ -14,10 +14,11 @@ object SendgridContactsSync {
 
     private val logger by getLogger()
 
+    private val emailService by getEmailService()
+
     suspend fun syncSendgridContacts(
         contactListId: String,
     ) {
-
         var message = ""
 
         // fetch users emails
@@ -39,7 +40,7 @@ object SendgridContactsSync {
             .filter { !excludeUsersEmailList.contains(base64Encoder.encodeToString(messageDigest.digest(it.toByteArray()))) }
         message += "\nSend list count: ${sendList.size}"
 
-        val success = SendGridService.upsertMarketingContacts(
+        val success = emailService.upsertMarketingContacts(
             contactEmails = sendList.toList(),
             contactListIds = listOf(contactListId),
         )

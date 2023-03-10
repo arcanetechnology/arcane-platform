@@ -87,7 +87,7 @@ fun Application.module() {
     routing {
         authenticate(ESP_V2_HEADER) {
             get("/whoami") {
-                val userInfo = call.request.headers[GcpHttpHeaders.UserInfo]
+                val userInfo = call.request.header(GcpHttpHeaders.UserInfo)
                     ?.let { userInfo -> String(Base64.getUrlDecoder().decode(userInfo)) }
                     ?: ""
                 val jsonElement = jsonSerializer.parseToJsonElement(userInfo)

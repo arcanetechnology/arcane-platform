@@ -163,6 +163,22 @@ paths:
       security:
         - api_key: [ ]
 
+  "/webhooks/stripe":
+    post:
+      description: Webhook to receive Stripe events
+      consumes:
+        - application/json
+      operationId: "reportStripeEvent"
+      parameters:
+        - name: "request"
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: "Success"
+
 
   "/email-subscriptions":
     put:

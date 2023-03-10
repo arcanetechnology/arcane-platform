@@ -1,6 +1,6 @@
 package com.k33.platform.emailsubscription
 
-import com.k33.platform.email.SendGridService
+import com.k33.platform.email.getEmailService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -10,11 +10,13 @@ import kotlinx.serialization.Serializable
 
 fun Application.module() {
 
+    val emailService by getEmailService()
+
     routing {
         route("/email-subscriptions") {
             put {
                 val request = call.receive<EmailSubscriptionsRequest>()
-                val success = SendGridService.upsertMarketingContacts(
+                val success = emailService.upsertMarketingContacts(
                     contactEmails = request.emails,
                     contactListIds = request.listIds,
                 )

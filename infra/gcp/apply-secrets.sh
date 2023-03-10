@@ -28,6 +28,7 @@ gcp_secrets[5]="ALGOLIA_APP_ID"
 gcp_secrets[6]="ALGOLIA_API_KEY"
 gcp_secrets[7]="SLACK_TOKEN"
 gcp_secrets[8]="STRIPE_API_KEY"
+gcp_secrets[9]="STRIPE_WEBHOOK_ENDPOINT_SECRET"
 
 CLOUD_RUN_SERVICE="k33-backend"
 
@@ -54,5 +55,5 @@ done
 echo $secret_string
 
 gcloud run services update "${CLOUD_RUN_SERVICE}" \
-  --update-secrets="${secret_string}" \
+  --set-secrets="${secret_string}" \
   --region europe-west1
