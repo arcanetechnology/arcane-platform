@@ -21,13 +21,13 @@ allprojects {
     }
 
     tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = JavaVersion.VERSION_18.toString()
-        targetCompatibility = JavaVersion.VERSION_18.toString()
+        sourceCompatibility = JavaVersion.VERSION_19.toString()
+        targetCompatibility = JavaVersion.VERSION_19.toString()
     }
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_18.majorVersion
+            jvmTarget = JavaVersion.VERSION_19.majorVersion
         }
     }
 
@@ -40,7 +40,7 @@ allprojects {
 subprojects {
     // Address https://github.com/gradle/gradle/issues/4823: Force parent project evaluation before subproject evaluation for Kotlin build scripts
     if (gradle.startParameter.isConfigureOnDemand
-        && buildscript.sourceFile?.extension?.toLowerCase() == "kts"
+        && buildscript.sourceFile?.extension?.lowercase() == "kts"
         && parent != rootProject) {
         generateSequence(parent) { project -> project.parent.takeIf { it != rootProject } }
             .forEach { evaluationDependsOn(it.path) }
