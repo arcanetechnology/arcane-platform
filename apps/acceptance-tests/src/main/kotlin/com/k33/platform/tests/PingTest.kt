@@ -7,7 +7,6 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import java.time.Instant
-import java.util.*
 
 class PingTest : StringSpec({
 
@@ -29,7 +28,7 @@ class PingTest : StringSpec({
         val response: String = apiClient.get {
             url(path = "utc")
             headers {
-                appendEndpointsApiUserInfoHeader(UUID.randomUUID().toString())
+                appendEndpointsApiUserInfoHeader()
             }
         }.bodyAsText()
         Instant.parse(response) shouldBeBefore Instant.now()

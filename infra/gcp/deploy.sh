@@ -41,6 +41,7 @@ gcloud run deploy "${backendCloudRun["service"]}" \
   --set-env-vars=GCP_PROJECT_ID="${GCP_PROJECT_ID}" \
   --set-env-vars=GOOGLE_CLOUD_PROJECT="${GCP_PROJECT_ID}" \
   --set-env-vars=STRIPE_PRODUCT_ID_RESEARCH_PRO="${STRIPE_PRODUCT_ID_RESEARCH_PRO}" \
+  --set-env-vars=STRIPE_COUPON_CORPORATE_PLAN="${STRIPE_COUPON_CORPORATE_PLAN}" \
   --set-env-vars=SLACK_ALERTS_CHANNEL_ID="${SLACK_ALERTS_CHANNEL_ID}" \
   --set-env-vars=SLACK_GENERAL_CHANNEL_ID="${SLACK_GENERAL_CHANNEL_ID}" \
   --set-env-vars=SLACK_INVEST_CHANNEL_ID="${SLACK_INVEST_CHANNEL_ID}" \

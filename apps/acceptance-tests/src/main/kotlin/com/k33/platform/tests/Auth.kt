@@ -30,8 +30,14 @@ private val oauthProviderEmulatorClient = HttpClient(CIO) {
     }
 }
 
-fun HeadersBuilder.appendEndpointsApiUserInfoHeader(subject: String) {
-    val firebaseIdTokenPayload = FirebaseIdTokenPayload(subject = subject)
+fun HeadersBuilder.appendEndpointsApiUserInfoHeader(
+    subject: String = UUID.randomUUID().toString(),
+    email: String = "test@k33.com"
+) {
+    val firebaseIdTokenPayload = FirebaseIdTokenPayload(
+        subject = subject,
+        email = email,
+    )
     if (usingEsp) {
         val idToken: String = runBlocking {
             oauthProviderEmulatorClient.get {

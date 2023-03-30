@@ -45,7 +45,9 @@ fun Application.module() {
                 } catch (e: JsonSyntaxException) {
                     call.application.log.error("Failed to parse stripe webhook event", e)
                     throw BadRequestException("Failed to json parse Stripe webhook event json", e)
-                } catch (e: SignatureVerificationException) {
+                }
+                // https://stripe.com/docs/error-handling?lang=java#signature-verification-errors
+                catch (e: SignatureVerificationException) {
                     call.application.log.error("Failed to verify signature of stripe webhook event", e)
                     throw BadRequestException("Failed to verify signature of stripe webhook event", e)
                 }

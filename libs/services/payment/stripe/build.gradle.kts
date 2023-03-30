@@ -12,4 +12,7 @@ dependencies {
     implementation("com.google.code.gson:gson:_")
 
     implementation(Ktor.server.core)
+
+    // test
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:_")
 }

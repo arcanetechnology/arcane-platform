@@ -215,6 +215,48 @@ paths:
           description: "Internal Error"
       security:
         - firebase: [ ]
+  "/payment/checkout-session":
+    post:
+      description: Create/fetch checkout session
+      operationId: createOrFetchCheckoutSession
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: "request"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CheckoutSessionRequest"
+      responses:
+        200:
+          description: Checkout session url and expiry date
+          schema:
+            $ref: "#/definitions/CheckoutSessionResponse"
+      security:
+        - firebase: [ ]
+  "/payment/customer-portal-session":
+    post:
+      description: Create customer portal session
+      operationId: createCustomerPortalSession
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: "request"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CustomerPortalSessionRequest"
+      responses:
+        200:
+          description: Customer Portal Session
+          schema:
+            $ref: "#/definitions/CustomerPortalSessionResponse"
+      security:
+        - firebase: [ ]
 
 
   "/apps/invest/funds":
@@ -331,6 +373,58 @@ definitions:
         type: array
         items:
           type: string
+
+
+  CheckoutSessionRequest:
+    type: object
+    properties:
+      price_id:
+        type: string
+      success_url:
+        type: string
+      cancel_url:
+        type: string
+    required:
+      - price_id
+      - success_url
+      - cancel_url
+  CheckoutSessionResponse:
+    type: object
+    properties:
+      url:
+        type: string
+      expires_at:
+        type: string
+        format: datetime
+      price_id:
+        type: string
+      success_url:
+        type: string
+      cancel_url:
+        type: string
+    required:
+      - url
+      - expires_at
+      - price_id
+      - success_url
+      - cancel_url
+  CustomerPortalSessionRequest:
+    type: object
+    properties:
+      return_url:
+        type: string
+    required:
+      - return_url
+  CustomerPortalSessionResponse:
+    type: object
+    properties:
+      url:
+        type: string
+      return_url:
+        type: string
+    required:
+      - url
+      - return_url
 
 
   FundInfoRequest:

@@ -15,4 +15,7 @@ while ! nc -z "$BACKEND_HOST" 8080; do
   sleep 0.1 # wait for 1/10 of the second before check again
 done
 
+# https://junit.org/junit5/docs/current/user-guide/#running-tests-console-launcher-options
+# ./acceptance-tests --select-class=com.k33.platform.tests.PaymentTest
+
 ./acceptance-tests --select-package=com.k33.platform.tests
