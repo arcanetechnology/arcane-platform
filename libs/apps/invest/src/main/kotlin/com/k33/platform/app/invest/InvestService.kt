@@ -7,11 +7,8 @@ import com.k33.platform.email.getEmailService
 import com.k33.platform.user.UserId
 import com.k33.platform.utils.config.loadConfig
 import com.k33.platform.utils.logging.getLogger
-import io.firestore4k.typed.add
-import io.firestore4k.typed.delete
+import io.firestore4k.typed.FirestoreClient
 import io.firestore4k.typed.div
-import io.firestore4k.typed.get
-import io.firestore4k.typed.put
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -48,6 +45,8 @@ object InvestService {
 
     private val emailService by getEmailService()
 
+    private val firestoreClient by lazy { FirestoreClient() }
+
     fun getAllFundIds() = config.funds.keys
 
     fun FundInfoRequest.isApproved(fundId: FundId): Boolean {
@@ -75,11 +74,11 @@ object InvestService {
             .keys
             .map(::FundId)
             .associateWithAsync { fundId ->
-                get(inInvestAppContext() / funds / fundId)
+                firestoreClient.get(inInvestAppContext() / funds / fundId)
             }
     }
 
-    suspend fun UserId.getFund(fundId: FundId): Fund? = get(inInvestAppContext() / funds / fundId)
+    suspend fun UserId.getFund(fundId: FundId): Fund? = firestoreClient.get(inInvestAppContext() / funds / fundId)
 
     private suspend fun <K, V> List<K>.associateWithAsync(valueSelector: suspend (K) -> V): Map<K, V> {
         return coroutineScope {
@@ -96,12 +95,12 @@ object InvestService {
     suspend fun UserId.saveStatus(
         fundId: FundId,
         status: Status,
-    ) = put(inInvestAppContext() / funds / fundId, Fund(status))
+    ) = firestoreClient.put(inInvestAppContext() / funds / fundId, Fund(status))
 
     suspend fun UserId.saveFundInfoRequest(
         fundId: FundId,
         fundInfoRequest: FundInfoRequest,
-    ) = add(inInvestAppContext() / funds / fundId / fundInfoRequests, fundInfoRequest)
+    ) = firestoreClient.add(inInvestAppContext() / funds / fundId / fundInfoRequests, fundInfoRequest)
 
     suspend fun sendEmail(
         investorEmail: String,
@@ -167,6 +166,6 @@ object InvestService {
         """.trimIndent()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun UserId.delete() = delete(inInvestAppContext())
+    suspend fun UserId.delete() = firestoreClient.delete(inInvestAppContext())
 }
 
