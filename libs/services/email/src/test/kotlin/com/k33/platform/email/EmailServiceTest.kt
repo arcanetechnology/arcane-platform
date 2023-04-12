@@ -16,4 +16,15 @@ class EmailServiceTest : StringSpec({
             )
         )
     }
+
+    "send email using template".config(enabled = false) {
+        val emailService by getEmailService()
+        emailService.sendEmail(
+            from = Email("vihang@k33.com"),
+            toList = listOf(Email("vihang@k33.com")),
+            mail = MailTemplate(
+                templateId = ""
+            )
+        )
+    }
 })
